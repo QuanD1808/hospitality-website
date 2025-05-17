@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
-import { UserIcon } from 'lucide-react';
+import { UserIcon, ChevronLeftIcon } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -110,7 +110,19 @@ export default function Login() {
                 {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
               </button>
             </div>
+            
+            <div>
+              <button
+                type="button"
+                onClick={() => router.push('/')}
+                className="w-full flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <ChevronLeftIcon className="h-4 w-4 mr-1" />
+                Quay lại trang chủ
+              </button>
+            </div>
           </form>
+          
           <div className="mt-6">
             <div className="relative">
               <div className="relative flex flex-col items-center text-sm">
