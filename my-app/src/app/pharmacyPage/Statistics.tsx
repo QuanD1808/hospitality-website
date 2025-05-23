@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CalendarIcon, SearchIcon, ChevronDownIcon } from 'lucide-react';
-import { dailyRevenue, invoices, patients } from '../data/mockData';
+import { dailyRevenue, invoices, patients } from '../datats/mockData';
 import { InvoiceDetailModal } from './InvoiceDetailModal';
 export const Statistics = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('day');

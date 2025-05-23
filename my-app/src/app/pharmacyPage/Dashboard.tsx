@@ -3,7 +3,7 @@ import { LogOutIcon, PillIcon, BarChartIcon } from 'lucide-react';
 import { PatientList } from './PatientList';
 import { PatientDetails } from './PatientDetails';
 import { Statistics } from './Statistics';
-import { patients } from '../data/mockData';
+import { patients } from '../datats/mockData';
 export const Dashboard = ({
   user,
   onLogout

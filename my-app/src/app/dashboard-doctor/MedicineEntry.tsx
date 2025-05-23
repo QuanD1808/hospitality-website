@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Medicine } from '../data/types';
+import { Medicine } from '../datats/types';
 import { TrashIcon } from 'lucide-react';
 
 interface MedicineEntryProps {

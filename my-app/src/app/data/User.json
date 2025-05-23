@@ -1,0 +1,23 @@
+[
+  {
+    "id": "u1",
+    "email": "admin@clinic.com",
+    "password": "hashed_password_123",
+    "fullName": "Admin User",
+    "role": "admin"
+  },
+  {
+    "id": "u2",
+    "email": "dr.john@clinic.com",
+    "password": "hashed_password_456",
+    "fullName": "Dr. John Smith",
+    "role": "doctor"
+  },
+  {
+    "id": "u3",
+    "email": "jane.doe@gmail.com",
+    "password": "hashed_password_789",
+    "fullName": "Jane Doe",
+    "role": "user"
+  }
+]

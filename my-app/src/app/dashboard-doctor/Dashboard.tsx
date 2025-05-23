@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { PatientList } from './PatientList';
 import { DiagnosisPanel } from './DiagnosisPanel';
-import { mockPatients, Patient } from '../data/auth';
+import { mockPatients, Patient } from '../datats/auth';
 
 export const Dashboard = () => {
   const [patients, setPatients] = useState<Patient[]>(mockPatients);

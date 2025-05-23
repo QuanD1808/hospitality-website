@@ -393,8 +393,9 @@ export function HomePage(props: HomePageProps) {
                 <select 
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white"
                   required
+                  defaultValue=""
                 >
-                  <option value="" disabled selected>Choose a service</option>
+                  <option value="" disabled>Choose a service</option>
                   <option value="general">General Checkup</option>
                   <option value="cardiology">Cardiology</option>
                   <option value="neurology">Neurology</option>

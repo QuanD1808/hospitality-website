@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ClockIcon, PhoneIcon } from 'lucide-react';
-import { Patient, AppointmentType } from '../data/auth';
+import { Patient, AppointmentType } from '../datats/auth';
 
 interface PatientCardProps {
   patient: Patient;

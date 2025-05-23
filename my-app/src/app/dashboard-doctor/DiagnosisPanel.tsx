@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { FileTextIcon, ClipboardListIcon, CalendarIcon, PlusIcon, UserIcon } from 'lucide-react';
 import { MedicineEntry } from './MedicineEntry';
-import { Patient, Medicine } from '../data/types';
+import { Patient, Medicine } from '../datats/types';
 import { PatientProfile } from './PatientProfile';
 
 interface DiagnosisPanelProps {
