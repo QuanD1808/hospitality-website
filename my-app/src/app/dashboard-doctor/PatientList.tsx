@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Patient } from '../datats/types';
+import { Patient } from '../data/types';
 import { PatientCard } from './PatientCard';
 
 interface PatientListProps {

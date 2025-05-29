@@ -1,10 +1,26 @@
 import React from 'react';
 import { XIcon } from 'lucide-react';
+import { Patient, Medicine } from '../data/types'; // Assuming the types are in ../data/types relative to this file
+
+interface Invoice {
+  id: string | number; // Assuming ID can be string or number
+  date: string; // Assuming date is a string
+  pharmacistName: string;
+  totalAmount: number;
+  // Add other invoice properties if known
+}
+
+interface InvoiceDetailModalProps {
+  invoice: Invoice;
+  patient: Patient;
+  onClose: () => void;
+}
+
 export const InvoiceDetailModal = ({
   invoice,
   patient,
   onClose
-}) => {
+}: InvoiceDetailModalProps) => {
   return <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="border-b border-gray-200">
@@ -91,7 +107,7 @@ export const InvoiceDetailModal = ({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {patient.prescription.map((medicine, index) => <tr key={index}>
+                  {patient.prescription.map((medicine: Medicine, index: number) => <tr key={index}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {index + 1}
                       </td>

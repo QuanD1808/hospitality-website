@@ -1,13 +1,21 @@
 import React from 'react';
 import { ArrowLeftIcon, PrinterIcon } from 'lucide-react';
+import { Patient, Medicine } from '../data/types'; // Corrected import path
+
+interface InvoiceProps {
+  patient: Patient;
+  onClose: () => void;
+  onComplete: () => void;
+}
+
 export const Invoice = ({
   patient,
   onClose,
   onComplete
-}) => {
+}: InvoiceProps) => {
   const currentDate = new Date().toLocaleDateString('vi-VN');
   const calculateTotal = () => {
-    return patient.prescription.reduce((total, med) => {
+    return patient.prescription.reduce((total: number, med: Medicine) => {
       return total + med.price * med.quantity;
     }, 0);
   };
@@ -100,7 +108,7 @@ export const Invoice = ({
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {patient.prescription.map((medicine, index) => <tr key={index}>
+                {patient.prescription.map((medicine: Medicine, index: number) => <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {index + 1}
                     </td>

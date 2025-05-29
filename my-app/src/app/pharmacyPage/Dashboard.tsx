@@ -1,23 +1,38 @@
 import React, { useState } from 'react';
 import { LogOutIcon, PillIcon, BarChartIcon } from 'lucide-react';
+import { Patient } from '../data/types';
 import { PatientList } from './PatientList';
 import { PatientDetails } from './PatientDetails';
 import { Statistics } from './Statistics';
 import { patients } from '../datats/mockData';
+
+interface User {
+  name: string;
+  // Add other user properties if known
+}
+
+interface DashboardProps {
+  user: User | null; // Assuming user can be null if not logged in
+  onLogout: () => void;
+}
+
 export const Dashboard = ({
   user,
   onLogout
-}) => {
+}: DashboardProps) => {
   const [activeTab, setActiveTab] = useState('dispense'); // 'dispense' or 'statistics'
-  const [selectedPatient, setSelectedPatient] = useState(null);
-  const [waitingPatients, setWaitingPatients] = useState(patients);
-  const handlePatientSelect = patient => {
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [waitingPatients, setWaitingPatients] = useState<Patient[]>(patients);
+
+  const handlePatientSelect = (patient: Patient) => {
     setSelectedPatient(patient);
   };
-  const handlePatientRemove = patientId => {
+
+  const handlePatientRemove = (patientId: string) => {
     setWaitingPatients(waitingPatients.filter(p => p.id !== patientId));
     setSelectedPatient(null);
   };
+
   return <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-blue-700 text-white shadow">
