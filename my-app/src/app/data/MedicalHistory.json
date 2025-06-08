@@ -1,9 +1,0 @@
-[
-  {
-    "id": "mh1",
-    "patientId": "p1",
-    "createdAt": "2024-05-01T10:00:00Z",
-    "reason": "Regular check-up",
-    "note": "Patient reported occasional headaches."
-  }
-]

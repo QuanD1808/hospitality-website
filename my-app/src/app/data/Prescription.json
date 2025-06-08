@@ -1,8 +1,26 @@
 [
   {
-    "id": "pr1",
-    "diagnosisId": "d1",
-    "createdAt": "2024-05-01T11:00:00Z",
-    "note": "For 5 days use."
+    "id": 1,
+    "patientId": 1,
+    "doctorId": 2,
+    "diagnosis": "Viêm phổi",
+    "date": "2025-06-08",
+    "status": 1
+  },
+    {
+    "id": 2,
+    "patientId": 2,
+    "doctorId": 1,
+    "diagnosis": "Viêm dạ dày",
+    "date": "2021-10-08",
+    "status": 2
+  },
+    {
+    "id": 3,
+    "patientId": 3,
+    "doctorId": 3,
+    "diagnosis": "Ung thư",
+    "date": "2020-06-01",
+    "status": 1
   }
 ]

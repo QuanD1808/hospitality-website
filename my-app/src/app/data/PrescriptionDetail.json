@@ -1,10 +1,20 @@
 [
   {
-    "id": "pd1",
-    "prescriptionId": "pr1",
-    "medicineId": "m1",
-    "dosage": "500mg",
-    "frequency": "Twice a day",
-    "duration": "5 days"
+    "prescriptionId": 1,
+    "medicineId": 1,
+    "quantity": 20,
+    "dosage": "1 viên sáng, 1 viên trưa, 1 viên tối"
+  },
+  {
+    "prescriptionId": 1,
+    "medicineId": 2,
+    "quantity": 10,
+    "dosage": "1 viên khi sốt trên 38.5°C"
+  },
+  {
+    "prescriptionId": 1,
+    "medicineId": 3,
+    "quantity": 30,
+    "dosage": "1 viên sáng, 1 viên trưa, 1 viên tối"
   }
 ]

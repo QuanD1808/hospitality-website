@@ -1,23 +1,38 @@
 [
   {
-    "id": "u1",
-    "email": "admin@clinic.com",
-    "password": "hashed_password_123",
-    "fullName": "Admin User",
-    "role": "admin"
+    "id": 1,
+    "username": "nguyen.an",
+    "password": "password123",
+    "fullName": "Nguyễn Văn An",
+    "email": "an.nguyen@mediclinic.com",
+    "phone": "0901234567",
+    "role": "patient"
   },
   {
-    "id": "u2",
-    "email": "dr.john@clinic.com",
-    "password": "hashed_password_456",
-    "fullName": "Dr. John Smith",
+    "id": 2,
+    "username": "tran.hoa",
+    "password": "password123",
+    "fullName": "Trần Thị Hoa",
+    "email": "hoa.tran@mediclinic.com",
+    "phone": "0912345678",
     "role": "doctor"
   },
-  {
-    "id": "u3",
-    "email": "jane.doe@gmail.com",
-    "password": "hashed_password_789",
-    "fullName": "Jane Doe",
-    "role": "user"
+    {
+    "id": 3,
+    "username": "ta.tuan",
+    "password": "password123",
+    "fullName": "Tạ Văn Tuấn",
+    "email": "tuan.ta@mediclinic.com",
+    "phone": "0912786678",
+    "role": "receptionist"
+  },
+    {
+    "id": 4,
+    "username": "anh.hai",
+    "password": "password123",
+    "fullName": "Nguyễn Hải Anh",
+    "email": "anh.hai@mediclinic.com",
+    "phone": "0112345678",
+    "role": "pharmacist"
   }
 ]
