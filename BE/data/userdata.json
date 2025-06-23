@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "username": "nguyen.an",
+    "password": "password123",
+    "fullName": "Nguyễn Văn An",
+    "email": "an.nguyen@mediclinic.com",
+    "phone": "0901234567",
+    "role": "patient"
+  },
+  {
+    "id": 2,
+    "username": "tran.hoa",
+    "password": "password123",
+    "fullName": "Trần Thị Hoa",
+    "email": "hoa.tran@mediclinic.com",
+    "phone": "0912345678",
+    "role": "doctor"
+  },
+  {
+    "id": 3,
+    "username": "ta.tuan",
+    "password": "password123",
+    "fullName": "Tạ Văn Tuấn",
+    "email": "tuan.ta@mediclinic.com",
+    "phone": "0912786678",
+    "role": "receptionist"
+  },
+  {
+    "id": "u4",
+    "username": "anh.hai",
+    "password": "$2b$10$/YBD2V1qjOmXGwk8AOZ4QepYTZibVxkYtsZAXuPKn5fydDzYT02uq",
+    "fullName": "Nguyễn Hải Anh",
+    "email": "anh.hai@mediclinic.com",
+    "phone": "0112345678",
+    "role": "PHARMACIST"
+  }
+]
