@@ -1,0 +1,43 @@
+{
+  "sorted_middleware": [],
+  "middleware": {
+    "/": {
+      "files": [
+        "server/edge/chunks/_0d3699dc._.js",
+        "server/edge/chunks/[root-of-the-server]__dc15d093._.js",
+        "server/edge/chunks/edge-wrapper_594fdf6a.js"
+      ],
+      "name": "middleware",
+      "page": "/",
+      "matchers": [
+        {
+          "regexp": "/:nextData(_next/data/[^/]{1,})?/login{(\\\\.json)}?",
+          "originalSource": "/login"
+        },
+        {
+          "regexp": "/:nextData(_next/data/[^/]{1,})?/dashboard-doctor/:path*{(\\\\.json)}?",
+          "originalSource": "/dashboard-doctor/:path*"
+        },
+        {
+          "regexp": "/:nextData(_next/data/[^/]{1,})?/pharmacyPage/:path*{(\\\\.json)}?",
+          "originalSource": "/pharmacyPage/:path*"
+        },
+        {
+          "regexp": "/:nextData(_next/data/[^/]{1,})?/receptionistPage/:path*{(\\\\.json)}?",
+          "originalSource": "/receptionistPage/:path*"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "development",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "eQHvmV6rqu3sGIyWz6HJkXpZdts+UiCNAOljqtVfXoM=",
+        "__NEXT_PREVIEW_MODE_ID": "0ddac52e49ae032b4b29517d4c5c020c",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "d1711db163374d896f4510cd97fc14e01900a118f0ea19d6fa5268e096393d49",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "e62b0edd1e4491c0f3dfb3c6c263d9dbad7ea24bf9df3a301137bb61277537b1"
+      }
+    }
+  },
+  "instrumentation": null,
+  "functions": {}
+}

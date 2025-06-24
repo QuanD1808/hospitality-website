@@ -10,6 +10,13 @@ require('dotenv').config();
 
 const app = express();
 
+// Thêm cấu hình CORS
+const cors = require('cors');
+app.use(cors({
+  origin: 'http://localhost:3000', // Đổi lại nếu FE chạy port khác
+  credentials: true
+}));
+
 // Kết nối đến Database
 connectDB();
 
