@@ -26,6 +26,36 @@ export const getMedicineById = async (medicineId: string, token: string) => {
   return response.data;
 };
 
+// Create a new medicine
+export const createMedicine = async (medicineData: any, token: string) => {
+  const response = await axiosInstance.post('/medicines', medicineData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+// Update an existing medicine
+export const updateMedicine = async (medicineId: string, medicineData: any, token: string) => {
+  const response = await axiosInstance.put(`/medicines/${medicineId}`, medicineData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+// Delete a medicine
+export const deleteMedicine = async (medicineId: string, token: string) => {
+  const response = await axiosInstance.delete(`/medicines/${medicineId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 // Appointments API methods
 export const getAppointments = async (token: string) => {
   const response = await axiosInstance.get('/appointments', {

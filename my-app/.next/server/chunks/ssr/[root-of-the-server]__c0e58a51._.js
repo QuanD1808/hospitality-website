@@ -162,11 +162,13 @@ var { g: global, __dirname } = __turbopack_context__;
 __turbopack_context__.s({
     "createAppointment": (()=>createAppointment),
     "createBatchPrescriptionDetails": (()=>createBatchPrescriptionDetails),
+    "createMedicine": (()=>createMedicine),
     "createPrescription": (()=>createPrescription),
     "createPrescriptionDetail": (()=>createPrescriptionDetail),
     "createQueue": (()=>createQueue),
     "createUser": (()=>createUser),
     "deleteAppointment": (()=>deleteAppointment),
+    "deleteMedicine": (()=>deleteMedicine),
     "deleteQueue": (()=>deleteQueue),
     "getAppointments": (()=>getAppointments),
     "getDoctors": (()=>getDoctors),
@@ -185,6 +187,7 @@ __turbopack_context__.s({
     "login": (()=>login),
     "sendQueueToDoctor": (()=>sendQueueToDoctor),
     "updateAppointment": (()=>updateAppointment),
+    "updateMedicine": (()=>updateMedicine),
     "updatePrescriptionStatus": (()=>updatePrescriptionStatus),
     "updateQueueStatus": (()=>updateQueueStatus),
     "updateUser": (()=>updateUser),
@@ -209,6 +212,30 @@ const getMedicines = async (token)=>{
 };
 const getMedicineById = async (medicineId, token)=>{
     const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/medicines/${medicineId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return response.data;
+};
+const createMedicine = async (medicineData, token)=>{
+    const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].post('/medicines', medicineData, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return response.data;
+};
+const updateMedicine = async (medicineId, medicineData, token)=>{
+    const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].put(`/medicines/${medicineId}`, medicineData, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return response.data;
+};
+const deleteMedicine = async (medicineId, token)=>{
+    const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].delete(`/medicines/${medicineId}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }

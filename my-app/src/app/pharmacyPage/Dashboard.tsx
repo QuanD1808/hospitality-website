@@ -1,11 +1,12 @@
+// Updated 2025-06-30: Removed API testing functionality and replaced with Medicine Manager
 import React, { useState, useEffect } from 'react';
-import { LogOutIcon, PillIcon, BarChartIcon, AlertTriangle, UserIcon } from 'lucide-react';
+import { LogOutIcon, PillIcon, BarChartIcon, AlertTriangle, UserIcon, FileText } from 'lucide-react';
 import { PatientList } from './PatientList';
 import { PatientDetails } from './PatientDetails';
 import { Statistics } from './Statistics';
+import { MedicineManager } from './MedicineManager';
 import { PharmacyPatient, getPatientsWithPendingPrescriptions } from './pharmacyUtils';
 import { useAuth } from '../context/AuthContext';
-import { runApiTests, checkTokenAvailability } from './apiTest';
 
 // User interface for authentication context
 interface User {
@@ -30,25 +31,11 @@ export const Dashboard = ({
   const [activeTab, setActiveTab] = useState('dispense'); // 'dispense' or 'statistics'
   const [selectedPatient, setSelectedPatient] = useState<PharmacyPatient | null>(null);
   const [waitingPatients, setWaitingPatients] = useState<PharmacyPatient[]>([]);
+  const [showMedicineManager, setShowMedicineManager] = useState(false);
   
   // State cho loading và error
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [testResults, setTestResults] = useState<any>(null);
-  
-  // Function to run API tests for debugging
-  const runTests = async () => {
-    checkTokenAvailability();
-    const result = await runApiTests(token);
-    setTestResults(result);
-    console.log("Test results:", result);
-    
-    // If tests were successful and found data, try to refresh the patient list
-    if (result.success && ((result.prescriptionCount && result.prescriptionCount > 0) || 
-        (result.patientCount && result.patientCount > 0))) {
-      fetchPatients();
-    }
-  };
   
   // Tải dữ liệu bệnh nhân chờ phát thuốc từ API
   const fetchPatients = async () => {
@@ -132,18 +119,27 @@ export const Dashboard = ({
   });
 
   return <div className="min-h-screen bg-gray-50">
+      {/* Medicine Manager Overlay */}
+      {showMedicineManager && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-lg shadow-2xl">
+            <MedicineManager onClose={() => setShowMedicineManager(false)} />
+          </div>
+        </div>
+      )}
+      
       {/* Header */}
       <header className="bg-blue-700 text-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Hệ Thống Quản Lý Nhà Thuốc</h1>
           <div className="flex items-center space-x-4">
-            {/* Debug button for admins/developers */}
+            {/* Medicine Management Button */}
             <button 
-              onClick={runTests} 
-              className="inline-flex items-center px-2 py-1 border border-transparent text-xs rounded-md text-white bg-purple-800 hover:bg-purple-900"
-              title="Debug API Connections"
+              onClick={() => setShowMedicineManager(true)} 
+              className="inline-flex items-center px-3 py-1.5 border border-green-800 text-sm rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors shadow-md font-medium"
+              title="Quản lý danh mục thuốc"
             >
-              Debug
+              <FileText className="h-4 w-4 mr-1.5 text-white" /> Quản Lý Thuốc
             </button>
             
             <span className="text-sm">
@@ -155,29 +151,6 @@ export const Dashboard = ({
           </div>
         </div>
       </header>
-      {/* Display test results if any */}
-      {testResults && (
-        <div className={`bg-${testResults.success ? 'green' : 'red'}-100 border-l-4 border-${testResults.success ? 'green' : 'red'}-500 text-${testResults.success ? 'green' : 'red'}-700 p-4 mb-4 mx-4 mt-2`}>
-          <div className="flex">
-            <div className="flex-shrink-0">
-              {testResults.success ? '✅' : '❌'}
-            </div>
-            <div className="ml-3">
-              <p className="text-sm">
-                {testResults.success 
-                  ? `API Test Success: Found ${testResults.prescriptionCount} prescriptions and ${testResults.patientCount} patients` 
-                  : `API Test Failed: ${testResults.error}`}
-              </p>
-            </div>
-            <button 
-              onClick={() => setTestResults(null)}
-              className="ml-auto text-sm text-gray-500"
-            >
-              Dismiss
-            </button>
-          </div>
-        </div>
-      )}
       
       {/* Navigation */}
       <nav className="bg-white shadow">
@@ -253,28 +226,12 @@ export const Dashboard = ({
               )}
             </div>
           </div> : <Statistics />}
-          {/* API Testing Section - Hidden by default, for debugging only */}
-          <div className="mt-8 p-4 bg-white rounded-lg shadow">
-            <h2 className="text-lg font-semibold mb-4">API Testing</h2>
-            <button 
-              onClick={runTests}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-            >
-              Chạy Kiểm Tra API
-            </button>
-            {testResults && (
-              <div className="mt-4">
-                <h3 className="text-md font-medium">Kết quả kiểm tra:</h3>
-                <pre className="bg-gray-100 p-2 rounded-md text-sm">{JSON.stringify(testResults, null, 2)}</pre>
-              </div>
-            )}
-          </div>
       </main>
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-gray-500">
-            © 2023 Hệ Thống Quản Lý Nhà Thuốc. Bản quyền thuộc về Phòng Khám.
+             Hệ Thống Quản Lý Nhà Thuốc. Bản quyền thuộc về Phòng Khám.
           </p>
         </div>
       </footer>
