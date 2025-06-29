@@ -14,14 +14,40 @@ export default function Login() {
   const router = useRouter();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      // Redirect based on user role
-      if (user?.role === 'PHARMACIST') {
-        router.push('/pharmacyPage');
-      } else if (user?.role === 'RECEPTIONIST') {
-        router.push('/receptionistPage');
-      } else {
-        router.push('/dashboard-doctor');
+    console.log('Login page - isAuthenticated:', isAuthenticated);
+    console.log('Login page - user data:', user);
+    
+    if (isAuthenticated && user) {
+      // Kiểm tra và log role trước khi chuyển hướng
+      console.log('Login page - user role:', user.role);
+      console.log('Login page - user role type:', typeof user.role);
+      
+      // Chuyển đổi role thành chữ hoa để so sánh nhất quán
+      const userRole = typeof user.role === 'string' ? user.role.toUpperCase() : '';
+      console.log('Login page - normalized user role:', userRole);
+      
+      // Redirect based on normalized user role
+      switch (userRole) {
+        case 'DOCTOR':
+          console.log('Login page - redirecting to doctor dashboard');
+          router.push('/dashboard-doctor');
+          break;
+        case 'PHARMACIST':
+          console.log('Login page - redirecting to pharmacy page');
+          router.push('/pharmacyPage');
+          break;
+        case 'RECEPTIONIST':
+          console.log('Login page - redirecting to receptionist page');
+          router.push('/receptionistPage');
+          break;
+        case 'PATIENT':
+          console.log('Login page - redirecting patient to home page');
+          router.push('/');
+          break;
+        default:
+          console.log('Login page - unknown role, redirecting to home');
+          router.push('/');
+          break;
       }
     }
   }, [isAuthenticated, router, user]);
@@ -130,9 +156,11 @@ export default function Login() {
                   Thông tin đăng nhập demo:
                 </span>
                 <ul className="text-gray-700 text-center">
-                  <li><strong>Bác sĩ:</strong> doctor@mediclinic.com / password</li>
-                  <li><strong>Nhà thuốc:</strong> pharmacy@gmail.com / password</li>
-                  <li><strong>Lễ tân:</strong> receptionist@gmail.com / password</li>
+                  <li><strong>Bệnh nhân:</strong> an.nguyen@mediclinic.com</li>
+                  <li><strong>Bác sĩ:</strong> hoa.tran@mediclinic.com</li>
+                  <li><strong>Lễ tân:</strong> tuan.ta@mediclinic.com </li>
+                  <li><strong>Nhà thuốc:</strong> anh.hai@mediclinic.com</li>
+                  <li><strong>Pass:</strong> password123</li>
                 </ul>
               </div>
             </div>

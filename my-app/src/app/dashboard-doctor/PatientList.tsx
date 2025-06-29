@@ -1,12 +1,24 @@
 'use client';
 
 import React from 'react';
-import { Patient } from '../data/types';
 import { PatientCard } from './PatientCard';
+import { User } from '../datats/mockPatients';
+
+// Interface cho thông tin bệnh nhân trong hàng đợi
+interface PatientInQueue {
+  _id: string; // ID của queue
+  patient: string; // ID của bệnh nhân
+  status: 'waiting' | 'in_progress' | 'completed' | 'canceled';
+  doctorId?: string;
+  createdAt: string;
+  updatedAt: string;
+  __v?: number;
+  patientInfo: User | null;
+}
 
 interface PatientListProps {
-  patients: Patient[];
-  onSelectPatient: (patient: Patient) => void;
+  patients: PatientInQueue[];
+  onSelectPatient: (patient: PatientInQueue) => void;
   selectedPatientId?: string;
 }
 
@@ -26,10 +38,10 @@ export const PatientList: React.FC<PatientListProps> = ({
         ) : (
           <div className="space-y-2">
             {patients.map((patient, idx) => (
-              <div key={patient.id} className={idx === 0 ? '' : 'opacity-50 pointer-events-none'}>
+              <div key={patient._id} className={idx === 0 ? '' : 'opacity-50 pointer-events-none'}>
                 <PatientCard
-                  patient={patient}
-                  isSelected={selectedPatientId === patient.id}
+                  patientInQueue={patient}
+                  isSelected={selectedPatientId === patient._id}
                   onSelect={() => idx === 0 && onSelectPatient(patient)}
                 />
               </div>

@@ -1239,11 +1239,11 @@ __turbopack_context__.s({
     "mockUsers": (()=>mockUsers)
 });
 var UserRole = /*#__PURE__*/ function(UserRole) {
+    UserRole["PATIENT"] = "PATIENT";
     UserRole["DOCTOR"] = "DOCTOR";
     UserRole["PHARMACIST"] = "PHARMACIST";
     UserRole["RECEPTIONIST"] = "RECEPTIONIST";
     UserRole["ADMIN"] = "ADMIN";
-    UserRole["PATIENT"] = "PATIENT"; // Người dùng (bệnh nhân)
     return UserRole;
 }({});
 const APPOINTMENT_PRIORITY = {

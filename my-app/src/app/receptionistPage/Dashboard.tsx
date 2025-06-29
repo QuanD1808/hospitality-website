@@ -1,37 +1,85 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { UsersIcon, ClockIcon, CheckSquareIcon, CalendarIcon, UserIcon, LogOutIcon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { AppointmentForm } from './components/Appointments/AppointmentForm';
+import { 
+  getAllPatients, 
+  getQueuesByStatus,
+  mockQueues
+} from '../datats/mockPatients';
 
-export function Dashboard({ onNavigate }) {
+interface DashboardProps {
+  onNavigate: (view: string) => void;
+}
+
+export function Dashboard({ onNavigate }: DashboardProps) {
   const { user, logout } = useAuth();
+  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  
+  // State cho các thống kê từ mock data
+  const [patientCount, setPatientCount] = useState(0);
+  const [waitingCount, setWaitingCount] = useState(0);
+  const [completedTodayCount, setCompletedTodayCount] = useState(0);
+  const [newPatientsToday, setNewPatientsToday] = useState(0);
 
+  // Load dữ liệu từ mock data khi component mount
+  useEffect(() => {
+    // Lấy tổng số bệnh nhân
+    const patients = getAllPatients();
+    setPatientCount(patients.length);
+    
+    // Tính số bệnh nhân mới hôm nay
+    const today = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại dạng YYYY-MM-DD
+    const newPatients = patients.filter(p => 
+      p.createdAt.startsWith(today)).length;
+    setNewPatientsToday(newPatients);
+    
+    // Lấy số bệnh nhân đang chờ
+    const waitingQueues = getQueuesByStatus('waiting');
+    setWaitingCount(waitingQueues.length);
+    
+    // Lấy số bệnh nhân đã hoàn thành khám hôm nay
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
+    
+    const completedQueues = getQueuesByStatus('completed');
+    const completedToday = completedQueues.filter(q => {
+      const queueDate = new Date(q.updatedAt);
+      return queueDate >= todayStart;
+    });
+    setCompletedTodayCount(completedToday.length);
+  }, []);
+
+  // Thống kê hiển thị với dữ liệu từ mock data
   const stats = [
     {
       title: 'Lịch hẹn hôm nay',
-      value: '24',
+      value: `${waitingCount + completedTodayCount}`,
       icon: <CalendarIcon className="h-6 w-6 text-blue-600" />,
-      change: '+2',
-      changeType: 'increase'
+      change: `${waitingCount} chờ`,
+      changeType: 'neutral'
     },
     {
       title: 'Đang chờ khám',
-      value: '12',
+      value: `${waitingCount}`,
       icon: <ClockIcon className="h-6 w-6 text-yellow-600" />,
-      change: '3 mới',
+      change: waitingCount > 0 ? `${waitingCount} bệnh nhân` : 'Không có',
       changeType: 'neutral'
     },
     {
       title: 'Hoàn thành hôm nay',
-      value: '18',
+      value: `${completedTodayCount}`,
       icon: <CheckSquareIcon className="h-6 w-6 text-green-600" />,
-      change: '75%',
+      change: completedTodayCount > 0 ? 
+        `${Math.round((completedTodayCount / (completedTodayCount + waitingCount || 1)) * 100)}%` : 
+        '0%',
       changeType: 'increase'
     },
     {
       title: 'Tổng bệnh nhân',
-      value: '1,234',
+      value: patientCount.toString(),
       icon: <UsersIcon className="h-6 w-6 text-purple-600" />,
-      change: '+5.2%',
+      change: `+${newPatientsToday} mới`,
       changeType: 'increase'
     }
   ];
@@ -52,7 +100,7 @@ export function Dashboard({ onNavigate }) {
           <h1 className="text-2xl font-bold text-gray-900">Hệ thống Lễ tân MediClinic</h1>
           <div className="flex items-center">
             <div className="mr-4 text-right">
-              <p className="text-sm font-medium text-gray-900">{user?.name || user?.fullName}</p>
+              <p className="text-sm font-medium text-gray-900">{user?.fullName || 'Người dùng'}</p>
               <p className="text-xs text-gray-500">Lễ tân</p>
             </div>
             <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
@@ -103,81 +151,14 @@ export function Dashboard({ onNavigate }) {
           ))}
         </div>
 
-        {/* Appointments Today */}
-        <div className="bg-white shadow rounded-lg mb-6">
-          <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-            <div>
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Lịch hẹn hôm nay</h3>
-              <p className="mt-1 text-sm text-gray-500">Danh sách bệnh nhân có lịch hẹn hôm nay</p>
-            </div>
-            <div>
-              <button 
-                onClick={() => onNavigate('AppointmentBooking')}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Thêm lịch hẹn mới
-              </button>
-            </div>
-          </div>
-          <div className="border-t border-gray-200">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Bệnh nhân
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Giờ hẹn
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Bác sĩ
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Khoa
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Trạng thái
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Hành động
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {appointments.map((appointment) => (
-                    <tr key={appointment.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{appointment.patient}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{appointment.time}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{appointment.doctor}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{appointment.department}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          appointment.status === 'Đang chờ' ? 'bg-yellow-100 text-yellow-800' : 
-                          appointment.status === 'Đang khám' ? 'bg-blue-100 text-blue-800' : 
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {appointment.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button className="text-blue-600 hover:text-blue-900 mr-2">Check-in</button>
-                        <button className="text-red-600 hover:text-red-900">Hủy</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        {/* Add New Appointment Button */}
+        <div className="flex justify-end mb-6">
+          <button 
+            onClick={() => setShowAppointmentForm(true)}
+            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Thêm lịch hẹn mới
+          </button>
         </div>
         
         {/* Quick Actions */}
@@ -232,6 +213,15 @@ export function Dashboard({ onNavigate }) {
           </div>
         </div>
       </main>
+      
+      {/* Modal form đặt lịch hẹn */}
+      {showAppointmentForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <AppointmentForm onClose={() => setShowAppointmentForm(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

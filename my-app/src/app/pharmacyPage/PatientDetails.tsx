@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { ClipboardListIcon, PrinterIcon, UserIcon, PillIcon } from 'lucide-react';
 import { Invoice } from './Invoice';
+import { PharmacyPatient } from './pharmacyUtils';
+
+interface PatientDetailsProps {
+  patient: PharmacyPatient;
+  onPatientComplete: (id: string) => void;
+}
 
 export const PatientDetails = ({
   patient,
   onPatientComplete
-}) => {
+}: PatientDetailsProps) => {
   const [showInvoice, setShowInvoice] = useState(false);
   
   if (showInvoice) {
@@ -50,20 +56,12 @@ export const PatientDetails = ({
               <p className="text-black">{patient.fullName}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-black mb-1">Tuổi</p>
-              <p className="text-black">{patient.age}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-black mb-1">Giới tính</p>
-              <p className="text-black">{patient.gender}</p>
-            </div>
-            <div>
               <p className="text-sm font-medium text-black mb-1">Số điện thoại</p>
               <p className="text-black">{patient.phone}</p>
             </div>
-            <div className="md:col-span-2">
-              <p className="text-sm font-medium text-black mb-1">Địa chỉ</p>
-              <p className="text-black">{patient.address}</p>
+            <div>
+              <p className="text-sm font-medium text-black mb-1">Mã đơn thuốc</p>
+              <p className="text-black">{patient.serialNumber}</p>
             </div>
           </div>
         </div>
@@ -78,10 +76,6 @@ export const PatientDetails = ({
           </div>
           
           <div className="space-y-4">
-            <div>
-              <p className="text-sm font-medium text-black mb-1">Tiền sử bệnh</p>
-              <p className="text-black">{patient.medicalHistory}</p>
-            </div>
             <div>
               <p className="text-sm font-medium text-black mb-1">Chẩn đoán</p>
               <p className="text-black">{patient.diagnosis}</p>

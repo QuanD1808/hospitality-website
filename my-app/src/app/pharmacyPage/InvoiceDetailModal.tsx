@@ -1,17 +1,10 @@
 import React from 'react';
 import { XIcon, FileTextIcon, PrinterIcon } from 'lucide-react';
-import { Patient, Medicine } from '../data/types';
-
-interface Invoice {
-  id: string | number;
-  date: string;
-  pharmacistName: string;
-  totalAmount: number;
-}
+import { PharmacyPatient, PharmacyMedicine, PharmacyInvoice } from './pharmacyUtils';
 
 interface InvoiceDetailModalProps {
-  invoice: Invoice;
-  patient: Patient;
+  invoice: PharmacyInvoice;
+  patient: PharmacyPatient;
   onClose: () => void;
 }
 
@@ -60,20 +53,12 @@ export const InvoiceDetailModal = ({
                 <p className="text-black">{patient.fullName}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-black mb-1">Tuổi</p>
-                <p className="text-black">{patient.age}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-black mb-1">Giới tính</p>
-                <p className="text-black">{patient.gender}</p>
-              </div>
-              <div>
                 <p className="text-sm font-medium text-black mb-1">Số điện thoại</p>
                 <p className="text-black">{patient.phone}</p>
               </div>
-              <div className="md:col-span-2">
-                <p className="text-sm font-medium text-black mb-1">Địa chỉ</p>
-                <p className="text-black">{patient.address}</p>
+              <div>
+                <p className="text-sm font-medium text-black mb-1">Mã đơn thuốc</p>
+                <p className="text-black">{patient.serialNumber}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-black mb-1">Chẩn đoán</p>
@@ -114,7 +99,7 @@ export const InvoiceDetailModal = ({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {patient.prescription.map((medicine: Medicine, index: number) => (
+                  {patient.prescription.map((medicine: PharmacyMedicine, index: number) => (
                     <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                         {index + 1}

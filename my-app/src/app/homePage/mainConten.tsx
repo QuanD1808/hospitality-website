@@ -3,11 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
+import { LogOut } from 'lucide-react'; // Import icon
 
 export type HomePageProps = {}
 
 export function HomePage(props: HomePageProps) {
   const router = useRouter();
+  const { isAuthenticated, user, logout } = useAuth(); // Lấy trạng thái auth
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
@@ -46,6 +49,11 @@ export function HomePage(props: HomePageProps) {
     router.push('/');
   };
 
+  const handleLogout = () => {
+    logout();
+    router.push('/'); // Chuyển về trang chủ sau khi logout
+  };
+
   // Animation variants
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -67,14 +75,13 @@ export function HomePage(props: HomePageProps) {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1">
-            {['Home', 'About Us', 'Services', 'Login', 'Contact Us'].map((item, index) => (
+            {['Home', 'About Us', 'Services', 'Contact Us'].map((item, index) => (
               <button 
                 key={index}
                 onClick={
                   item === 'Home' ? handleHomeClick :
                   item === 'About Us' ? handleAboutUsClick :
                   item === 'Services' ? handleServicesClick :
-                  item === 'Login' ? handleLoginClick :
                   handleContactClick
                 }
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 
@@ -82,15 +89,31 @@ export function HomePage(props: HomePageProps) {
                     ? 'text-gray-700 hover:bg-gray-100' 
                     : 'text-white hover:bg-white hover:bg-opacity-20'
                   }
-                  ${item === 'Login' ? 
-                    `ml-2 ${scrolled ? 'bg-gradient-to-r from-teal-500 to-blue-500 text-white hover:from-teal-600 hover:to-blue-600' : 'bg-white bg-opacity-20 hover:bg-opacity-30'}`
-                    : ''
-                  }
                 `}
               >
                 {item}
               </button>
             ))}
+            {/* Conditional Login/Logout Button */}
+            {isAuthenticated && user ? (
+              <div className="flex items-center space-x-4 ml-2">
+                <span className={`font-medium text-sm ${scrolled ? 'text-gray-800' : 'text-white'}`}>Chào, {user.fullName}!</span>
+                <button
+                  onClick={handleLogout}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${scrolled ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-white bg-opacity-20 hover:bg-opacity-30'}`}
+                >
+                  <LogOut className="w-4 h-4" />
+                  Đăng xuất
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={handleLoginClick}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ml-2 ${scrolled ? 'bg-gradient-to-r from-teal-500 to-blue-500 text-white hover:from-teal-600 hover:to-blue-600' : 'bg-white bg-opacity-20 hover:bg-opacity-30'}`}
+              >
+                Đăng nhập
+              </button>
+            )}
           </nav>
           
           {/* Mobile Menu Button */}
@@ -118,23 +141,47 @@ export function HomePage(props: HomePageProps) {
         {mobileMenuOpen && (
           <div className="md:hidden bg-white shadow-xl absolute top-full left-0 w-full">
             <div className="container mx-auto py-3 px-4 flex flex-col space-y-2">
-              {['Home', 'About Us', 'Services', 'Login', 'Contact Us'].map((item, index) => (
+              {['Home', 'About Us', 'Services', 'Contact Us'].map((item, index) => (
                 <button 
                   key={index}
-                  onClick={
-                    item === 'Home' ? handleHomeClick :
-                    item === 'About Us' ? handleAboutUsClick :
-                    item === 'Services' ? handleServicesClick :
-                    item === 'Login' ? handleLoginClick :
-                    handleContactClick
-                  }
-                  className={`px-4 py-3 rounded-lg text-left text-sm font-medium transition-colors
-                    ${item === 'Login' ? 'bg-gradient-to-r from-teal-500 to-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100'}`
-                  }
+                  onClick={() => {
+                    if (item === 'Home') handleHomeClick();
+                    else if (item === 'About Us') handleAboutUsClick();
+                    else if (item === 'Services') handleServicesClick();
+                    else if (item === 'Contact Us') handleContactClick();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="px-4 py-3 rounded-lg text-left text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   {item}
                 </button>
               ))}
+              {/* Conditional Mobile Login/Logout */}
+              {isAuthenticated && user ? (
+                 <div className="border-t border-gray-200 mt-2 pt-2">
+                    <div className="px-4 py-2 text-sm text-gray-600">Đã đăng nhập với tư cách <span className="font-semibold">{user.fullName}</span></div>
+                    <button 
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full px-4 py-3 rounded-lg text-left text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-colors flex items-center gap-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Đăng xuất
+                    </button>
+                 </div>
+              ) : (
+                <button 
+                  onClick={() => {
+                    handleLoginClick();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="px-4 py-3 rounded-lg text-left text-sm font-medium bg-gradient-to-r from-teal-500 to-blue-500 text-white"
+                >
+                  Đăng nhập
+                </button>
+              )}
             </div>
           </div>
         )}

@@ -35,13 +35,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('AuthContext - Login attempt:', email);
       const data = await apiLogin(email, password);
-      // data sẽ chứa user info và token từ BE
-      setUser(data);
+      console.log('AuthContext - Login response data:', data);
+      
+      // Tách token và thông tin người dùng
+      const { token, ...userData } = data;
+      
+      // Xử lý role để đảm bảo nhất quán
+      if (userData.role) {
+        console.log('AuthContext - Original role:', userData.role);
+        
+        // Đảm bảo role là chuỗi và được lưu dưới dạng chữ hoa để nhất quán
+        const normalizedRole = typeof userData.role === 'string' 
+          ? userData.role.toUpperCase() 
+          : userData.role;
+        
+        userData.role = normalizedRole;
+        console.log('AuthContext - Normalized role:', userData.role);
+      }
+      
+      setUser(userData);
       setIsAuthenticated(true);
-      Cookies.set('user', JSON.stringify(data), { expires: 1 }); // Lưu user và token
+
+      console.log('AuthContext - Setting user cookie with data:', userData);
+      // Lưu thông tin người dùng và token vào cookie riêng biệt
+      Cookies.set('user', JSON.stringify(userData), { expires: 1 });
+      if (token) {
+        Cookies.set('token', token, { expires: 1 });
+      }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('AuthContext - Login error:', error);
       throw error;
     }
   };
@@ -49,7 +73,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
+    // Xóa cả hai cookie khi đăng xuất
     Cookies.remove('user');
+    Cookies.remove('token');
   };
 
   return (

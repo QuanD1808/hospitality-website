@@ -19,9 +19,9 @@ export const Header = () => {
           </div>
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex items-center text-sm text-gray-800">
-              <span className="font-bold text-gray-900">{user?.name}</span>
+              <span className="font-bold text-gray-900">{user?.fullName || user?.username}</span>
               <span className="mx-2 text-gray-600">|</span>
-              <span>{user?.specialty}</span>
+              <span>{user?.specialization || user?.role}</span>
             </div>
             <div className="flex items-center">
               {/* <button className="p-1 rounded-full text-gray-600 hover:text-blue-600 focus:outline-none">

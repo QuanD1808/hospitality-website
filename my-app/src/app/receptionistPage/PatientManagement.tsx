@@ -1,58 +1,67 @@
-import React, { useState } from 'react';
-import { SearchIcon, PlusIcon, EditIcon, TrashIcon, UsersIcon, FilterIcon, ArrowUpDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { SearchIcon, PlusIcon, EditIcon, TrashIcon, UsersIcon, FilterIcon, ArrowUpDown, UserPlusIcon } from 'lucide-react';
 import { PatientForm } from './components/Patients/PatientForm';
+import { 
+  mockPatients, 
+  searchUsers, 
+  User, 
+  addPatient, 
+  updatePatient, 
+  deletePatient, 
+  getAllPatients,
+  addQueue,
+  getQueueByPatientId
+} from '../datats/mockPatients';
 
-export function PatientManagement() {
+interface PatientManagementProps {
+  onBack: () => void;
+}
+
+export function PatientManagement({ onBack }: PatientManagementProps) {
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [editingPatient, setEditingPatient] = useState<any>(null);
+  const [editingPatient, setEditingPatient] = useState<User | null>(null);
+  // Thêm state để theo dõi thay đổi và buộc giao diện cập nhật
+  const [refreshData, setRefreshData] = useState(0);
   
-  // Mock patient data
-  const [patients] = useState([{
-    id: 1,
-    name: 'Nguyễn Văn A',
-    nationalId: '001201012345',
-    age: 45,
-    gender: 'Nam',
-    phone: '0912345678',
-    address: 'Hà Nội'
-  }, {
-    id: 2,
-    name: 'Trần Thị B',
-    nationalId: '001201054321',
-    age: 32,
-    gender: 'Nữ',
-    phone: '0923456789',
-    address: 'Hồ Chí Minh'
-  }, {
-    id: 3,
-    name: 'Lê Văn C',
-    nationalId: '001201098765',
-    age: 28,
-    gender: 'Nam',
-    phone: '0934567890',
-    address: 'Đà Nẵng'
-  }, {
-    id: 4,
-    name: 'Phạm Thị D',
-    nationalId: '001201087654',
-    age: 50,
-    gender: 'Nữ',
-    phone: '0945678901',
-    address: 'Hải Phòng'
-  }, {
-    id: 5,
-    name: 'Hoàng Văn E',
-    nationalId: '001201076543',
-    age: 35,
-    gender: 'Nam',
-    phone: '0956789012',
-    address: 'Cần Thơ'
-  }]);
+  // Sử dụng dữ liệu bệnh nhân từ mockPatients - hàm này sẽ lấy danh sách mới mỗi khi gọi
+  const [patients, setPatients] = useState<User[]>([]);
   
-  const handleEdit = (patient: any) => {
+  // Cập nhật danh sách bệnh nhân khi có thay đổi
+  useEffect(() => {
+    // Sử dụng getAllPatients() để luôn lấy danh sách mới nhất
+    const latestPatients = getAllPatients();
+    setPatients(latestPatients);
+  }, [refreshData]);
+  
+  const handleEdit = (patient: User) => {
     setEditingPatient(patient);
     setShowForm(true);
+  };
+  
+  const handleDelete = (id: string) => {
+    const confirmed = window.confirm("Bạn có chắc chắn muốn xóa bệnh nhân này không?");
+    if (confirmed) {
+      deletePatient(id);
+      // Kích hoạt cập nhật giao diện
+      setRefreshData(prev => prev + 1);
+    }
+  };
+  
+  const handleSavePatient = (patientData: Partial<User>) => {
+    if (editingPatient && editingPatient._id) {
+      // Cập nhật bệnh nhân hiện có
+      updatePatient(editingPatient._id, patientData);
+    } else {
+      // Thêm bệnh nhân mới
+      addPatient({
+        ...patientData,
+        role: 'PATIENT'
+      });
+    }
+    // Kích hoạt cập nhật giao diện
+    setRefreshData(prev => prev + 1);
+    handleCloseForm();
   };
   
   const handleCloseForm = () => {
@@ -60,13 +69,51 @@ export function PatientManagement() {
     setEditingPatient(null);
   };
   
-  const filteredPatients = patients.filter(patient => 
-    patient.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    patient.nationalId.includes(searchTerm)
-  );
+  // Hàm thêm bệnh nhân vào phòng chờ
+  const addToWaitingRoom = (patientId: string) => {
+    // Kiểm tra xem bệnh nhân đã có trong phòng chờ chưa
+    const existingQueue = getQueueByPatientId(patientId);
+    
+    if (existingQueue) {
+      if (existingQueue.status === 'waiting' || existingQueue.status === 'in_progress') {
+        alert(`Bệnh nhân này đã có trong phòng chờ hoặc đang khám!`);
+        return;
+      } else if (existingQueue.status === 'completed' || existingQueue.status === 'canceled') {
+        // Nếu bệnh nhân đã từng được thêm vào phòng chờ trước đó,
+        // nhưng đã hoàn thành hoặc hủy, ta có thể thêm họ vào lại phòng chờ
+        const newQueue = addQueue(patientId);
+        if (newQueue) {
+          alert(`Đã thêm bệnh nhân vào phòng chờ!`);
+        } else {
+          alert(`Có lỗi khi thêm bệnh nhân vào phòng chờ!`);
+        }
+      }
+    } else {
+      // Nếu bệnh nhân chưa từng được thêm vào phòng chờ
+      const newQueue = addQueue(patientId);
+      if (newQueue) {
+        alert(`Đã thêm bệnh nhân vào phòng chờ!`);
+      } else {
+        alert(`Có lỗi khi thêm bệnh nhân vào phòng chờ!`);
+      }
+    }
+  };
+  
+  // Sử dụng hàm searchUsers từ mockPatients.ts để tìm kiếm bệnh nhân
+  const filteredPatients = searchTerm.trim() === '' 
+    ? patients 
+    : searchUsers(searchTerm).filter(user => user.role === 'PATIENT');
   
   return (
     <div className="w-full px-4 sm:px-6">
+      <div className="flex items-center mb-4">
+        <button 
+          onClick={onBack}
+          className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center text-gray-700"
+        >
+          ← Quay lại
+        </button>
+      </div>
       {/* Header section */}
       <div className="mb-8 border-b border-gray-200 pb-5">
         <div className="flex justify-between items-center">
@@ -95,7 +142,7 @@ export function PatientManagement() {
               </div>
               <input 
                 type="text" 
-                placeholder="Tìm kiếm theo tên hoặc CCCD..." 
+                placeholder="Tìm kiếm theo tên, ID, email hoặc SĐT..." 
                 className="pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black placeholder-gray-500 shadow-sm" 
                 value={searchTerm} 
                 onChange={e => setSearchTerm(e.target.value)} 
@@ -105,9 +152,12 @@ export function PatientManagement() {
             <div className="flex gap-3">
               <div className="relative">
                 <select className="appearance-none bg-white border border-gray-300 rounded-lg pl-10 pr-10 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm">
-                  <option value="">Tất cả giới tính</option>
-                  <option value="male">Nam</option>
-                  <option value="female">Nữ</option>
+                  <option value="">Tất cả vai trò</option>
+                  <option value="PATIENT">Bệnh nhân</option>
+                  <option value="DOCTOR">Bác sĩ</option>
+                  <option value="PHARMACIST">Nhân viên quầy thuốc</option>
+                  <option value="RECEPTIONIST">Lễ tân</option>
+                  <option value="ADMIN">Quản trị viên</option>
                 </select>
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FilterIcon size={16} className="text-black" />
@@ -122,9 +172,9 @@ export function PatientManagement() {
               <div className="relative">
                 <select className="appearance-none bg-white border border-gray-300 rounded-lg pl-10 pr-10 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm">
                   <option value="">Sắp xếp theo</option>
-                  <option value="name">Tên</option>
-                  <option value="age">Tuổi</option>
-                  <option value="date">Ngày tạo</option>
+                  <option value="fullName">Tên</option>
+                  <option value="username">Tên đăng nhập</option>
+                  <option value="createdAt">Ngày tạo</option>
                 </select>
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <ArrowUpDown size={16} className="text-black" />
@@ -150,19 +200,19 @@ export function PatientManagement() {
                       Họ và tên
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider border-b border-gray-200">
-                      CCCD
+                      User ID
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider border-b border-gray-200">
-                      Tuổi
+                      Tên đăng nhập
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider border-b border-gray-200">
-                      Giới tính
+                      Email
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider border-b border-gray-200">
                       Số điện thoại
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider border-b border-gray-200">
-                      Địa chỉ
+                      Vai trò
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider border-b border-gray-200">
                       Thao tác
@@ -171,24 +221,24 @@ export function PatientManagement() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredPatients.map((patient, index) => (
-                    <tr key={patient.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <tr key={patient._id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="px-6 py-3.5 whitespace-nowrap text-sm font-medium text-black">
-                        {patient.name}
+                        {patient.fullName}
                       </td>
                       <td className="px-6 py-3.5 whitespace-nowrap text-sm text-black">
-                        {patient.nationalId}
+                        {patient.userId}
                       </td>
                       <td className="px-6 py-3.5 whitespace-nowrap text-sm text-black">
-                        {patient.age}
+                        {patient.username}
                       </td>
                       <td className="px-6 py-3.5 whitespace-nowrap text-sm text-black">
-                        {patient.gender}
+                        {patient.email}
                       </td>
                       <td className="px-6 py-3.5 whitespace-nowrap text-sm text-black">
                         {patient.phone}
                       </td>
                       <td className="px-6 py-3.5 whitespace-nowrap text-sm text-black">
-                        {patient.address}
+                        {patient.role}
                       </td>
                       <td className="px-6 py-3.5 whitespace-nowrap text-sm text-black">
                         <div className="flex items-center space-x-3">
@@ -200,13 +250,18 @@ export function PatientManagement() {
                             <EditIcon size={16} />
                           </button>
                           <button 
+                            onClick={() => handleDelete(patient._id)}
                             className="p-1.5 rounded-full hover:bg-gray-100 text-black border border-gray-300"
                             title="Xóa"
                           >
                             <TrashIcon size={16} />
                           </button>
-                          <button className="text-sm text-white bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded-lg transition-colors shadow-sm">
-                            Chuyển vào phòng chờ
+                          <button 
+                            onClick={() => addToWaitingRoom(patient._id)}
+                            className="text-sm text-white bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded-lg transition-colors shadow-sm flex items-center"
+                          >
+                            <UserPlusIcon size={16} className="mr-1" />
+                            Thêm vào phòng chờ
                           </button>
                         </div>
                       </td>
@@ -253,7 +308,11 @@ export function PatientManagement() {
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <PatientForm patient={editingPatient} onClose={handleCloseForm} />
+            <PatientForm 
+              patient={editingPatient} 
+              onClose={handleCloseForm}
+              onSave={handleSavePatient} 
+            />
           </div>
         </div>
       )}

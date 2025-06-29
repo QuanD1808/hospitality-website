@@ -1,75 +1,122 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SearchIcon, CalendarIcon, PillIcon } from 'lucide-react';
+import { 
+  getAllPrescriptions,
+  getUserById,
+  getPrescriptionDetailsByPrescriptionId,
+  getMedicineById,
+  searchUsers
+} from '../datats/mockPatients';
 
-export function MedicationHistory() {
+// Define interfaces for the data we're working with
+interface MedicationDetailDisplay {
+  name: string;
+  dosage: string;
+  frequency: string; // This will be derived from the dosage
+  duration: string;  // This will be derived from the quantity
+}
+
+interface MedicationRecordDisplay {
+  id: string;
+  name: string;
+  patientId: string;
+  date: string;
+  doctor: string;
+  diagnosis: string;
+  medications: MedicationDetailDisplay[];
+}
+
+interface MedicationHistoryProps {
+  onBack: () => void;
+}
+
+export function MedicationHistory({ onBack }: MedicationHistoryProps) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [medicationRecords, setMedicationRecords] = useState<MedicationRecordDisplay[]>([]);
   
-  // Mock medication data
-  const [medications] = useState([{
-    id: 1,
-    name: 'Nguyễn Văn A',
-    nationalId: '001201012345',
-    date: '15/05/2023',
-    doctor: 'Bs. Nguyễn Văn X',
-    diagnosis: 'Viêm họng',
-    medications: [{
-      name: 'Paracetamol',
-      dosage: '500mg',
-      frequency: '3 lần/ngày',
-      duration: '5 ngày'
-    }, {
-      name: 'Strepsils',
-      dosage: '1 viên',
-      frequency: '4 lần/ngày',
-      duration: '5 ngày'
-    }]
-  }, {
-    id: 2,
-    name: 'Trần Thị B',
-    nationalId: '001201054321',
-    date: '15/05/2023',
-    doctor: 'Bs. Trần Thị Y',
-    diagnosis: 'Cảm cúm',
-    medications: [{
-      name: 'Panadol',
-      dosage: '500mg',
-      frequency: '3 lần/ngày',
-      duration: '3 ngày'
-    }, {
-      name: 'Vitamin C',
-      dosage: '1000mg',
-      frequency: '1 lần/ngày',
-      duration: '7 ngày'
-    }]
-  }, {
-    id: 3,
-    name: 'Lê Văn C',
-    nationalId: '001201098765',
-    date: '14/05/2023',
-    doctor: 'Bs. Nguyễn Văn X',
-    diagnosis: 'Đau lưng',
-    medications: [{
-      name: 'Ibuprofen',
-      dosage: '400mg',
-      frequency: '2 lần/ngày',
-      duration: '7 ngày'
-    }, {
-      name: 'Myonal',
-      dosage: '50mg',
-      frequency: '3 lần/ngày',
-      duration: '5 ngày'
-    }]
-  }]);
+  // Load medication data from mock database
+  useEffect(() => {
+    // Get all prescriptions
+    const prescriptions = getAllPrescriptions();
+    
+    // Transform prescriptions to the format we need for display
+    const records: MedicationRecordDisplay[] = prescriptions.map(prescription => {
+      // Get patient info
+      const patient = getUserById(prescription.patientId);
+      
+      // Get doctor info
+      const doctor = getUserById(prescription.doctorId);
+      
+      // Get prescription details
+      const prescriptionDetails = getPrescriptionDetailsByPrescriptionId(prescription._id);
+      
+      // Transform prescription details to medication details
+      const medications: MedicationDetailDisplay[] = prescriptionDetails.map(detail => {
+        const medicine = getMedicineById(detail.medicineId);
+        
+        // Parse dosage to extract frequency and duration
+        // In a real app, these would be separate fields
+        const dosageInfo = detail.dosage.split(' ');
+        const frequency = dosageInfo.slice(0, dosageInfo.length > 3 ? 3 : dosageInfo.length).join(' ');
+        const duration = `${detail.quantity / parseInt(dosageInfo[0])} ngày`;
+        
+        return {
+          name: medicine ? medicine.name : 'Unknown Medicine',
+          dosage: medicine ? `${medicine.name.split(' ')[1]}` : 'Unknown Dosage',
+          frequency: frequency,
+          duration: duration
+        };
+      });
+      
+      // Format date for display
+      const dateObj = new Date(prescription.date);
+      const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+      
+      return {
+        id: prescription._id,
+        name: patient ? patient.fullName : 'Unknown Patient',
+        patientId: patient ? patient.userId : 'Unknown',
+        date: formattedDate,
+        doctor: doctor ? doctor.fullName : 'Unknown Doctor',
+        diagnosis: prescription.diagnosis,
+        medications: medications
+      };
+    });
+    
+    setMedicationRecords(records);
+  }, []);
   
-  const filteredMedications = medications.filter(med => 
-    med.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    med.nationalId.includes(searchTerm)
-  );
+  // Filter medications based on search term and date range
+  const filteredMedications = medicationRecords.filter(record => {
+    // Filter by search term
+    const matchesSearch = 
+      record.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      record.patientId.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Filter by date range if applicable
+    let matchesDateRange = true;
+    if (startDate && endDate) {
+      const recordDate = new Date(record.date.split('/').reverse().join('-'));
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      matchesDateRange = recordDate >= start && recordDate <= end;
+    }
+    
+    return matchesSearch && matchesDateRange;
+  });
   
   return (
     <div className="max-w-7xl mx-auto">
+      <div className="flex items-center mb-4">
+        <button 
+          onClick={onBack}
+          className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center text-gray-700"
+        >
+          ← Quay lại
+        </button>
+      </div>
       {/* Header section */}
       <div className="mb-8 border-b border-gray-200 pb-5">
         <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Lịch sử thuốc</h1>
@@ -87,7 +134,7 @@ export function MedicationHistory() {
               </div>
               <input 
                 type="text" 
-                placeholder="Tìm theo TÊN hoặc CCCD..." 
+                placeholder="Tìm theo TÊN hoặc ID..." 
                 className="pl-10 pr-4 py-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-black focus:border-black shadow-sm transition-all text-black placeholder-gray-500" 
                 value={searchTerm} 
                 onChange={e => setSearchTerm(e.target.value)} 
@@ -142,7 +189,7 @@ export function MedicationHistory() {
                         {record.name}
                       </h3>
                       <p className="text-sm text-gray-700 mt-0.5">
-                        CCCD: {record.nationalId}
+                        ID: {record.patientId}
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-6">

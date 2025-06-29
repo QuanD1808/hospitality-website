@@ -2636,8 +2636,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$PatientList$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/PatientList.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$PatientDetails$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/PatientDetails.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$Statistics$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/Statistics.tsx [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockData.js [app-ssr] (ecmascript)");
-;
 ;
 ;
 ;
@@ -2647,7 +2645,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mock
 const Dashboard = ({ user, onLogout })=>{
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('dispense'); // 'dispense' or 'statistics'
     const [selectedPatient, setSelectedPatient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
-    const [waitingPatients, setWaitingPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["patients"]);
+    const [waitingPatients, setWaitingPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(patients);
     const handlePatientSelect = (patient)=>{
         setSelectedPatient(patient);
     };
@@ -2668,7 +2666,7 @@ const Dashboard = ({ user, onLogout })=>{
                             children: "Hệ Thống Quản Lý Nhà Thuốc"
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 40,
+                            lineNumber: 44,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2678,11 +2676,11 @@ const Dashboard = ({ user, onLogout })=>{
                                     className: "text-sm",
                                     children: [
                                         "Xin chào, ",
-                                        user?.name || 'Nhân viên'
+                                        user?.fullName || 'Nhân viên'
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 42,
+                                    lineNumber: 46,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2693,31 +2691,31 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-4 w-4 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 46,
+                                            lineNumber: 50,
                                             columnNumber: 15
                                         }, this),
                                         " Đăng Xuất"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 45,
+                                    lineNumber: 49,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 41,
+                            lineNumber: 45,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 39,
+                    lineNumber: 43,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 38,
+                lineNumber: 42,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -2740,14 +2738,14 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-5 w-5 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 60,
+                                            lineNumber: 64,
                                             columnNumber: 17
                                         }, this),
                                         " Phát Thuốc"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 56,
+                                    lineNumber: 60,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2761,35 +2759,35 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-5 w-5 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 66,
+                                            lineNumber: 70,
                                             columnNumber: 17
                                         }, this),
                                         " Xem Thống Kê Doanh Thu"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 62,
+                                    lineNumber: 66,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 55,
+                            lineNumber: 59,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                        lineNumber: 54,
+                        lineNumber: 58,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 53,
+                    lineNumber: 57,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 52,
+                lineNumber: 56,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -2804,12 +2802,12 @@ const Dashboard = ({ user, onLogout })=>{
                                 onPatientSelect: handlePatientSelect
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 76,
+                                lineNumber: 80,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 75,
+                            lineNumber: 79,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2819,7 +2817,7 @@ const Dashboard = ({ user, onLogout })=>{
                                 onPatientComplete: handlePatientRemove
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 79,
+                                lineNumber: 83,
                                 columnNumber: 34
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center",
@@ -2828,32 +2826,32 @@ const Dashboard = ({ user, onLogout })=>{
                                     children: "Vui lòng chọn bệnh nhân từ danh sách để xem chi tiết."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 80,
+                                    lineNumber: 84,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 79,
+                                lineNumber: 83,
                                 columnNumber: 121
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 78,
+                            lineNumber: 82,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 74,
+                    lineNumber: 78,
                     columnNumber: 37
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$Statistics$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Statistics"], {}, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 85,
+                    lineNumber: 89,
                     columnNumber: 20
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 73,
+                lineNumber: 77,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -2865,23 +2863,23 @@ const Dashboard = ({ user, onLogout })=>{
                         children: "© 2023 Hệ Thống Quản Lý Nhà Thuốc. Bản quyền thuộc về Phòng Khám."
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                        lineNumber: 90,
+                        lineNumber: 94,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 89,
+                    lineNumber: 93,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 88,
+                lineNumber: 92,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-        lineNumber: 36,
+        lineNumber: 40,
         columnNumber: 10
     }, this);
 };

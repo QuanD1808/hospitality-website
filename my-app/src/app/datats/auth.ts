@@ -10,11 +10,12 @@ export type AppointmentType = 'Khẩn cấp' | 'Đã đặt trước' | 'Tái kh
 
 // Types for user roles
 export enum UserRole {
+  PATIENT = 'PATIENT',
   DOCTOR = 'DOCTOR',
   PHARMACIST = 'PHARMACIST',    // Nhân viên quầy thuốc
   RECEPTIONIST = 'RECEPTIONIST', // Lễ tân
   ADMIN = 'ADMIN',
-  PATIENT = 'PATIENT'           // Người dùng (bệnh nhân)
+         // Người dùng (bệnh nhân)
 }
 
 // Types for patient data

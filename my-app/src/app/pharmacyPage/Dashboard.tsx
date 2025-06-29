@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LogOutIcon, PillIcon, BarChartIcon } from 'lucide-react';
-import { Patient } from '../data/types';
 import { PatientList } from './PatientList';
 import { PatientDetails } from './PatientDetails';
 import { Statistics } from './Statistics';
-import { patients } from '../datats/mockData';
+import { PharmacyPatient, getPatientsWithPendingPrescriptions } from './pharmacyUtils';
 
+// User interface for authentication context
 interface User {
-  name: string;
-  // Add other user properties if known
+  fullName: string; // Changed from 'name' to 'fullName' to match User in mockPatients
+  role: string;
+  // Other user properties (optional)
+  _id?: string;
+  username?: string;
+  email?: string;
 }
 
 interface DashboardProps {
@@ -21,10 +25,16 @@ export const Dashboard = ({
   onLogout
 }: DashboardProps) => {
   const [activeTab, setActiveTab] = useState('dispense'); // 'dispense' or 'statistics'
-  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-  const [waitingPatients, setWaitingPatients] = useState<Patient[]>(patients);
+  const [selectedPatient, setSelectedPatient] = useState<PharmacyPatient | null>(null);
+  const [waitingPatients, setWaitingPatients] = useState<PharmacyPatient[]>([]);
+  
+  // Tải dữ liệu bệnh nhân chờ phát thuốc từ mockPatients
+  useEffect(() => {
+    const patients = getPatientsWithPendingPrescriptions();
+    setWaitingPatients(patients);
+  }, []);
 
-  const handlePatientSelect = (patient: Patient) => {
+  const handlePatientSelect = (patient: PharmacyPatient) => {
     setSelectedPatient(patient);
   };
 
@@ -40,7 +50,7 @@ export const Dashboard = ({
           <h1 className="text-2xl font-bold">Hệ Thống Quản Lý Nhà Thuốc</h1>
           <div className="flex items-center space-x-4">
             <span className="text-sm">
-              Xin chào, {user?.name || 'Nhân viên'}
+              Xin chào, {user?.fullName || 'Nhân viên'}
             </span>
             <button onClick={onLogout} className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-blue-800 hover:bg-blue-900 focus:outline-none focus:border-blue-900 focus:shadow-outline-blue active:bg-blue-900 transition duration-150 ease-in-out">
               <LogOutIcon className="h-4 w-4 mr-1" /> Đăng Xuất

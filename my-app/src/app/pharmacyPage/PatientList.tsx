@@ -1,9 +1,16 @@
 import React from 'react';
 import { UserIcon } from 'lucide-react';
+import { PharmacyPatient } from './pharmacyUtils';
+
+interface PatientListProps {
+  patients: PharmacyPatient[];
+  onPatientSelect: (patient: PharmacyPatient) => void;
+}
+
 export const PatientList = ({
   patients,
   onPatientSelect
-}) => {
+}: PatientListProps) => {
   return <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="bg-blue-600 px-4 py-3">
         <h2 className="text-lg font-medium text-white">
@@ -22,7 +29,7 @@ export const PatientList = ({
                       {patient.serialNumber} - {patient.fullName}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {patient.gender}, {patient.age} tuổi
+                      {patient.phone}
                     </p>
                   </div>
                 </div>

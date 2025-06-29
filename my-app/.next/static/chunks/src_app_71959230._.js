@@ -94,22 +94,42 @@ function AuthProvider({ children }) {
     }["AuthProvider.useEffect"], []);
     const login = async (email, password)=>{
         try {
+            console.log('AuthContext - Login attempt:', email);
             const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["login"])(email, password);
-            // data sẽ chứa user info và token từ BE
-            setUser(data);
+            console.log('AuthContext - Login response data:', data);
+            // Tách token và thông tin người dùng
+            const { token, ...userData } = data;
+            // Xử lý role để đảm bảo nhất quán
+            if (userData.role) {
+                console.log('AuthContext - Original role:', userData.role);
+                // Đảm bảo role là chuỗi và được lưu dưới dạng chữ hoa để nhất quán
+                const normalizedRole = typeof userData.role === 'string' ? userData.role.toUpperCase() : userData.role;
+                userData.role = normalizedRole;
+                console.log('AuthContext - Normalized role:', userData.role);
+            }
+            setUser(userData);
             setIsAuthenticated(true);
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie$2f$dist$2f$js$2e$cookie$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].set('user', JSON.stringify(data), {
+            console.log('AuthContext - Setting user cookie with data:', userData);
+            // Lưu thông tin người dùng và token vào cookie riêng biệt
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie$2f$dist$2f$js$2e$cookie$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].set('user', JSON.stringify(userData), {
                 expires: 1
-            }); // Lưu user và token
+            });
+            if (token) {
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie$2f$dist$2f$js$2e$cookie$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].set('token', token, {
+                    expires: 1
+                });
+            }
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('AuthContext - Login error:', error);
             throw error;
         }
     };
     const logout = ()=>{
         setUser(null);
         setIsAuthenticated(false);
+        // Xóa cả hai cookie khi đăng xuất
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie$2f$dist$2f$js$2e$cookie$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].remove('user');
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie$2f$dist$2f$js$2e$cookie$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].remove('token');
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(AuthContext.Provider, {
         value: {
@@ -121,7 +141,7 @@ function AuthProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/app/context/AuthContext.tsx",
-        lineNumber: 56,
+        lineNumber: 82,
         columnNumber: 5
     }, this);
 }

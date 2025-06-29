@@ -3,27 +3,43 @@
 import React, { useState, useEffect } from 'react';
 import { FileTextIcon, ClipboardListIcon, CalendarIcon, PlusIcon, UserIcon } from 'lucide-react';
 import { MedicineEntry } from './MedicineEntry';
-import { Patient, Medicine } from '../data/types';
+import { User } from '../datats/mockPatients';
+import { Medicine } from '../datats/auth';
 import { PatientProfile } from './PatientProfile';
 
+// Interface cho thông tin bệnh nhân trong hàng đợi
+interface PatientInQueue {
+  _id: string;
+  patient: string;
+  status: 'waiting' | 'in_progress' | 'completed' | 'canceled';
+  doctorId?: string;
+  createdAt: string;
+  updatedAt: string;
+  __v?: number;
+  patientInfo: User | null;
+}
+
 interface DiagnosisPanelProps {
-  patient: Patient | null;
-  onMarkAsDone: (patientId: string) => void;
+  patient: User | null;
+  queueInfo: PatientInQueue | null;
+  onMarkAsDone: (queueId: string) => void;
 }
 
 export const DiagnosisPanel: React.FC<DiagnosisPanelProps> = ({
   patient,
+  queueInfo,
   onMarkAsDone
 }) => {
-  const [diagnosis, setDiagnosis] = useState(patient?.diagnosis || '');
-  const [prescription, setPrescription] = useState<Medicine[]>(Array.isArray(patient?.prescription) ? patient?.prescription : []);
+  const [diagnosis, setDiagnosis] = useState('');
+  const [prescription, setPrescription] = useState<Medicine[]>([]);
   const [followUp, setFollowUp] = useState(false);
   const [followUpDate, setFollowUpDate] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setDiagnosis(patient?.diagnosis || '');
-    setPrescription(Array.isArray(patient?.prescription) ? patient?.prescription : []);
+    // Reset form fields when patient changes
+    setDiagnosis('');
+    setPrescription([]);
     setFollowUp(false);
     setFollowUpDate('');
     setError(null);
@@ -41,30 +57,34 @@ export const DiagnosisPanel: React.FC<DiagnosisPanelProps> = ({
       return;
     }
     setError(null);
-    if (patient) onMarkAsDone(String(patient.id));
+    if (queueInfo) onMarkAsDone(queueInfo._id);
   };
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!patient) return;
-    // TODO: Implement save functionality
+    if (!patient || !queueInfo) return;
+    
+    // TODO: Implement save functionality with mock data
     console.log('Saving diagnosis:', {
-      patientId: String(patient.id),
+      patientId: queueInfo.patient,
+      queueId: queueInfo._id,
       diagnosis,
       prescription,
       followUp,
       followUpDate
     });
-    onMarkAsDone(String(patient.id));
+    
+    // Cập nhật trạng thái queue
+    onMarkAsDone(queueInfo._id);
   };
 
   const handleAddMedicine = () => {
+    // Tạo thuốc mới với cấu trúc phù hợp với Medicine từ auth.ts
     const newMedicine: Medicine = {
       id: Date.now().toString(),
       name: '',
-      dosage: '',
-      frequency: '',
-      duration: ''
+      totalPills: 0,
+      schedule: ''
     };
     setPrescription([...prescription, newMedicine]);
   };
@@ -96,9 +116,9 @@ export const DiagnosisPanel: React.FC<DiagnosisPanelProps> = ({
   return <div className="bg-white rounded-lg shadow-md h-full">
       <div className="p-4 border-b border-gray-200 flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-medium text-gray-900">{patient.name}</h2>
+          <h2 className="text-lg font-medium text-gray-900">{patient?.fullName || 'Không có tên'}</h2>
           <p className="text-sm text-gray-500">
-            {patient.age} tuổi • {patient.gender} • {patient.appointmentType}
+            {patient?.email} • {patient?.phone}
           </p>
         </div>
         <button
@@ -125,20 +145,24 @@ export const DiagnosisPanel: React.FC<DiagnosisPanelProps> = ({
         <div className="p-4 bg-gray-50 rounded-lg">
           <h3 className="text-sm font-medium text-gray-900 flex items-center">
             <ClipboardListIcon className="h-4 w-4 mr-2 text-blue-500" />
-            Lịch sử bệnh án
+            Thông tin khám bệnh
           </h3>
           <div className="mt-2 text-sm text-gray-800">
             <p>
-              <strong>Dị ứng:</strong>{' '}
-              {patient.medicalHistory?.allergies || 'Không'}
+              <strong>Thời gian chờ:</strong>{' '}
+              {queueInfo ? `${Math.floor((new Date().getTime() - new Date(queueInfo.createdAt).getTime()) / 60000)} phút` : 'Không xác định'}
             </p>
             <p>
-              <strong>Bệnh mãn tính:</strong>{' '}
-              {patient.medicalHistory?.chronicConditions || 'Không'}
+              <strong>Trạng thái:</strong>{' '}
+              <span className={`font-medium ${queueInfo?.status === 'waiting' ? 'text-yellow-600' : queueInfo?.status === 'in_progress' ? 'text-blue-600' : queueInfo?.status === 'completed' ? 'text-green-600' : 'text-red-600'}`}>
+                {queueInfo?.status === 'waiting' ? 'Đang chờ' : 
+                queueInfo?.status === 'in_progress' ? 'Đang khám' : 
+                queueInfo?.status === 'completed' ? 'Đã hoàn thành' : 'Đã hủy'}
+              </span>
             </p>
             <p>
-              <strong>Lần khám gần nhất:</strong>{' '}
-              {patient.medicalHistory?.lastVisit || 'Lần đầu'}
+              <strong>Ngày tạo:</strong>{' '}
+              {queueInfo ? new Date(queueInfo.createdAt).toLocaleString() : 'Không xác định'}
             </p>
           </div>
         </div>

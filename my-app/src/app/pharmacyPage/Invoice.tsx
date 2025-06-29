@@ -1,9 +1,9 @@
 import React from 'react';
 import { ArrowLeftIcon, PrinterIcon } from 'lucide-react';
-import { Patient, Medicine } from '../data/types'; // Corrected import path
+import { PharmacyPatient, PharmacyMedicine } from './pharmacyUtils';
 
 interface InvoiceProps {
-  patient: Patient;
+  patient: PharmacyPatient;
   onClose: () => void;
   onComplete: () => void;
 }
@@ -15,7 +15,7 @@ export const Invoice = ({
 }: InvoiceProps) => {
   const currentDate = new Date().toLocaleDateString('vi-VN');
   const calculateTotal = () => {
-    return patient.prescription.reduce((total: number, med: Medicine) => {
+    return patient.prescription.reduce((total: number, med: PharmacyMedicine) => {
       return total + med.price * med.quantity;
     }, 0);
   };
@@ -55,20 +55,12 @@ export const Invoice = ({
               <p className="font-medium">{patient.fullName}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Tuổi</p>
-              <p className="font-medium">{patient.age}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Giới tính</p>
-              <p className="font-medium">{patient.gender}</p>
-            </div>
-            <div>
               <p className="text-sm text-gray-500">Số điện thoại</p>
               <p className="font-medium">{patient.phone}</p>
             </div>
-            <div className="md:col-span-2">
-              <p className="text-sm text-gray-500">Địa chỉ</p>
-              <p className="font-medium">{patient.address}</p>
+            <div>
+              <p className="text-sm text-gray-500">Mã đơn thuốc</p>
+              <p className="font-medium">{patient.serialNumber}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Chẩn đoán</p>
@@ -108,7 +100,7 @@ export const Invoice = ({
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {patient.prescription.map((medicine: Medicine, index: number) => <tr key={index}>
+                {patient.prescription.map((medicine: PharmacyMedicine, index: number) => <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {index + 1}
                     </td>
