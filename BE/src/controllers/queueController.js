@@ -33,6 +33,48 @@ exports.getAllQueuesWithPatients = async (req, res) => {
     }
 };
 
+// @desc    Lấy các queue được chỉ định cho bác sĩ cụ thể
+// @route   GET /api/queues/doctor
+// @access  Protected (DOCTOR)
+exports.getQueuesByDoctor = async (req, res) => {
+    try {
+        // Nếu là bác sĩ, chỉ trả về queue được chỉ định cho bác sĩ đó
+        if (req.user.role === 'DOCTOR') {
+            const doctorId = req.user._id;
+            
+            // Lọc queue theo doctorId và có thể theo status nếu được chỉ định trong query
+            const filter = { doctorId };
+            if (req.query.status) {
+                filter.status = req.query.status;
+            }
+            
+            const queues = await Queue.find(filter)
+                .populate('patient', 'userId fullName phone role email')
+                .populate('doctorId', 'fullName userId')
+                .sort({ createdAt: 1 });
+            
+            console.log(`Found ${queues.length} queues for doctor ${doctorId}`);
+            return res.status(200).json(queues);
+        }
+        
+        // Nếu là admin hoặc vai trò khác được phép, có thể lọc theo doctorId từ query
+        if (req.query.doctorId) {
+            const queues = await Queue.find({ doctorId: req.query.doctorId })
+                .populate('patient', 'userId fullName phone role email')
+                .populate('doctorId', 'fullName userId')
+                .sort({ createdAt: 1 });
+            
+            return res.status(200).json(queues);
+        }
+        
+        // Nếu không có doctorId trong query, trả về lỗi
+        return res.status(400).json({ message: 'doctorId is required for non-doctor users' });
+    } catch (err) {
+        console.error('Error fetching queues for doctor:', err);
+        res.status(500).json({ message: 'Server Error', error: err.message });
+    }
+};
+
 // @desc    Lấy queue theo ID
 // @route   GET /api/queues/:id
 // @access  Protected

@@ -446,3 +446,19 @@ export const getPrescriptionDetails = async (prescriptionId: string, token: stri
   });
   return response.data;
 };
+
+export const getDoctorQueues = async (token: string, status?: string) => {
+  // URL và params
+  const url = '/queues/doctor';
+  const params = status ? { status } : {};
+  
+  // Gọi API
+  const response = await axiosInstance.get(url, {
+    params,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  
+  return response.data;
+};

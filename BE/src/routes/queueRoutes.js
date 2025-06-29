@@ -10,6 +10,7 @@ router.use(protect);
 // Routes cho nhân viên y tế (RECEPTIONIST, DOCTOR, ADMIN, PHARMACIST)
 router.get('/', authorizeRoles('ADMIN', 'DOCTOR', 'RECEPTIONIST', 'PHARMACIST'), queueController.getAllQueues);
 router.get('/with-patients', authorizeRoles('ADMIN', 'DOCTOR', 'RECEPTIONIST', 'PHARMACIST'), queueController.getAllQueuesWithPatients);
+router.get('/doctor', authorizeRoles('ADMIN', 'DOCTOR'), queueController.getQueuesByDoctor);
 router.get('/status/:status', authorizeRoles('ADMIN', 'DOCTOR', 'RECEPTIONIST', 'PHARMACIST'), queueController.getQueuesByStatus);
 router.get('/:id', authorizeRoles('ADMIN', 'DOCTOR', 'RECEPTIONIST', 'PHARMACIST'), queueController.getQueueById);
 router.post('/', authorizeRoles('ADMIN', 'RECEPTIONIST'), queueController.createQueue);
