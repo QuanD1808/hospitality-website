@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
-import { ClipboardListIcon, PrinterIcon, UserIcon, PillIcon, AlertTriangle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ClipboardListIcon, PrinterIcon, UserIcon, PillIcon, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Invoice } from './Invoice';
-import { PharmacyPatient, createPharmacyInvoice } from './pharmacyUtils';
+import { PharmacyPatient, PharmacyMedicine, createPharmacyInvoice } from './pharmacyUtils';
 import { useAuth } from '../context/AuthContext';
+import { getPrescriptionDetails } from '../services/api.service';
 
 interface PatientDetailsProps {
   patient: PharmacyPatient;
   onPatientComplete: (id: string) => void;
+}
+
+interface PrescriptionDetailType {
+  _id: string;
+  prescriptionId: string;
+  medicineId: {
+    _id: string;
+    name: string;
+    price: number;
+  };
+  quantity: number;
+  dosage: string;
 }
 
 export const PatientDetails = ({
@@ -17,6 +30,42 @@ export const PatientDetails = ({
   const [showInvoice, setShowInvoice] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [medicines, setMedicines] = useState<PharmacyMedicine[]>(patient.prescription);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Fetch prescription details from MongoDB when component loads
+  useEffect(() => {
+    const fetchPrescriptionDetails = async () => {
+      if (!token) return;
+      
+      setIsLoading(true);
+      try {
+        // Get prescription details from the backend
+        const prescriptionDetails = await getPrescriptionDetails(patient.id, token);
+        console.log(`Fetched ${prescriptionDetails.length} prescription details from MongoDB for ID: ${patient.id}`);
+        
+        // Transform prescription details to match our UI format
+        if (prescriptionDetails && prescriptionDetails.length > 0) {
+          const updatedMedicines: PharmacyMedicine[] = prescriptionDetails.map((detail: PrescriptionDetailType) => ({
+            name: detail.medicineId?.name || 'Unknown', // medicineId is populated with name
+            quantity: detail.quantity,
+            dosage: detail.dosage,
+            price: detail.medicineId?.price || 0 // medicineId is populated with price
+          }));
+          
+          setMedicines(updatedMedicines);
+        }
+      } catch (err: any) {
+        console.error("Error fetching prescription details:", err);
+        // Keep using the medicines from props if API fetch fails
+        setError("Không thể tải chi tiết đơn thuốc từ máy chủ. Đang hiển thị dữ liệu cục bộ.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchPrescriptionDetails();
+  }, [patient.id, token]);
   
   // Handler for showing invoice
   const handleShowInvoice = async () => {
@@ -64,15 +113,22 @@ export const PatientDetails = ({
   };
   
   if (showInvoice) {
+    // Pass our fetched medicines data to Invoice component
+    const patientWithUpdatedMeds = {
+      ...patient,
+      prescription: medicines
+    };
+    
     return <Invoice 
-      patient={patient} 
+      patient={patientWithUpdatedMeds} 
       onClose={() => setShowInvoice(false)} 
       onComplete={handleComplete} 
     />;
   }
   
   const calculateTotal = () => {
-    return patient.prescription.reduce((total, med) => {
+    // Use our fetched medicines instead of patient.prescription
+    return medicines.reduce((total, med) => {
       return total + med.price * med.quantity;
     }, 0);
   };
@@ -194,7 +250,7 @@ export const PatientDetails = ({
               </thead>
               
               <tbody className="bg-white divide-y divide-gray-300">
-                {patient.prescription.map((medicine, index) => (
+                {medicines.map((medicine, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                       {index + 1}
