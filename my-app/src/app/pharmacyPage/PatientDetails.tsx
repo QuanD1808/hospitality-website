@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ClipboardListIcon, PrinterIcon, UserIcon, PillIcon } from 'lucide-react';
+import { ClipboardListIcon, PrinterIcon, UserIcon, PillIcon, AlertTriangle } from 'lucide-react';
 import { Invoice } from './Invoice';
-import { PharmacyPatient } from './pharmacyUtils';
+import { PharmacyPatient, createPharmacyInvoice } from './pharmacyUtils';
+import { useAuth } from '../context/AuthContext';
 
 interface PatientDetailsProps {
   patient: PharmacyPatient;
@@ -12,10 +13,62 @@ export const PatientDetails = ({
   patient,
   onPatientComplete
 }: PatientDetailsProps) => {
+  const { token } = useAuth();
   const [showInvoice, setShowInvoice] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Handler for showing invoice
+  const handleShowInvoice = async () => {
+    setProcessing(true);
+    setError(null);
+    
+    try {
+      setShowInvoice(true);
+    } catch (err: any) {
+      console.error("Error preparing invoice:", err);
+      setError(err.message || "Không thể tạo hóa đơn. Vui lòng thử lại.");
+    } finally {
+      setProcessing(false);
+    }
+  };
+  
+  // Handler for completing prescription
+  const handleComplete = async () => {
+    setProcessing(true);
+    setError(null);
+    
+    try {
+      if (!token) {
+        throw new Error("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn.");
+      }
+      
+      const totalAmount = calculateTotal();
+      
+      // Mark prescription as dispensed
+      const success = await createPharmacyInvoice(patient.id, totalAmount, token);
+      
+      if (success) {
+        // Close invoice and notify parent component
+        setShowInvoice(false);
+        onPatientComplete(patient.id);
+      } else {
+        throw new Error("Không thể cập nhật trạng thái đơn thuốc.");
+      }
+    } catch (err: any) {
+      console.error("Error completing prescription:", err);
+      setError(err.message || "Không thể hoàn thành phát thuốc. Vui lòng thử lại.");
+    } finally {
+      setProcessing(false);
+    }
+  };
   
   if (showInvoice) {
-    return <Invoice patient={patient} onClose={() => setShowInvoice(false)} onComplete={() => onPatientComplete(patient.id)} />;
+    return <Invoice 
+      patient={patient} 
+      onClose={() => setShowInvoice(false)} 
+      onComplete={handleComplete} 
+    />;
   }
   
   const calculateTotal = () => {
@@ -31,13 +84,34 @@ export const PatientDetails = ({
           <PillIcon size={20} className="mr-2 text-black" />
           Chi Tiết Đơn Thuốc
         </h2>
-        <button 
-          onClick={() => setShowInvoice(true)} 
-          className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-sm transition-colors"
-        >
-          <PrinterIcon size={16} className="mr-2" /> 
-          Xuất hóa đơn thuốc
-        </button>
+        {error ? (
+          <div className="flex items-center text-red-600">
+            <AlertTriangle size={16} className="mr-1" />
+            <span className="text-sm">{error}</span>
+          </div>
+        ) : (
+          <button 
+            onClick={handleShowInvoice} 
+            disabled={processing}
+            className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white transition-colors shadow-sm ${
+              processing 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
+            }`}
+          >
+            {processing ? (
+              <>
+                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>
+                Đang xử lý...
+              </>
+            ) : (
+              <>
+                <PrinterIcon size={16} className="mr-2" /> 
+                Xuất hóa đơn thuốc
+              </>
+            )}
+          </button>
+        )}
       </div>
       
       <div className="p-6 space-y-6">

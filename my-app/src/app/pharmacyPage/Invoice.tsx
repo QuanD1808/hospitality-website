@@ -1,5 +1,5 @@
-import React from 'react';
-import { ArrowLeftIcon, PrinterIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeftIcon, PrinterIcon, AlertTriangle } from 'lucide-react';
 import { PharmacyPatient, PharmacyMedicine } from './pharmacyUtils';
 
 interface InvoiceProps {
@@ -13,16 +13,35 @@ export const Invoice = ({
   onClose,
   onComplete
 }: InvoiceProps) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
   const currentDate = new Date().toLocaleDateString('vi-VN');
+  
   const calculateTotal = () => {
     return patient.prescription.reduce((total: number, med: PharmacyMedicine) => {
       return total + med.price * med.quantity;
     }, 0);
   };
-  const handlePrint = () => {
-    // In a real app, this would trigger the print functionality
-    // For now, we'll just simulate the completion
-    onComplete();
+  
+  const handlePrint = async () => {
+    setIsProcessing(true);
+    setError(null);
+    
+    try {
+      // In thực tế, ở đây sẽ gọi API để in và lưu hoá đơn
+      // Sau đó mới gọi onComplete để xác nhận đã phát thuốc
+      
+      // Giả lập thời gian chờ để UX tốt hơn
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      onComplete();
+    } catch (err: any) {
+      console.error("Error completing invoice:", err);
+      setError(err.message || "Không thể hoàn tất hóa đơn. Vui lòng thử lại.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
   return <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="bg-blue-600 px-4 py-3 flex justify-between items-center">
@@ -32,9 +51,33 @@ export const Invoice = ({
           </button>
           <h2 className="text-lg font-medium text-white">Hóa Đơn Thuốc</h2>
         </div>
-        <button onClick={handlePrint} className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-          <PrinterIcon className="h-4 w-4 mr-1" /> In hóa đơn
-        </button>
+        {error ? (
+          <div className="flex items-center text-red-600 bg-red-50 px-3 py-1 rounded-md border border-red-200">
+            <AlertTriangle className="h-4 w-4 mr-1" />
+            <span className="text-sm">{error}</span>
+          </div>
+        ) : (
+          <button 
+            onClick={handlePrint} 
+            disabled={isProcessing}
+            className={`inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md transition-colors ${
+              isProcessing 
+                ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : 'text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+            }`}
+          >
+            {isProcessing ? (
+              <>
+                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-1"></span>
+                Đang xử lý...
+              </>
+            ) : (
+              <>
+                <PrinterIcon className="h-4 w-4 mr-1" /> In & hoàn tất
+              </>
+            )}
+          </button>
+        )}
       </div>
       <div className="p-6">
         <div className="border border-gray-200 rounded-lg p-6 mb-6">

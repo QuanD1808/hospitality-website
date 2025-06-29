@@ -47,12 +47,12 @@ const PatientList = ({ patients, onPatientSelect })=>{
                     children: "Danh Sách Chờ Phát Thuốc"
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                    lineNumber: 15,
+                    lineNumber: 16,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                lineNumber: 14,
+                lineNumber: 15,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -71,12 +71,12 @@ const PatientList = ({ patients, onPatientSelect })=>{
                                                 className: "h-5 w-5 text-blue-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                lineNumber: 24,
+                                                lineNumber: 25,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                            lineNumber: 23,
+                                            lineNumber: 24,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -90,7 +90,7 @@ const PatientList = ({ patients, onPatientSelect })=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                    lineNumber: 27,
+                                                    lineNumber: 28,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -98,19 +98,19 @@ const PatientList = ({ patients, onPatientSelect })=>{
                                                     children: patient.phone
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                    lineNumber: 30,
+                                                    lineNumber: 31,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                            lineNumber: 26,
+                                            lineNumber: 27,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                    lineNumber: 22,
+                                    lineNumber: 23,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -119,36 +119,36 @@ const PatientList = ({ patients, onPatientSelect })=>{
                                     children: "Phát thuốc"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                    lineNumber: 35,
+                                    lineNumber: 36,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 21,
+                            lineNumber: 22,
                             columnNumber: 15
                         }, this)
                     }, patient.id, false, {
                         fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                        lineNumber: 20,
+                        lineNumber: 21,
                         columnNumber: 56
                     }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "p-4 text-center text-gray-500",
                     children: "Không có bệnh nhân nào trong danh sách chờ."
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                    lineNumber: 39,
+                    lineNumber: 40,
                     columnNumber: 23
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                lineNumber: 19,
+                lineNumber: 20,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-        lineNumber: 13,
+        lineNumber: 14,
         columnNumber: 10
     }, this);
 };
@@ -337,7 +337,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-sm text-gray-500",
-                                            children: "Tuổi"
+                                            children: "Số điện thoại"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 58,
@@ -345,7 +345,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "font-medium",
-                                            children: patient.age
+                                            children: patient.phone
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 59,
@@ -361,7 +361,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-sm text-gray-500",
-                                            children: "Giới tính"
+                                            children: "Mã đơn thuốc"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 62,
@@ -369,7 +369,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "font-medium",
-                                            children: patient.gender
+                                            children: patient.serialNumber
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 63,
@@ -385,7 +385,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-sm text-gray-500",
-                                            children: "Số điện thoại"
+                                            children: "Chẩn đoán"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 66,
@@ -393,7 +393,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "font-medium",
-                                            children: patient.phone
+                                            children: patient.diagnosis
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 67,
@@ -406,11 +406,10 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "md:col-span-2",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-sm text-gray-500",
-                                            children: "Địa chỉ"
+                                            children: "Bác sĩ kê đơn"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 70,
@@ -418,7 +417,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "font-medium",
-                                            children: patient.address
+                                            children: patient.doctor
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 71,
@@ -434,7 +433,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-sm text-gray-500",
-                                            children: "Chẩn đoán"
+                                            children: "Nhân viên phát thuốc"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 74,
@@ -442,7 +441,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "font-medium",
-                                            children: patient.diagnosis
+                                            children: "Nguyễn Thị Hà"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                             lineNumber: 75,
@@ -452,54 +451,6 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
                                     lineNumber: 73,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "text-sm text-gray-500",
-                                            children: "Bác sĩ kê đơn"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 78,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "font-medium",
-                                            children: patient.doctor
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 79,
-                                            columnNumber: 15
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 77,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "text-sm text-gray-500",
-                                            children: "Nhân viên phát thuốc"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 82,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "font-medium",
-                                            children: "Nguyễn Thị Hà"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 83,
-                                            columnNumber: 15
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 81,
                                     columnNumber: 13
                                 }, this)
                             ]
@@ -523,7 +474,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "STT"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 90,
+                                                    lineNumber: 82,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -532,7 +483,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Tên thuốc"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 93,
+                                                    lineNumber: 85,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -541,7 +492,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Số lượng"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 96,
+                                                    lineNumber: 88,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -550,7 +501,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Liều dùng"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 99,
+                                                    lineNumber: 91,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -559,7 +510,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Đơn giá"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 102,
+                                                    lineNumber: 94,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -568,18 +519,18 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Thành tiền"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 105,
+                                                    lineNumber: 97,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 89,
+                                            lineNumber: 81,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                        lineNumber: 88,
+                                        lineNumber: 80,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -592,7 +543,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             children: index + 1
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 112,
+                                                            lineNumber: 104,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -600,7 +551,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             children: medicine.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 115,
+                                                            lineNumber: 107,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -608,7 +559,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             children: medicine.quantity
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 118,
+                                                            lineNumber: 110,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -616,7 +567,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             children: medicine.dosage
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 121,
+                                                            lineNumber: 113,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -627,7 +578,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 124,
+                                                            lineNumber: 116,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -639,14 +590,14 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 127,
+                                                            lineNumber: 119,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, index, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 111,
-                                                    columnNumber: 82
+                                                    lineNumber: 103,
+                                                    columnNumber: 90
                                                 }, this)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 className: "bg-gray-50",
@@ -657,7 +608,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                         children: "Tổng cộng:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                        lineNumber: 133,
+                                                        lineNumber: 125,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -668,30 +619,30 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                        lineNumber: 136,
+                                                        lineNumber: 128,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                lineNumber: 132,
+                                                lineNumber: 124,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 102,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                lineNumber: 87,
+                                lineNumber: 79,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                            lineNumber: 86,
+                            lineNumber: 78,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -705,7 +656,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Người lập phiếu"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 145,
+                                            lineNumber: 137,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -713,27 +664,27 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "(Ký, ghi rõ họ tên)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 146,
+                                            lineNumber: 138,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "h-16"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 147,
+                                            lineNumber: 139,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             children: "Nguyễn Thị Hà"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 148,
+                                            lineNumber: 140,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 144,
+                                    lineNumber: 136,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -744,7 +695,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Người nhận thuốc"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 151,
+                                            lineNumber: 143,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -752,33 +703,33 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "(Ký, ghi rõ họ tên)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 152,
+                                            lineNumber: 144,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "h-16"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 153,
+                                            lineNumber: 145,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             children: patient.fullName
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 154,
+                                            lineNumber: 146,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 150,
+                                    lineNumber: 142,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                            lineNumber: 143,
+                            lineNumber: 135,
                             columnNumber: 11
                         }, this)
                     ]
@@ -828,7 +779,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
             onComplete: ()=>onPatientComplete(patient.id)
         }, void 0, false, {
             fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-            lineNumber: 12,
+            lineNumber: 18,
             columnNumber: 12
         }, this);
     }
@@ -851,14 +802,14 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                 className: "mr-2 text-black"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                lineNumber: 25,
+                                lineNumber: 31,
                                 columnNumber: 11
                             }, this),
                             "Chi Tiết Đơn Thuốc"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                        lineNumber: 24,
+                        lineNumber: 30,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -870,20 +821,20 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                 className: "mr-2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                lineNumber: 32,
+                                lineNumber: 38,
                                 columnNumber: 11
                             }, this),
                             "Xuất hóa đơn thuốc"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                        lineNumber: 28,
+                        lineNumber: 34,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                lineNumber: 23,
+                lineNumber: 29,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -900,7 +851,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                         className: "text-black mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 41,
+                                        lineNumber: 47,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -908,13 +859,13 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                         children: "Thông tin bệnh nhân"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 42,
+                                        lineNumber: 48,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                lineNumber: 40,
+                                lineNumber: 46,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -927,7 +878,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                 children: "Họ và tên"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 49,
+                                                lineNumber: 55,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -935,61 +886,13 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                 children: patient.fullName
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 50,
+                                                lineNumber: 56,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 48,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-sm font-medium text-black mb-1",
-                                                children: "Tuổi"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 53,
-                                                columnNumber: 15
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-black",
-                                                children: patient.age
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 54,
-                                                columnNumber: 15
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 52,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-sm font-medium text-black mb-1",
-                                                children: "Giới tính"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 57,
-                                                columnNumber: 15
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-black",
-                                                children: patient.gender
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 58,
-                                                columnNumber: 15
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 56,
+                                        lineNumber: 54,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -999,7 +902,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                 children: "Số điện thoại"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 61,
+                                                lineNumber: 59,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1007,50 +910,49 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                 children: patient.phone
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 62,
+                                                lineNumber: 60,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 60,
+                                        lineNumber: 58,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "md:col-span-2",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "text-sm font-medium text-black mb-1",
-                                                children: "Địa chỉ"
+                                                children: "Mã đơn thuốc"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 65,
+                                                lineNumber: 63,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "text-black",
-                                                children: patient.address
+                                                children: patient.serialNumber
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 66,
+                                                lineNumber: 64,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 64,
+                                        lineNumber: 62,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                lineNumber: 47,
+                                lineNumber: 53,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                        lineNumber: 39,
+                        lineNumber: 45,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1064,7 +966,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                         className: "text-black mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 74,
+                                        lineNumber: 72,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -1072,13 +974,13 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                         children: "Thông tin y tế"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 75,
+                                        lineNumber: 73,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                lineNumber: 73,
+                                lineNumber: 71,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1088,34 +990,10 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "text-sm font-medium text-black mb-1",
-                                                children: "Tiền sử bệnh"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 82,
-                                                columnNumber: 15
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-black",
-                                                children: patient.medicalHistory
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 83,
-                                                columnNumber: 15
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 81,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-sm font-medium text-black mb-1",
                                                 children: "Chẩn đoán"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 86,
+                                                lineNumber: 80,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1123,13 +1001,13 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                 children: patient.diagnosis
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 87,
+                                                lineNumber: 81,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 85,
+                                        lineNumber: 79,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1139,7 +1017,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                 children: "Bác sĩ"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 90,
+                                                lineNumber: 84,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1147,25 +1025,25 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                 children: patient.doctor
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 91,
+                                                lineNumber: 85,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 89,
+                                        lineNumber: 83,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                lineNumber: 80,
+                                lineNumber: 78,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                        lineNumber: 72,
+                        lineNumber: 70,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1178,14 +1056,14 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                         className: "mr-2 text-black"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                        lineNumber: 99,
+                                        lineNumber: 93,
                                         columnNumber: 13
                                     }, this),
                                     "Đơn thuốc"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                lineNumber: 98,
+                                lineNumber: 92,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1203,7 +1081,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                         children: "STT"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                        lineNumber: 107,
+                                                        lineNumber: 101,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1212,7 +1090,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                         children: "Tên thuốc"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                        lineNumber: 110,
+                                                        lineNumber: 104,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1221,7 +1099,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                         children: "Số lượng"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                        lineNumber: 113,
+                                                        lineNumber: 107,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1230,7 +1108,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                         children: "Liều dùng"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                        lineNumber: 116,
+                                                        lineNumber: 110,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1239,7 +1117,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                         children: "Đơn giá"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                        lineNumber: 119,
+                                                        lineNumber: 113,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1248,18 +1126,18 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                         children: "Thành tiền"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                        lineNumber: 122,
+                                                        lineNumber: 116,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                lineNumber: 106,
+                                                lineNumber: 100,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                            lineNumber: 105,
+                                            lineNumber: 99,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -1273,7 +1151,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                                 children: index + 1
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                                lineNumber: 131,
+                                                                lineNumber: 125,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1281,7 +1159,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                                 children: medicine.name
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                                lineNumber: 134,
+                                                                lineNumber: 128,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1289,7 +1167,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                                 children: medicine.quantity
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                                lineNumber: 137,
+                                                                lineNumber: 131,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1297,7 +1175,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                                 children: medicine.dosage
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                                lineNumber: 140,
+                                                                lineNumber: 134,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1308,7 +1186,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                                lineNumber: 143,
+                                                                lineNumber: 137,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1319,13 +1197,13 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                                lineNumber: 146,
+                                                                lineNumber: 140,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, index, true, {
                                                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                        lineNumber: 130,
+                                                        lineNumber: 124,
                                                         columnNumber: 19
                                                     }, this)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -1337,7 +1215,7 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                             children: "Tổng cộng:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                            lineNumber: 153,
+                                                            lineNumber: 147,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1348,48 +1226,48 @@ const PatientDetails = ({ patient, onPatientComplete })=>{
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                            lineNumber: 156,
+                                                            lineNumber: 150,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                                    lineNumber: 152,
+                                                    lineNumber: 146,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                            lineNumber: 128,
+                                            lineNumber: 122,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                    lineNumber: 104,
+                                    lineNumber: 98,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                                lineNumber: 103,
+                                lineNumber: 97,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                        lineNumber: 97,
+                        lineNumber: 91,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-                lineNumber: 37,
+                lineNumber: 43,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/PatientDetails.tsx",
-        lineNumber: 22,
+        lineNumber: 28,
         columnNumber: 5
     }, this);
 };
@@ -1918,10 +1796,88 @@ const InvoiceDetailModal = ({ invoice, patient, onClose })=>{
     }, this);
 };
 }}),
-"[project]/src/app/pharmacyPage/pharmacyUtils.ts [app-ssr] (ecmascript)": (function(__turbopack_context__) {
+"[project]/src/app/pharmacyPage/pharmacyUtils.ts [app-ssr] (ecmascript)": ((__turbopack_context__) => {
+"use strict";
 
-var { g: global, __dirname, m: module, e: exports } = __turbopack_context__;
+var { g: global, __dirname } = __turbopack_context__;
 {
+__turbopack_context__.s({
+    "getDailyRevenue": (()=>getDailyRevenue),
+    "getPatientsWithPendingPrescriptions": (()=>getPatientsWithPendingPrescriptions),
+    "getPharmacyInvoices": (()=>getPharmacyInvoices)
+});
+(()=>{
+    const e = new Error("Cannot find module '../datats/mockPatients'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
+;
+const getPatientsWithPendingPrescriptions = ()=>{
+    const pendingPrescriptions = getPrescriptionsByStatus('PENDING_DISPENSE');
+    return pendingPrescriptions.map((prescription)=>{
+        // Get patient details
+        const patient = getUserById(prescription.patientId);
+        // Get doctor details
+        const doctor = getUserById(prescription.doctorId);
+        // Get prescription details
+        const prescriptionDetails = getPrescriptionDetailsByPrescriptionId(prescription._id);
+        // Map prescription details to medicines
+        const medicines = prescriptionDetails.map((detail)=>{
+            const medicine = getMedicineById(detail.medicineId);
+            return {
+                name: medicine?.name || 'Unknown',
+                quantity: detail.quantity,
+                dosage: detail.dosage,
+                price: medicine?.price || 0
+            };
+        });
+        return {
+            id: prescription._id,
+            serialNumber: prescription.customPrescriptionId,
+            fullName: patient?.fullName || 'Unknown',
+            phone: patient?.phone || 'N/A',
+            diagnosis: prescription.diagnosis,
+            doctor: doctor?.fullName || 'Không xác định',
+            prescription: medicines
+        };
+    });
+};
+const getPharmacyInvoices = ()=>{
+    return mockInvoices.map((invoice)=>{
+        // Get pharmacist information (default to a specific ID if needed)
+        const pharmacist = getUserById('685face13fc4c04e1bd96c0a'); // Default pharmacist ID
+        // Return formatted invoice data
+        return {
+            id: invoice._id,
+            date: invoice.createdAt,
+            patientId: invoice.patientId,
+            pharmacistName: pharmacist?.fullName || 'Nhân viên phát thuốc',
+            totalAmount: invoice.totalAmount
+        };
+    });
+};
+const getDailyRevenue = ()=>{
+    const today = new Date();
+    const result = [];
+    // Create revenue data for the last 7 days
+    for(let i = 0; i < 7; i++){
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const dateString = date.toISOString().split('T')[0];
+        // Sum all invoices for this date
+        const dateInvoices = mockInvoices.filter((invoice)=>{
+            const invoiceDate = new Date(invoice.createdAt);
+            return invoiceDate.toISOString().split('T')[0] === dateString;
+        });
+        const totalAmount = dateInvoices.reduce((sum, invoice)=>sum + invoice.totalAmount, 0);
+        result.push({
+            date: dateString,
+            amount: totalAmount
+        });
+    }
+    // Sort by date ascending for easier chart rendering
+    return result.sort((a, b)=>new Date(a.date).getTime() - new Date(b.date).getTime());
+};
 }}),
 "[project]/src/app/pharmacyPage/Statistics.tsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
@@ -1949,22 +1905,21 @@ const Statistics = ()=>{
     const [selectedInvoice, setSelectedInvoice] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [revenueData, setRevenueData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [invoicesData, setInvoicesData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    // Tải dữ liệu doanh thu và hóa đơn từ API
+    const [patients, setPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    // Tải dữ liệu doanh thu và hóa đơn từ mockPatients
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        const fetchData = async ()=>{
-            try {
-                const token = localStorage.getItem('token') || '';
-                // Lấy dữ liệu doanh thu
-                const revenue = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getDailyRevenue"])(token);
-                setRevenueData(revenue);
-                // Lấy dữ liệu hóa đơn
-                const invoices = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getPharmacyInvoices"])(token);
-                setInvoicesData(invoices);
-            } catch (error) {
-                console.error('Error fetching statistics data:', error);
-            }
-        };
-        fetchData();
+        // Khởi tạo dữ liệu từ mockPatients
+        const revenue = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getDailyRevenue"])();
+        const invoices = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getPharmacyInvoices"])();
+        const patientsList = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])();
+        setRevenueData(revenue);
+        setInvoicesData(invoices);
+        setPatients(patientsList);
+        // Mặc định chọn ngày hôm nay nếu có dữ liệu
+        if (revenue && revenue.length > 0) {
+            // Lấy ngày đầu tiên trong danh sách doanh thu (thường là ngày gần nhất)
+            setSelectedDate(revenue[0].date);
+        }
     }, []);
     const formatDate = (dateString)=>{
         const date = new Date(dateString);
@@ -1973,33 +1928,17 @@ const Statistics = ()=>{
     const getTotalRevenue = ()=>{
         return revenueData.find((item)=>item.date === selectedDate)?.amount || 0;
     };
-    // Lọc hóa đơn theo ngày được chọn
-    const filterInvoicesByDate = ()=>{
+    const getInvoicesForDate = ()=>{
         return invoicesData.filter((invoice)=>{
             // Lấy phần ngày từ định dạng ISO
             const invoiceDate = new Date(invoice.date).toISOString().split('T')[0];
             return invoiceDate === selectedDate;
         });
     };
-    // Lấy thông tin hóa đơn theo ngày được chọn
-    const getInvoicesForDate = ()=>{
-        return filterInvoicesByDate();
-    };
-    // Lấy thông tin bệnh nhân từ API (tạm thời trả về object giả định)
     const getPatientById = (id)=>{
-        // Tìm hóa đơn chứa patientId này
-        const invoice = invoicesData.find((inv)=>inv.patientId === id);
-        // Trả về thông tin giả định
-        return {
-            id: id,
-            serialNumber: 'P' + id.slice(-5),
-            fullName: `Bệnh nhân #${id.slice(-5)}`,
-            phone: 'N/A',
-            prescription: [],
-            diagnosis: '',
-            doctor: ''
-        };
+        return patients.find((patient)=>patient.id === id);
     };
+    // Render thống kê doanh thu và danh sách hóa đơn
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "space-y-6",
         children: [
@@ -2013,12 +1952,12 @@ const Statistics = ()=>{
                             children: "Xem Thống Kê Doanh Thu"
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                            lineNumber: 78,
+                            lineNumber: 65,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                        lineNumber: 77,
+                        lineNumber: 64,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2035,7 +1974,7 @@ const Statistics = ()=>{
                                                 children: "Chọn ngày"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                lineNumber: 86,
+                                                lineNumber: 74,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2048,12 +1987,12 @@ const Statistics = ()=>{
                                                             className: "text-black"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                            lineNumber: 91,
+                                                            lineNumber: 79,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                        lineNumber: 90,
+                                                        lineNumber: 78,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2064,26 +2003,26 @@ const Statistics = ()=>{
                                                         className: "pl-10 pr-4 py-2.5 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-black focus:border-black text-black border"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                        lineNumber: 93,
+                                                        lineNumber: 81,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                lineNumber: 89,
+                                                lineNumber: 77,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 85,
+                                        lineNumber: 73,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "flex-grow"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 103,
+                                        lineNumber: 91,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2096,25 +2035,25 @@ const Statistics = ()=>{
                                                     className: "h-4 w-4 mr-1"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                    lineNumber: 106,
+                                                    lineNumber: 99,
                                                     columnNumber: 17
                                                 }, this),
-                                                " Xem chi tiết"
+                                                showDetails ? 'Ẩn chi tiết' : 'Xem chi tiết'
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                            lineNumber: 105,
+                                            lineNumber: 95,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 104,
+                                        lineNumber: 94,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                lineNumber: 83,
+                                lineNumber: 71,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2125,7 +2064,7 @@ const Statistics = ()=>{
                                         children: "Tổng doanh thu"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 111,
+                                        lineNumber: 107,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2139,7 +2078,7 @@ const Statistics = ()=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                lineNumber: 115,
+                                                lineNumber: 111,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2150,19 +2089,19 @@ const Statistics = ()=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                lineNumber: 118,
+                                                lineNumber: 114,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 114,
+                                        lineNumber: 110,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                lineNumber: 110,
+                                lineNumber: 106,
                                 columnNumber: 11
                             }, this),
                             showDetails && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2172,7 +2111,7 @@ const Statistics = ()=>{
                                         children: "Chi tiết hóa đơn"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 124,
+                                        lineNumber: 123,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2190,7 +2129,7 @@ const Statistics = ()=>{
                                                                 children: "Mã hóa đơn"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 131,
+                                                                lineNumber: 130,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2199,7 +2138,7 @@ const Statistics = ()=>{
                                                                 children: "Tên bệnh nhân"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 134,
+                                                                lineNumber: 133,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2208,7 +2147,7 @@ const Statistics = ()=>{
                                                                 children: "Nhân viên phát thuốc"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 137,
+                                                                lineNumber: 136,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2217,7 +2156,7 @@ const Statistics = ()=>{
                                                                 children: "Tổng tiền"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 140,
+                                                                lineNumber: 139,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2226,24 +2165,25 @@ const Statistics = ()=>{
                                                                 children: "Thao tác"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 143,
+                                                                lineNumber: 142,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                        lineNumber: 130,
+                                                        lineNumber: 129,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                    lineNumber: 129,
+                                                    lineNumber: 128,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
                                                     className: "bg-white divide-y divide-gray-200",
                                                     children: [
                                                         getInvoicesForDate().map((invoice)=>{
+                                                            // Lấy thông tin bệnh nhân từ ID
                                                             const patient = getPatientById(invoice.patientId);
                                                             return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                                 children: [
@@ -2255,7 +2195,7 @@ const Statistics = ()=>{
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 152,
+                                                                        lineNumber: 154,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2263,7 +2203,7 @@ const Statistics = ()=>{
                                                                         children: patient?.fullName || 'N/A'
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 155,
+                                                                        lineNumber: 157,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2271,7 +2211,7 @@ const Statistics = ()=>{
                                                                         children: invoice.pharmacistName
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 158,
+                                                                        lineNumber: 160,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2282,38 +2222,34 @@ const Statistics = ()=>{
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 161,
+                                                                        lineNumber: 163,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                                         className: "px-6 py-4 whitespace-nowrap text-sm text-gray-900",
                                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                                            onClick: ()=>{
-                                                                                const patient = getPatientById(invoice.patientId);
-                                                                                if ("TURBOPACK compile-time truthy", 1) {
-                                                                                    setSelectedInvoice({
-                                                                                        invoice,
-                                                                                        patient
-                                                                                    });
-                                                                                }
-                                                                            },
+                                                                            onClick: ()=>setSelectedInvoice({
+                                                                                    invoice,
+                                                                                    patient
+                                                                                }),
                                                                             className: "text-blue-600 hover:text-blue-800",
+                                                                            disabled: !patient,
                                                                             children: "Xem chi tiết"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                            lineNumber: 165,
+                                                                            lineNumber: 167,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 164,
+                                                                        lineNumber: 166,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, invoice.id, true, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 151,
-                                                                columnNumber: 26
+                                                                lineNumber: 153,
+                                                                columnNumber: 25
                                                             }, this);
                                                         }),
                                                         getInvoicesForDate().length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -2323,63 +2259,63 @@ const Statistics = ()=>{
                                                                 children: "Không có hóa đơn nào cho ngày đã chọn."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 180,
+                                                                lineNumber: 182,
                                                                 columnNumber: 25
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                            lineNumber: 179,
-                                                            columnNumber: 59
+                                                            lineNumber: 181,
+                                                            columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                    lineNumber: 148,
+                                                    lineNumber: 147,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                            lineNumber: 128,
+                                            lineNumber: 127,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 127,
+                                        lineNumber: 126,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                lineNumber: 123,
-                                columnNumber: 27
+                                lineNumber: 122,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                        lineNumber: 82,
+                        lineNumber: 69,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                lineNumber: 76,
+                lineNumber: 63,
                 columnNumber: 7
             }, this),
-            selectedInvoice && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$InvoiceDetailModal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["InvoiceDetailModal"], {
+            selectedInvoice && selectedInvoice.patient && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$InvoiceDetailModal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["InvoiceDetailModal"], {
                 invoice: selectedInvoice.invoice,
                 patient: selectedInvoice.patient,
                 onClose: ()=>setSelectedInvoice(null)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                lineNumber: 190,
-                columnNumber: 27
+                lineNumber: 197,
+                columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-        lineNumber: 75,
-        columnNumber: 10
+        lineNumber: 61,
+        columnNumber: 5
     }, this);
 };
 }}),
@@ -2411,18 +2347,10 @@ const Dashboard = ({ user, onLogout })=>{
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('dispense'); // 'dispense' or 'statistics'
     const [selectedPatient, setSelectedPatient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [waitingPatients, setWaitingPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    // Tải dữ liệu bệnh nhân chờ phát thuốc từ API
+    // Tải dữ liệu bệnh nhân chờ phát thuốc từ mockPatients
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        const fetchPatients = async ()=>{
-            try {
-                const token = localStorage.getItem('token') || '';
-                const patients = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])(token);
-                setWaitingPatients(patients);
-            } catch (error) {
-                console.error("Error fetching patients:", error);
-            }
-        };
-        fetchPatients();
+        const patients = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])();
+        setWaitingPatients(patients);
     }, []);
     const handlePatientSelect = (patient)=>{
         setSelectedPatient(patient);
@@ -2444,7 +2372,7 @@ const Dashboard = ({ user, onLogout })=>{
                             children: "Hệ Thống Quản Lý Nhà Thuốc"
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 51,
+                            lineNumber: 50,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2458,7 +2386,7 @@ const Dashboard = ({ user, onLogout })=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 53,
+                                    lineNumber: 52,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2469,31 +2397,31 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-4 w-4 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 57,
+                                            lineNumber: 56,
                                             columnNumber: 15
                                         }, this),
                                         " Đăng Xuất"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 56,
+                                    lineNumber: 55,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 52,
+                            lineNumber: 51,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 50,
+                    lineNumber: 49,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 49,
+                lineNumber: 48,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -2516,14 +2444,14 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-5 w-5 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 71,
+                                            lineNumber: 70,
                                             columnNumber: 17
                                         }, this),
                                         " Phát Thuốc"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 67,
+                                    lineNumber: 66,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2537,35 +2465,35 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-5 w-5 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 77,
+                                            lineNumber: 76,
                                             columnNumber: 17
                                         }, this),
                                         " Xem Thống Kê Doanh Thu"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 73,
+                                    lineNumber: 72,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 66,
+                            lineNumber: 65,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                        lineNumber: 65,
+                        lineNumber: 64,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 64,
+                    lineNumber: 63,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 63,
+                lineNumber: 62,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -2580,12 +2508,12 @@ const Dashboard = ({ user, onLogout })=>{
                                 onPatientSelect: handlePatientSelect
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 87,
+                                lineNumber: 86,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 86,
+                            lineNumber: 85,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2595,7 +2523,7 @@ const Dashboard = ({ user, onLogout })=>{
                                 onPatientComplete: handlePatientRemove
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 90,
+                                lineNumber: 89,
                                 columnNumber: 34
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center",
@@ -2604,32 +2532,32 @@ const Dashboard = ({ user, onLogout })=>{
                                     children: "Vui lòng chọn bệnh nhân từ danh sách để xem chi tiết."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 91,
+                                    lineNumber: 90,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 90,
+                                lineNumber: 89,
                                 columnNumber: 121
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 89,
+                            lineNumber: 88,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 85,
+                    lineNumber: 84,
                     columnNumber: 37
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$Statistics$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Statistics"], {}, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 96,
+                    lineNumber: 95,
                     columnNumber: 20
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 84,
+                lineNumber: 83,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -2641,23 +2569,23 @@ const Dashboard = ({ user, onLogout })=>{
                         children: "© 2023 Hệ Thống Quản Lý Nhà Thuốc. Bản quyền thuộc về Phòng Khám."
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                        lineNumber: 101,
+                        lineNumber: 100,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 100,
+                    lineNumber: 99,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 99,
+                lineNumber: 98,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-        lineNumber: 47,
+        lineNumber: 46,
         columnNumber: 10
     }, this);
 };

@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Medicine as AuthMedicine } from '../datats/auth';
-import { Medicine as MockMedicine, getAllMedicines } from '../datats/mockPatients';
 import { TrashIcon, ChevronDownIcon } from 'lucide-react';
+import * as apiService from '../services/api.service';
+import { useAuth } from '../context/AuthContext';
 
 interface MedicineEntryProps {
   medicine: AuthMedicine;
@@ -23,66 +24,68 @@ export const MedicineEntry: React.FC<MedicineEntryProps> = ({
   
   // State để quản lý dropdown
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [availableMedicines, setAvailableMedicines] = useState<MockMedicine[]>([]);
-  const [filteredMedicines, setFilteredMedicines] = useState<MockMedicine[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [availableMedicines, setAvailableMedicines] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { token } = useAuth();
   
-  // Lấy danh sách thuốc từ mockdata
+  // Lấy danh sách thuốc từ API
   useEffect(() => {
-    const medicines = getAllMedicines();
-    setAvailableMedicines(medicines);
-    setFilteredMedicines(medicines);
-    setSearchTerm(name); // Đặt giá trị tìm kiếm ban đầu là tên thuốc hiện tại
-  }, []);
-  
-  // Thêm sự kiện click ngoài để đóng dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest(`#medicine-dropdown-${medicine.id}`)) {
-        setIsDropdownOpen(false);
+    const fetchMedicines = async () => {
+      setIsLoading(true);
+      try {
+        if (token) {
+          const medicines = await apiService.getMedicines(token);
+          setAvailableMedicines(medicines);
+        }
+      } catch (error) {
+        console.error("Error fetching medicines:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [medicine.id]);
-
-  // Cập nhật lại danh sách thuốc được lọc khi nhập term tìm kiếm
-  useEffect(() => {
-    if (searchTerm.trim() === '') {
-      setFilteredMedicines(availableMedicines);
-    } else {
-      const filtered = availableMedicines.filter(med => 
-        med.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredMedicines(filtered);
-    }
-  }, [searchTerm, availableMedicines]);
+    fetchMedicines();
+  }, [token]);
 
   // Xử lý khi chọn một loại thuốc từ danh sách
-  const handleSelectMedicine = (selectedMedicine: MockMedicine) => {
+  const handleSelectMedicine = (selectedMedicine: any) => {
     setName(selectedMedicine.name);
     setIsDropdownOpen(false);
-    setSearchTerm(selectedMedicine.name);
     
-    onUpdate({
+    // Cập nhật thông tin thuốc
+    const updatedMedicine = {
       ...medicine,
       name: selectedMedicine.name,
       totalPills: parseInt(totalPills) || 0,
+      schedule,
+      medicineId: selectedMedicine._id
+    };
+    
+    onUpdate(updatedMedicine);
+  };
+  
+  // Cập nhật thông tin thuốc khi thay đổi số lượng và cách dùng
+  const handlePillsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setTotalPills(newValue);
+    
+    onUpdate({
+      ...medicine,
+      name,
+      totalPills: parseInt(newValue) || 0,
       schedule
     });
   };
   
-  // Xử lý thay đổi số lượng và cách dùng
-  const handleChange = () => {
+  const handleScheduleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSchedule(newValue);
+    
     onUpdate({
       ...medicine,
       name,
       totalPills: parseInt(totalPills) || 0,
-      schedule
+      schedule: newValue
     });
   };
 
@@ -101,30 +104,29 @@ export const MedicineEntry: React.FC<MedicineEntryProps> = ({
               <input 
                 type="text"
                 id={`medicine-name-${medicine.id}`}
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setIsDropdownOpen(true);
-                }}
-                onClick={(e) => e.stopPropagation()}
-                placeholder="Tìm thuốc..."
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Chọn thuốc..."
                 className="border-none outline-none focus:ring-0 p-0 w-full text-base text-gray-800"
+                readOnly
               />
               <ChevronDownIcon className="h-5 w-5 text-gray-600" />
             </div>
             
             {isDropdownOpen && (
               <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base overflow-auto focus:outline-none border border-gray-200">
-                {filteredMedicines.length === 0 ? (
-                  <div className="px-3 py-2 text-sm text-gray-600">Không tìm thấy thuốc</div>
+                {isLoading ? (
+                  <div className="px-3 py-4 text-sm text-gray-600 text-center">Đang tải...</div>
+                ) : availableMedicines.length === 0 ? (
+                  <div className="px-3 py-2 text-sm text-gray-600">Không có thuốc</div>
                 ) : (
-                  filteredMedicines.map(med => (
+                  availableMedicines.map(med => (
                     <div
                       key={med._id}
                       className="px-3 py-2 cursor-pointer hover:bg-blue-50 text-sm text-gray-800"
                       onClick={() => handleSelectMedicine(med)}
                     >
-                      {med.name} - <span className="text-blue-600 font-medium">{med.price}đ/viên</span>
+                      {med.name} - <span>{med.price}đ/viên</span>
                     </div>
                   ))
                 )}
@@ -141,10 +143,7 @@ export const MedicineEntry: React.FC<MedicineEntryProps> = ({
             id={`medicine-total-${medicine.id}`}
             value={totalPills}
             min={0}
-            onChange={(e) => {
-              setTotalPills(e.target.value);
-              handleChange();
-            }}
+            onChange={handlePillsChange}
             placeholder="0"
             className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base text-gray-800 placeholder-gray-400 px-3 py-2"
           />
@@ -157,10 +156,7 @@ export const MedicineEntry: React.FC<MedicineEntryProps> = ({
             type="text"
             id={`medicine-schedule-${medicine.id}`}
             value={schedule}
-            onChange={(e) => {
-              setSchedule(e.target.value);
-              handleChange();
-            }}
+            onChange={handleScheduleChange}
             placeholder="VD: 1 sáng, 2 trưa, 1 tối"
             className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base text-gray-800 placeholder-gray-400 px-3 py-2"
           />

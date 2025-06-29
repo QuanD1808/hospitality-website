@@ -8,6 +8,7 @@ import {
   getDailyRevenue,
   getPatientsWithPendingPrescriptions
 } from './pharmacyUtils';
+import { initializeData } from '../datats/mockPatients';
 
 export const Statistics = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('day');
@@ -18,22 +19,35 @@ export const Statistics = () => {
   const [invoicesData, setInvoicesData] = useState<PharmacyInvoice[]>([]);
   const [patients, setPatients] = useState<PharmacyPatient[]>([]);
   
-  // Tải dữ liệu doanh thu và hóa đơn từ mockPatients
+  // Tải dữ liệu doanh thu và hóa đơn từ API
   useEffect(() => {
-    // Khởi tạo dữ liệu từ mockPatients
-    const revenue = getDailyRevenue();
-    const invoices = getPharmacyInvoices();
-    const patientsList = getPatientsWithPendingPrescriptions();
+    const fetchData = async () => {
+      try {
+        // Khởi tạo dữ liệu từ API trước
+        await initializeData();
+        
+        // Sau đó lấy dữ liệu thống kê, hóa đơn, và danh sách bệnh nhân
+        const [revenue, invoices, patientsList] = await Promise.all([
+          getDailyRevenue(),
+          getPharmacyInvoices(),
+          getPatientsWithPendingPrescriptions()
+        ]);
+        
+        setRevenueData(revenue);
+        setInvoicesData(invoices);
+        setPatients(patientsList);
+        
+        // Mặc định chọn ngày hôm nay nếu có dữ liệu
+        if (revenue && revenue.length > 0) {
+          // Lấy ngày đầu tiên trong danh sách doanh thu (thường là ngày gần nhất)
+          setSelectedDate(revenue[0].date);
+        }
+      } catch (error) {
+        console.error("Error fetching statistics data:", error);
+      }
+    };
     
-    setRevenueData(revenue);
-    setInvoicesData(invoices);
-    setPatients(patientsList);
-    
-    // Mặc định chọn ngày hôm nay nếu có dữ liệu
-    if (revenue && revenue.length > 0) {
-      // Lấy ngày đầu tiên trong danh sách doanh thu (thường là ngày gần nhất)
-      setSelectedDate(revenue[0].date);
-    }
+    fetchData();
   }, []);
   
   const formatDate = (dateString: string): string => {

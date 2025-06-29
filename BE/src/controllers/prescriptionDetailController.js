@@ -9,11 +9,23 @@ const Medicine = require('../models/Medicine'); // Để kiểm tra medicineId
 exports.createPrescriptionDetail = async (req, res) => {
     console.log('--- createPrescriptionDetail controller function called with data:', req.body);
     const { customPrescriptionDetailId, prescriptionId, medicineId, quantity, dosage } = req.body;
+    
+    // Kiểm tra các trường bắt buộc
+    if (!customPrescriptionDetailId || !prescriptionId || !medicineId || !quantity || !dosage) {
+        return res.status(400).json({ 
+            message: 'Missing required fields',
+            requiredFields: ['customPrescriptionDetailId', 'prescriptionId', 'medicineId', 'quantity', 'dosage']
+        });
+    }
+    
     try {
+        // Kiểm tra đơn thuốc có tồn tại không
         const prescription = await Prescription.findById(prescriptionId);
         if (!prescription) {
             return res.status(404).json({ message: 'Prescription not found' });
         }
+        
+        // Kiểm tra thuốc có tồn tại không
         const medicine = await Medicine.findById(medicineId);
         if (!medicine) {
             return res.status(404).json({ message: 'Medicine not found' });
@@ -24,12 +36,45 @@ exports.createPrescriptionDetail = async (req, res) => {
             return res.status(403).json({ message: 'Not authorized to add details to this prescription' });
         }
 
+        // Kiểm tra xem đã tồn tại chi tiết với customPrescriptionDetailId này chưa
+        const existingDetail = await PrescriptionDetail.findOne({ customPrescriptionDetailId });
+        if (existingDetail) {
+            return res.status(400).json({ message: `PrescriptionDetail with ID ${customPrescriptionDetailId} already exists` });
+        }
+
+        // Tạo chi tiết đơn thuốc mới
         const newPrescriptionDetail = new PrescriptionDetail({
-            customPrescriptionDetailId, prescriptionId, medicineId, quantity, dosage
+            customPrescriptionDetailId, 
+            prescriptionId, 
+            medicineId, 
+            quantity, 
+            dosage
         });
+        
+        // Lưu chi tiết đơn thuốc
         const savedPrescriptionDetail = await newPrescriptionDetail.save();
-        res.status(201).json(savedPrescriptionDetail);
-    } catch (err) { /* ... (xử lý lỗi tương tự) ... */ }
+        
+        // Trả về chi tiết đơn thuốc đã lưu kèm thông tin thuốc
+        const detailWithMedicineInfo = await PrescriptionDetail.findById(savedPrescriptionDetail._id)
+            .populate('medicineId', 'name price')
+            .populate({
+                path: 'prescriptionId',
+                select: 'customPrescriptionId diagnosis status',
+                populate: {
+                    path: 'patientId',
+                    select: 'fullName'
+                }
+            });
+            
+        res.status(201).json(detailWithMedicineInfo);
+    } catch (err) {
+        console.error('Error in createPrescriptionDetail:', err);
+        if (err.name === 'ValidationError') {
+            const messages = Object.values(err.errors).map(val => val.message);
+            return res.status(400).json({ message: messages.join(', ') });
+        }
+        res.status(500).json({ message: 'Server Error', error: err.message });
+    }
 };
 
 // @desc    Lấy tất cả PrescriptionDetails (có thể lọc theo prescriptionId)
@@ -127,4 +172,176 @@ exports.deletePrescriptionDetail = async (req, res) => {
         await PrescriptionDetail.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'Prescription detail deleted successfully' });
     } catch (err) { /* ... (xử lý lỗi) ... */ }
+};
+
+// @desc    Tạo nhiều PrescriptionDetail cùng lúc (batch creation)
+// @route   POST /api/prescriptiondetails/batch
+// @access  Protected (DOCTOR, ADMIN)
+exports.createBatchPrescriptionDetails = async (req, res) => {
+    console.log('>>> createBatchPrescriptionDetails called with body:', JSON.stringify(req.body, null, 2));
+    console.log('>>> Auth headers:', req.headers.authorization ? 'Present' : 'Missing');
+    
+    const { prescriptionId, details } = req.body;
+    
+    // Debug thông tin gửi tới
+    console.log('>>> prescriptionId:', prescriptionId);
+    console.log('>>> details length:', details?.length || 0);
+    
+    // Validate request data
+    if (!prescriptionId || !details || !Array.isArray(details) || details.length === 0) {
+        console.log('>>> Missing or invalid request data');
+        return res.status(400).json({ 
+            message: 'Invalid request data. prescriptionId and details array are required.',
+            received: {
+                prescriptionId: prescriptionId || 'missing',
+                details: details ? (Array.isArray(details) ? `array with ${details.length} items` : typeof details) : 'missing'
+            }
+        });
+    }
+
+    try {
+        // Verify prescription exists
+        console.log('>>> Looking up prescription with ID:', prescriptionId);
+        let prescription;
+        try {
+            prescription = await Prescription.findById(prescriptionId);
+            console.log('>>> Prescription lookup result:', prescription ? 'Found' : 'Not found');
+        } catch (findError) {
+            console.error('>>> Error finding prescription:', findError);
+            return res.status(400).json({
+                message: 'Invalid prescription ID format',
+                error: findError.message
+            });
+        }
+        
+        if (!prescription) {
+            return res.status(404).json({ message: 'Prescription not found' });
+        }
+
+        // Ensure doctor is authorized to add details to this prescription (except admin)
+        if (req.user.role === 'DOCTOR' && prescription.doctorId.toString() !== req.user._id.toString()) {
+            console.log('>>> Authorization failed: Doctor IDs do not match');
+            console.log(`>>> Prescription doctor ID: ${prescription.doctorId}, User ID: ${req.user._id}`);
+            return res.status(403).json({ message: 'Not authorized to add details to this prescription' });
+        }
+
+        // Log the medicine IDs for debugging
+        console.log('>>> Medicine IDs received:', details.map(detail => ({ 
+            id: detail.medicineId, 
+            type: typeof detail.medicineId 
+        })));
+
+        // Validate each detail object before processing
+        const validDetails = [];
+        const invalidDetails = [];
+
+        for (const detail of details) {
+            console.log('>>> Processing detail:', detail);
+            
+            // Check required fields
+            if (!detail.customPrescriptionDetailId || !detail.medicineId || 
+                detail.quantity === undefined || !detail.dosage) {
+                console.error('>>> Invalid detail object - missing fields:', detail);
+                invalidDetails.push({
+                    ...detail,
+                    reason: 'Missing required fields',
+                    missing: {
+                        customPrescriptionDetailId: !detail.customPrescriptionDetailId,
+                        medicineId: !detail.medicineId,
+                        quantity: detail.quantity === undefined,
+                        dosage: !detail.dosage
+                    }
+                });
+                continue;
+            }
+
+            // Check if medicine exists
+            try {
+                console.log('>>> Looking up medicine with ID:', detail.medicineId);
+                const medicine = await Medicine.findById(detail.medicineId);
+                if (!medicine) {
+                    console.error(`>>> Medicine with ID ${detail.medicineId} not found`);
+                    invalidDetails.push({
+                        ...detail,
+                        reason: `Medicine with ID ${detail.medicineId} not found`
+                    });
+                    continue;
+                }
+                console.log(`>>> Medicine found: ${medicine.name}`);
+                
+                // Đảm bảo trường dosage luôn có giá trị hợp lý
+                const dosage = detail.dosage && detail.dosage.trim() 
+                    ? detail.dosage.trim() 
+                    : 'Dùng theo chỉ dẫn của bác sĩ';
+                
+                validDetails.push({
+                    customPrescriptionDetailId: detail.customPrescriptionDetailId,
+                    prescriptionId,
+                    medicineId: detail.medicineId,
+                    quantity: detail.quantity,
+                    dosage: dosage
+                });
+                console.log('>>> Detail validated successfully');
+            } catch (err) {
+                console.error(`>>> Error validating medicine ${detail.medicineId}:`, err);
+                invalidDetails.push({
+                    ...detail,
+                    reason: `Error validating medicine: ${err.message}`
+                });
+            }
+        }
+
+        if (validDetails.length === 0) {
+            console.log('>>> No valid details to save');
+            return res.status(400).json({
+                message: 'No valid prescription details to create',
+                invalidDetails
+            });
+        }
+
+        console.log(`>>> Attempting to insert ${validDetails.length} valid details`);
+        
+        // Insert all valid details in one operation
+        const savedDetails = await PrescriptionDetail.insertMany(validDetails);
+        
+        console.log(`>>> Successfully saved ${savedDetails.length} prescription details`);
+        
+        res.status(201).json({
+            message: `Successfully created ${savedDetails.length} prescription details`,
+            data: savedDetails,
+            invalidCount: invalidDetails.length,
+            invalidDetails: invalidDetails.length > 0 ? invalidDetails : undefined
+        });
+    } catch (err) {
+        console.error('>>> Error in createBatchPrescriptionDetails:', err);
+        
+        // Xử lý các lỗi validation từ MongoDB
+        if (err.name === 'ValidationError') {
+            const messages = Object.values(err.errors).map(val => val.message);
+            return res.status(400).json({ 
+                message: 'Validation error',
+                details: messages.join(', ')
+            });
+        }
+        
+        // Xử lý các lỗi từ MongoDB khác
+        if (err.name === 'MongoError' || err.name === 'MongoServerError') {
+            // Duplicate key error
+            if (err.code === 11000) {
+                return res.status(400).json({
+                    message: 'Duplicate entry found',
+                    details: err.message
+                });
+            }
+        }
+        
+        // Log chi tiết lỗi để debug
+        console.error('>>> Full error object:', JSON.stringify(err, null, 2));
+        
+        res.status(500).json({ 
+            message: 'Server error when creating batch prescription details',
+            error: err.message,
+            stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+        });
+    }
 };

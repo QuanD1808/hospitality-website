@@ -4,9 +4,12 @@ import { AppointmentForm } from './components/Appointments/AppointmentForm';
 import { 
   getAllPatients, 
   getQueuesByStatus, 
-  addQueue, 
-  User 
+  addQueue
 } from '../datats/mockPatients';
+import { User } from '../datats/mockPatients';
+import axiosInstance from '../services/axios.customize.service';
+import * as apiService from '../services/api.service';
+import { useAuth } from '../context/AuthContext';
 
 interface AppointmentBookingProps {
   onBack: () => void;
@@ -27,32 +30,74 @@ export function AppointmentBooking({ onBack }: AppointmentBookingProps) {
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { token } = useAuth();
 
-  // Load mock patient data and generate appointments
+  // Load appointments from API
   useEffect(() => {
-    // Get all patients
-    const patients = getAllPatients();
+    const loadAppointments = async () => {
+      try {
+        setLoading(true);
+        
+        // Get patients for mapping 
+        const patients = await getAllPatients();
+        
+        // In a real implementation, fetch appointments from the API
+        // For now, generate mock appointments from patient data
+        if (token) {
+          // Try to get appointments from API
+          try {
+            const apiAppointments = await apiService.getAppointments(token);
+            if (apiAppointments && Array.isArray(apiAppointments)) {
+              // Format appointments from API
+              const formattedAppointments = apiAppointments.map((appt: any) => ({
+                id: appt._id,
+                name: appt.patientName || 'Unknown',
+                userId: appt.patientId || '',
+                phone: appt.patientPhone || '',
+                appointmentDate: new Date(appt.appointmentDate).toISOString().split('T')[0],
+                appointmentTime: appt.appointmentTime,
+                status: appt.status as 'pending' | 'confirmed' | 'completed' | 'canceled'
+              }));
+              setAppointments(formattedAppointments);
+              setLoading(false);
+              return;
+            }
+          } catch (apiError) {
+            console.log('Could not fetch appointments from API, falling back to mock data', apiError);
+          }
+        }
+
+        // Fallback: Generate mock appointments from patient data
+        const today = new Date();
+        const mockAppointments = patients.slice(0, 5).map((patient, index) => {
+          const appointmentHour = 9 + index;
+          const appointmentDate = new Date();
+          appointmentDate.setDate(today.getDate() + (index % 3)); // Distribute over next 3 days
+          
+          return {
+            id: patient._id,
+            name: patient.fullName,
+            userId: patient.userId,
+            phone: patient.phone,
+            appointmentDate: appointmentDate.toISOString().split('T')[0],
+            appointmentTime: `${appointmentHour < 10 ? '0' + appointmentHour : appointmentHour}:00`,
+            status: (index % 2 === 0) ? 'pending' : 'confirmed'
+          } as Appointment;
+        });
+        
+        setAppointments(mockAppointments);
+      } catch (err) {
+        console.error("Error loading appointments:", err);
+        setError("Could not load appointments. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
     
-    // Generate mock appointments using patient data
-    const today = new Date();
-    const mockAppointments = patients.slice(0, 5).map((patient, index) => {
-      const appointmentHour = 9 + index;
-      const appointmentDate = new Date();
-      appointmentDate.setDate(today.getDate() + (index % 3)); // Distribute over next 3 days
-      
-      return {
-        id: patient._id,
-        name: patient.fullName,
-        userId: patient.userId,
-        phone: patient.phone,
-        appointmentDate: appointmentDate.toISOString().split('T')[0],
-        appointmentTime: `${appointmentHour < 10 ? '0' + appointmentHour : appointmentHour}:00`,
-        status: (index % 2 === 0) ? 'pending' : 'confirmed'
-      } as Appointment;
-    });
-    
-    setAppointments(mockAppointments);
-  }, []);
+    loadAppointments();
+  }, [token]);
   
   const filteredAppointments = appointments.filter(appointment => 
     appointment.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -60,21 +105,46 @@ export function AppointmentBooking({ onBack }: AppointmentBookingProps) {
     appointment.phone.includes(searchTerm)
   );
   
-  const handleMoveToQueue = (appointmentId: string) => {
-    // Add patient to queue using the addQueue function from mockPatients.ts
-    const result = addQueue(appointmentId, 'waiting');
-    
-    if (result) {
-      // Update appointment status
-      setAppointments(appointments.map(appt => 
-        appt.id === appointmentId ? {...appt, status: 'completed' as const} : appt
-      ));
+  const handleMoveToQueue = async (appointmentId: string) => {
+    try {
+      // Add patient to queue using the addQueue function (now async)
+      const result = await addQueue(appointmentId, 'waiting');
       
-      alert('Đã chuyển bệnh nhân vào phòng chờ!');
-    } else {
-      alert('Bệnh nhân đã có trong phòng chờ hoặc không thể thêm!');
+      if (result) {
+        // Update appointment status
+        setAppointments(appointments.map(appt => 
+          appt.id === appointmentId ? {...appt, status: 'completed' as const} : appt
+        ));
+        
+        // In a real implementation, update the appointment status in the API
+        if (token) {
+          try {
+            const appointmentToUpdate = appointments.find(a => a.id === appointmentId);
+            if (appointmentToUpdate) {
+              await apiService.updateAppointment(
+                appointmentId, 
+                { status: 'completed' }, 
+                token
+              );
+            }
+          } catch (apiError) {
+            console.error("Failed to update appointment status in API:", apiError);
+          }
+        }
+        
+        alert('Đã chuyển bệnh nhân vào phòng chờ!');
+      } else {
+        alert('Bệnh nhân đã có trong phòng chờ hoặc không thể thêm!');
+      }
+    } catch (error) {
+      console.error("Error adding patient to queue:", error);
+      alert('Đã xảy ra lỗi khi chuyển bệnh nhân vào phòng chờ!');
     }
   };
+  
+  if (loading) return <div className="p-8 text-center">Đang tải dữ liệu...</div>;
+  
+  if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
   
   return <div>
       <div className="flex items-center mb-4">

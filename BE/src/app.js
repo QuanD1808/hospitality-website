@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes');
 const prescriptionRoutes = require('./routes/prescriptionRoutes');
 const prescriptionDetailRoutes = require('./routes/prescriptionDetailRoutes');
 const medicineRoutes = require('./routes/medicineRoutes');
+const queueRoutes = require('./routes/queueRoutes');
 
 require('dotenv').config();
 
@@ -28,6 +29,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
 app.use('/api/prescriptiondetails', prescriptionDetailRoutes);
 app.use('/api/medicines', medicineRoutes);
+app.use('/api/queues', queueRoutes);
 
 // Error Handling Middleware (giữ nguyên)
 app.use((err, req, res, next) => {

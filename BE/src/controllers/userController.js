@@ -159,14 +159,31 @@ exports.getUserByCustomId = async (req, res) => {
 // @access  Protected
 exports.updateUser = async (req, res) => {
     console.log('--- updateUser controller function called for id:', req.params.id, 'with data:', req.body);
-    const { password, role, ...otherUpdates } = req.body; // Tách password và role ra
+    const { password, role, isReceptionist, ...otherUpdates } = req.body; // Thêm isReceptionist vào destructuring
     try {
         let user = await User.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Phân quyền cập nhật:
+        // Xử lý đặc biệt cho tiếp tân khi có tham số isReceptionist
+        if (req.user.role === 'RECEPTIONIST' && isReceptionist === true && user.role === 'PATIENT') {
+            console.log('Receptionist updating patient with special permission');
+            // Cho phép tiếp tân cập nhật thông tin bệnh nhân (không bao gồm role)
+            Object.keys(otherUpdates).forEach(key => {
+                // Tiếp tân không thể thay đổi userId và username
+                if (key !== 'userId' && key !== 'username') {
+                    user[key] = otherUpdates[key];
+                }
+            });
+
+            const updatedUser = await user.save();
+            const userResponse = updatedUser.toObject();
+            delete userResponse.password;
+            return res.status(200).json(userResponse);
+        }
+
+        // Phân quyền cập nhật thông thường:
         // User chỉ có thể tự cập nhật thông tin của mình (trừ vai trò)
         // ADMIN có thể cập nhật mọi thứ của người khác, bao gồm cả vai trò
         if (req.user.role !== 'ADMIN' && req.user._id.toString() !== user._id.toString()) {
@@ -183,7 +200,6 @@ exports.updateUser = async (req, res) => {
         if (role && req.user.role === 'ADMIN') { // Nếu admin gửi role, cập nhật nó
             user.role = role;
         }
-
 
         // Cập nhật các trường khác
         Object.keys(otherUpdates).forEach(key => {
@@ -224,7 +240,7 @@ exports.updateUser = async (req, res) => {
 
 // @desc    Xóa một User theo _id
 // @route   DELETE /api/users/:id
-// @access  Protected (ADMIN)
+// @access  Protected (ADMIN và RECEPTIONIST đối với PATIENT)
 exports.deleteUser = async (req, res) => {
     console.log('--- deleteUser controller function called for id:', req.params.id);
     try {
@@ -233,17 +249,145 @@ exports.deleteUser = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Trong trường hợp này, route đã được bảo vệ bởi authorizeRoles('ADMIN'),
-        // nên chỉ admin mới vào được đây. Nếu muốn thêm kiểm tra ở đây cũng được.
+        // Kiểm tra nếu là tiếp tân và có tham số isReceptionist=true và người dùng là PATIENT
+        if (req.user.role === 'RECEPTIONIST' && req.query.isReceptionist === 'true' && user.role === 'PATIENT') {
+            console.log('Receptionist deleting patient with special permission');
+            await User.findByIdAndDelete(req.params.id);
+            return res.status(200).json({ message: 'User deleted successfully by receptionist' });
+        }
 
-        await User.findByIdAndDelete(req.params.id); // Đã sửa lại, dùng findByIdAndDelete
+        // Nếu không phải trường hợp đặc biệt, phải là ADMIN
+        if (req.user.role !== 'ADMIN') {
+            return res.status(403).json({ message: 'Not authorized to delete users' });
+        }
 
+        await User.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (err) {
         if (err.name === 'CastError') {
              return res.status(400).json({ message: 'Invalid User ID format' });
         }
         console.error('Error in deleteUser:', err);
+        res.status(500).json({ message: 'Server Error', error: err.message });
+    }
+};
+
+// @desc    Kiểm tra tính hợp lệ của token
+// @route   GET /api/users/validate-token
+// @access  Protected
+exports.validateToken = async (req, res) => {
+    console.log('--- validateToken controller function called ---');
+    // Nếu middleware 'protect' đã xác thực token thành công, chỉ cần trả về thành công
+    res.status(200).json({ valid: true, user: req.user._id });
+};
+
+// @desc    Lấy tất cả bệnh nhân (Users với role='PATIENT')
+// @route   GET /api/users/patients
+// @access  Protected (ADMIN, DOCTOR, PHARMACIST, RECEPTIONIST)
+exports.getAllPatients = async (req, res) => {
+    console.log('--- getAllPatients controller function called ---');
+    try {
+        // Chỉ lấy người dùng có role là PATIENT
+        const patients = await User.find({ role: 'PATIENT' });
+        res.status(200).json(patients);
+    } catch (err) {
+        console.error('Error getting all patients:', err);
+        res.status(500).json({ message: 'Server Error', error: err.message });
+    }
+};
+
+// @desc    Tạo User mới (bởi nhân viên hoặc admin)
+// @route   POST /api/users
+// @access  Protected (ADMIN, DOCTOR, PHARMACIST, RECEPTIONIST)
+exports.createUser = async (req, res) => {
+    console.log('--- createUser controller function called ---');
+    console.log('Request body:', req.body);
+    
+    // Lấy thông tin của người đang tạo user (người đã xác thực)
+    const creatorRole = req.user.role;
+    console.log(`User with role ${creatorRole} is creating a new user`);
+    
+    const { userId, username, email, password, fullName, phone, role } = req.body;
+    
+    // Kiểm tra xác thực quyền: chỉ ADMIN mới có thể tạo nhân viên, các nhân viên khác chỉ có thể tạo PATIENT
+    if (role !== 'PATIENT' && creatorRole !== 'ADMIN') {
+        console.log(`${creatorRole} attempted to create a ${role} user - Permission denied`);
+        return res.status(403).json({ message: `You do not have permission to create users with role ${role}` });
+    }
+    
+    try {
+        // Kiểm tra xem user đã tồn tại chưa
+        let existingUser = await User.findOne({ $or: [
+            { userId: userId },
+            { username: username },
+            { email: email }
+        ]});
+        
+        if (existingUser) {
+            // Xác định trường bị trùng
+            let duplicateField = '';
+            if (existingUser.userId === userId) duplicateField = 'User ID';
+            else if (existingUser.username === username) duplicateField = 'Username';
+            else if (existingUser.email === email) duplicateField = 'Email';
+            
+            return res.status(400).json({ 
+                message: `Không thể tạo người dùng. ${duplicateField} đã tồn tại.`,
+                field: duplicateField.toLowerCase()
+            });
+        }
+        
+        // Tạo user ID tự động nếu không cung cấp
+        const autoUserId = userId || `${role.substring(0, 2).toUpperCase()}${Date.now()}`;
+        
+        // Tạo user mới
+        const newUser = new User({
+            userId: autoUserId,
+            username,
+            email,
+            password, // Sẽ được hash trong model
+            fullName,
+            phone,
+            role,
+        });
+        
+        // Lưu user vào database
+        const savedUser = await newUser.save();
+        
+        // Xóa password khỏi response
+        const userResponse = savedUser.toObject();
+        delete userResponse.password;
+        
+        // Log thành công
+        console.log(`Successfully created new ${role} with ID: ${autoUserId}`);
+        
+        // Trả về user mới tạo
+        res.status(201).json(userResponse);
+    } catch (err) {
+        console.error('Error creating user:', err);
+        
+        if (err.code === 11000) { // Lỗi trùng lặp unique key
+            const field = Object.keys(err.keyPattern)[0];
+            return res.status(400).json({ 
+                message: `${field.charAt(0).toUpperCase() + field.slice(1)} '${err.keyValue[field]}' already exists.`,
+                field: field
+            });
+        }
+        
+        res.status(500).json({ message: 'Server Error', error: err.message });
+    }
+};
+
+// @desc    Lấy tất cả bác sĩ (Users với role='DOCTOR')
+// @route   GET /api/users/doctors
+// @access  Protected (ADMIN, DOCTOR, PHARMACIST, RECEPTIONIST)
+exports.getAllDoctors = async (req, res) => {
+    console.log('--- getAllDoctors controller function called ---');
+    try {
+        // Chỉ lấy người dùng có role là DOCTOR
+        const doctors = await User.find({ role: 'DOCTOR' });
+        res.status(200).json(doctors);
+    } catch (err) {
+        console.error('Error getting all doctors:', err);
         res.status(500).json({ message: 'Server Error', error: err.message });
     }
 };

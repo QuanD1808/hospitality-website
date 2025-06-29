@@ -5,7 +5,8 @@ import {
   getUserById,
   getPrescriptionDetailsByPrescriptionId,
   getMedicineById,
-  searchUsers
+  searchUsers,
+  initializeData
 } from '../datats/mockPatients';
 
 // Define interfaces for the data we're working with
@@ -36,56 +37,72 @@ export function MedicationHistory({ onBack }: MedicationHistoryProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [medicationRecords, setMedicationRecords] = useState<MedicationRecordDisplay[]>([]);
   
-  // Load medication data from mock database
+  // Load medication data from API
   useEffect(() => {
-    // Get all prescriptions
-    const prescriptions = getAllPrescriptions();
-    
-    // Transform prescriptions to the format we need for display
-    const records: MedicationRecordDisplay[] = prescriptions.map(prescription => {
-      // Get patient info
-      const patient = getUserById(prescription.patientId);
-      
-      // Get doctor info
-      const doctor = getUserById(prescription.doctorId);
-      
-      // Get prescription details
-      const prescriptionDetails = getPrescriptionDetailsByPrescriptionId(prescription._id);
-      
-      // Transform prescription details to medication details
-      const medications: MedicationDetailDisplay[] = prescriptionDetails.map(detail => {
-        const medicine = getMedicineById(detail.medicineId);
+    const loadData = async () => {
+      try {
+        // Initialize data from API first
+        await initializeData();
         
-        // Parse dosage to extract frequency and duration
-        // In a real app, these would be separate fields
-        const dosageInfo = detail.dosage.split(' ');
-        const frequency = dosageInfo.slice(0, dosageInfo.length > 3 ? 3 : dosageInfo.length).join(' ');
-        const duration = `${detail.quantity / parseInt(dosageInfo[0])} ngày`;
+        // Get all prescriptions
+        const prescriptions = await getAllPrescriptions();
         
-        return {
-          name: medicine ? medicine.name : 'Unknown Medicine',
-          dosage: medicine ? `${medicine.name.split(' ')[1]}` : 'Unknown Dosage',
-          frequency: frequency,
-          duration: duration
-        };
-      });
-      
-      // Format date for display
-      const dateObj = new Date(prescription.date);
-      const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
-      
-      return {
-        id: prescription._id,
-        name: patient ? patient.fullName : 'Unknown Patient',
-        patientId: patient ? patient.userId : 'Unknown',
-        date: formattedDate,
-        doctor: doctor ? doctor.fullName : 'Unknown Doctor',
-        diagnosis: prescription.diagnosis,
-        medications: medications
-      };
-    });
+        // Transform prescriptions to the format we need for display
+        const records: MedicationRecordDisplay[] = [];
+        
+        for (const prescription of prescriptions) {
+          // Get patient info
+          const patient = await getUserById(prescription.patientId);
+          
+          // Get doctor info
+          const doctor = await getUserById(prescription.doctorId);
+          
+          // Get prescription details
+          const prescriptionDetails = await getPrescriptionDetailsByPrescriptionId(prescription._id);
+          
+          // Transform prescription details to medication details
+          const medications: MedicationDetailDisplay[] = [];
+          
+          for (const detail of prescriptionDetails) {
+            const medicine = await getMedicineById(detail.medicineId);
+            
+            // Parse dosage to extract frequency and duration
+            // In a real app, these would be separate fields
+            const dosageInfo = detail.dosage.split(' ');
+            const frequency = dosageInfo.slice(0, dosageInfo.length > 3 ? 3 : dosageInfo.length).join(' ');
+            const duration = `${detail.quantity / parseInt(dosageInfo[0])} ngày`;
+            
+            medications.push({
+              name: medicine ? medicine.name : 'Unknown Medicine',
+              dosage: medicine ? `${medicine.name.split(' ')[1]}` : 'Unknown Dosage',
+              frequency: frequency,
+              duration: duration
+            });
+          }
+          
+          // Format date for display
+          const dateObj = new Date(prescription.date);
+          const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+          
+          records.push({
+            id: prescription._id,
+            name: patient ? patient.fullName : 'Unknown Patient',
+            patientId: patient ? patient.userId : 'Unknown',
+            date: formattedDate,
+            doctor: doctor ? doctor.fullName : 'Unknown Doctor',
+            diagnosis: prescription.diagnosis,
+            medications: medications
+          });
+        }
+        
+        setMedicationRecords(records);
+      } catch (error) {
+        console.error("Error loading medication data:", error);
+        setMedicationRecords([]);
+      }
+    };
     
-    setMedicationRecords(records);
+    loadData();
   }, []);
   
   // Filter medications based on search term and date range

@@ -23,12 +23,12 @@ const PatientList = ({ patients, onPatientSelect })=>{
                     children: "Danh Sách Chờ Phát Thuốc"
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                    lineNumber: 16,
+                    lineNumber: 18,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                lineNumber: 15,
+                lineNumber: 17,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -47,12 +47,12 @@ const PatientList = ({ patients, onPatientSelect })=>{
                                                 className: "h-5 w-5 text-blue-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                lineNumber: 25,
+                                                lineNumber: 27,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                            lineNumber: 24,
+                                            lineNumber: 26,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -66,7 +66,7 @@ const PatientList = ({ patients, onPatientSelect })=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                    lineNumber: 28,
+                                                    lineNumber: 30,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -74,19 +74,19 @@ const PatientList = ({ patients, onPatientSelect })=>{
                                                     children: patient.phone
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                    lineNumber: 31,
+                                                    lineNumber: 33,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                            lineNumber: 27,
+                                            lineNumber: 29,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                    lineNumber: 23,
+                                    lineNumber: 25,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -95,36 +95,36 @@ const PatientList = ({ patients, onPatientSelect })=>{
                                     children: "Phát thuốc"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                    lineNumber: 36,
+                                    lineNumber: 38,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 22,
+                            lineNumber: 24,
                             columnNumber: 15
                         }, this)
                     }, patient.id, false, {
                         fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                        lineNumber: 21,
+                        lineNumber: 23,
                         columnNumber: 56
                     }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "p-4 text-center text-gray-500",
                     children: "Không có bệnh nhân nào trong danh sách chờ."
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                    lineNumber: 40,
+                    lineNumber: 42,
                     columnNumber: 23
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                lineNumber: 20,
+                lineNumber: 22,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-        lineNumber: 14,
+        lineNumber: 16,
         columnNumber: 10
     }, this);
 };
@@ -1804,15 +1804,18 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 
 var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
-// Mock database dựa trên cấu trúc MongoDB
-// Khai báo các interface
+// Dữ liệu được fetched từ API thay vì dùng static data
 __turbopack_context__.s({
-    "addPatient": (()=>addPatient),
     "addQueue": (()=>addQueue),
-    "deletePatient": (()=>deletePatient),
     "deleteQueue": (()=>deleteQueue),
+    "fetchInvoices": (()=>fetchInvoices),
+    "fetchMedicines": (()=>fetchMedicines),
+    "fetchPrescriptionDetails": (()=>fetchPrescriptionDetails),
+    "fetchPrescriptions": (()=>fetchPrescriptions),
+    "fetchQueues": (()=>fetchQueues),
+    "fetchUsers": (()=>fetchUsers),
+    "fetchUsersAlternative": (()=>fetchUsersAlternative),
     "generateMongoId": (()=>generateMongoId),
-    "generateNextUserId": (()=>generateNextUserId),
     "getAllDoctors": (()=>getAllDoctors),
     "getAllInvoices": (()=>getAllInvoices),
     "getAllMedicines": (()=>getAllMedicines),
@@ -1822,6 +1825,7 @@ __turbopack_context__.s({
     "getAllQueues": (()=>getAllQueues),
     "getAllQueuesWithPatientInfo": (()=>getAllQueuesWithPatientInfo),
     "getAllUsers": (()=>getAllUsers),
+    "getAuthToken": (()=>getAuthToken),
     "getInvoiceById": (()=>getInvoiceById),
     "getInvoiceByPrescriptionId": (()=>getInvoiceByPrescriptionId),
     "getInvoicesByPatientId": (()=>getInvoicesByPatientId),
@@ -1839,6 +1843,7 @@ __turbopack_context__.s({
     "getUserById": (()=>getUserById),
     "getUsersByRole": (()=>getUsersByRole),
     "getWaitingPatients": (()=>getWaitingPatients),
+    "initializeData": (()=>initializeData),
     "mockInvoices": (()=>mockInvoices),
     "mockMedicines": (()=>mockMedicines),
     "mockPatients": (()=>mockPatients),
@@ -1846,888 +1851,363 @@ __turbopack_context__.s({
     "mockPrescriptions": (()=>mockPrescriptions),
     "mockQueues": (()=>mockQueues),
     "mockUsers": (()=>mockUsers),
+    "reloadData": (()=>reloadData),
     "searchMedicines": (()=>searchMedicines),
     "searchUsers": (()=>searchUsers),
-    "updatePatient": (()=>updatePatient),
+    "sendQueueToDoctor": (()=>sendQueueToDoctor),
+    "setAuthToken": (()=>setAuthToken),
     "updateQueueStatus": (()=>updateQueueStatus)
 });
-const mockUsers = [
-    {
-        _id: '685face13fc4c04e1bd96c06',
-        userId: 'u1',
-        username: 'nguyen.an',
-        email: 'an.nguyen@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Nguyễn Văn An',
-        phone: '0901234567',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T08:50:41.269+00:00',
-        updatedAt: '2025-06-28T08:50:41.269+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c07',
-        userId: 'u2',
-        username: 'tran.binh',
-        email: 'binh.tran@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Trần Văn Bình',
-        phone: '0912345678',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T09:15:22.123+00:00',
-        updatedAt: '2025-06-28T09:15:22.123+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c08',
-        userId: 'd1',
-        username: 'dr.hoa',
-        email: 'hoa.doctor@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Bác sĩ Trần Thị Hoa',
-        phone: '0923456789',
-        role: 'DOCTOR',
-        createdAt: '2025-06-28T10:05:17.456+00:00',
-        updatedAt: '2025-06-28T10:05:17.456+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c09',
-        userId: 'u3',
-        username: 'le.chi',
-        email: 'chi.le@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Lê Thị Chi',
-        phone: '0934567890',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T11:30:45.789+00:00',
-        updatedAt: '2025-06-28T11:30:45.789+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0a',
-        userId: 'p1',
-        username: 'pham.dung',
-        email: 'dung.pham@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Phạm Văn Dũng',
-        phone: '0945678901',
-        role: 'PHARMACIST',
-        createdAt: '2025-06-28T12:45:33.012+00:00',
-        updatedAt: '2025-06-28T12:45:33.012+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0b',
-        userId: 'r1',
-        username: 'receptionist.minh',
-        email: 'minh.receptionist@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Nguyễn Thị Minh',
-        phone: '0956789012',
-        role: 'RECEPTIONIST',
-        createdAt: '2025-06-28T14:20:10.345+00:00',
-        updatedAt: '2025-06-28T14:20:10.345+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0c',
-        userId: 'a1',
-        username: 'admin.tuan',
-        email: 'tuan.admin@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Lê Minh Tuấn',
-        phone: '0967890123',
-        role: 'ADMIN',
-        createdAt: '2025-06-28T15:55:27.678+00:00',
-        updatedAt: '2025-06-28T15:55:27.678+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0d',
-        userId: 'u4',
-        username: 'hoang.em',
-        email: 'em.hoang@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Hoàng Thị Em',
-        phone: '0978901234',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T16:30:50.901+00:00',
-        updatedAt: '2025-06-28T16:30:50.901+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0e',
-        userId: 'u5',
-        username: 'nguyen.khang',
-        email: 'khang.nguyen@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Nguyễn Minh Khang',
-        phone: '0989012345',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T17:15:42.234+00:00',
-        updatedAt: '2025-06-28T17:15:42.234+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0f',
-        userId: 'd2',
-        username: 'dr.trang',
-        email: 'trang.doctor@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Bác sĩ Lê Thị Trang',
-        phone: '0990123456',
-        role: 'DOCTOR',
-        createdAt: '2025-06-28T18:40:15.567+00:00',
-        updatedAt: '2025-06-28T18:40:15.567+00:00',
-        __v: 0
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/axios.customize.service.ts [app-client] (ecmascript)");
+;
+let mockUsers = [];
+let mockQueues = [];
+let mockMedicines = [];
+let mockPrescriptions = [];
+let mockPrescriptionDetails = [];
+let mockInvoices = [];
+// Biến toàn cục để lưu token xác thực
+let authToken = null;
+const setAuthToken = (token)=>{
+    authToken = token;
+    if ("TURBOPACK compile-time truthy", 1) {
+        localStorage.setItem('authToken', token); // Lưu token vào localStorage để giữ qua refresh
     }
-];
-const mockQueues = [
-    {
-        _id: '685f10baa8040f24f1a9014d',
-        patient: '685face13fc4c04e1bd96c06',
-        status: 'waiting',
-        createdAt: '2025-06-27T21:44:26.099+00:00',
-        updatedAt: '2025-06-27T21:44:26.102+00:00',
-        __v: 0
-    },
-    {
-        _id: '685f10baa8040f24f1a9014e',
-        patient: '685face13fc4c04e1bd96c07',
-        status: 'in_progress',
-        createdAt: '2025-06-27T22:30:15.456+00:00',
-        updatedAt: '2025-06-27T22:45:20.789+00:00',
-        __v: 0
-    },
-    {
-        _id: '685f10baa8040f24f1a9014f',
-        patient: '685face13fc4c04e1bd96c09',
-        status: 'completed',
-        createdAt: '2025-06-27T20:15:33.222+00:00',
-        updatedAt: '2025-06-27T21:05:42.111+00:00',
-        __v: 0
-    },
-    {
-        _id: '685f10baa8040f24f1a90150',
-        patient: '685face13fc4c04e1bd96c0d',
-        status: 'waiting',
-        createdAt: '2025-06-28T08:22:17.345+00:00',
-        updatedAt: '2025-06-28T08:22:17.345+00:00',
-        __v: 0
-    },
-    {
-        _id: '685f10baa8040f24f1a90151',
-        patient: '685face13fc4c04e1bd96c0e',
-        status: 'canceled',
-        createdAt: '2025-06-28T07:45:10.123+00:00',
-        updatedAt: '2025-06-28T08:15:23.456+00:00',
-        __v: 0
+};
+const getAuthToken = ()=>{
+    // Nếu không có token trong memory, thử lấy từ localStorage
+    if (!authToken && "object" !== 'undefined') {
+        authToken = localStorage.getItem('authToken');
     }
-];
-const mockMedicines = [
-    {
-        _id: '685face13fc4c04e1bd96c10',
-        customMedicineId: 'm1',
-        name: 'Paracetamol 500mg',
-        totalPills: 980,
-        price: 0.5,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:41.969+00:00',
-        updatedAt: '2025-06-28T10:57:49.516+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96c11',
-        customMedicineId: 'm2',
-        name: 'Amoxicillin 500mg',
-        totalPills: 850,
-        price: 1.2,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.001+00:00',
-        updatedAt: '2025-06-28T08:50:42.001+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96c12',
-        customMedicineId: 'm3',
-        name: 'Ibuprofen 200mg',
-        totalPills: 1200,
-        price: 0.7,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.010+00:00',
-        updatedAt: '2025-06-28T08:50:42.010+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96c1a',
-        customMedicineId: 'm4',
-        name: 'Cetirizine 10mg',
-        totalPills: 750,
-        price: 0.8,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.022+00:00',
-        updatedAt: '2025-06-28T08:50:42.022+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96c1b',
-        customMedicineId: 'm5',
-        name: 'Omeprazole 20mg',
-        totalPills: 630,
-        price: 1.5,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d20',
-        customMedicineId: 'm6',
-        name: 'Loratadine 10mg',
-        totalPills: 520,
-        price: 0.9,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d21',
-        customMedicineId: 'm7',
-        name: 'Amlodipine 5mg',
-        totalPills: 480,
-        price: 1.8,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d22',
-        customMedicineId: 'm8',
-        name: 'Atorvastatin 20mg',
-        totalPills: 360,
-        price: 2.5,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d23',
-        customMedicineId: 'm9',
-        name: 'Metformin 500mg',
-        totalPills: 720,
-        price: 0.6,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d24',
-        customMedicineId: 'm10',
-        name: 'Clopidogrel 75mg',
-        totalPills: 280,
-        price: 3.2,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d25',
-        customMedicineId: 'm11',
-        name: 'Losartan 50mg',
-        totalPills: 420,
-        price: 2.1,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d26',
-        customMedicineId: 'm12',
-        name: 'Simvastatin 40mg',
-        totalPills: 310,
-        price: 1.7,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d27',
-        customMedicineId: 'm13',
-        name: 'Aspirin 100mg',
-        totalPills: 940,
-        price: 0.3,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d28',
-        customMedicineId: 'm14',
-        name: 'Metoprolol 25mg',
-        totalPills: 390,
-        price: 1.9,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d29',
-        customMedicineId: 'm15',
-        name: 'Furosemide 40mg',
-        totalPills: 280,
-        price: 1.4,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d30',
-        customMedicineId: 'm16',
-        name: 'Pantoprazole 40mg',
-        totalPills: 450,
-        price: 2.0,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d31',
-        customMedicineId: 'm17',
-        name: 'Fluoxetine 20mg',
-        totalPills: 320,
-        price: 2.3,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d32',
-        customMedicineId: 'm18',
-        name: 'Sertraline 50mg',
-        totalPills: 290,
-        price: 2.4,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d33',
-        customMedicineId: 'm19',
-        name: 'Ranitidine 150mg',
-        totalPills: 580,
-        price: 0.8,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d34',
-        customMedicineId: 'm20',
-        name: 'Tramadol 50mg',
-        totalPills: 240,
-        price: 2.8,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d35',
-        customMedicineId: 'm21',
-        name: 'Diazepam 5mg',
-        totalPills: 180,
-        price: 3.5,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d36',
-        customMedicineId: 'm22',
-        name: 'Gabapentin 300mg',
-        totalPills: 340,
-        price: 2.2,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d37',
-        customMedicineId: 'm23',
-        name: 'Pregabalin 75mg',
-        totalPills: 260,
-        price: 3.1,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d38',
-        customMedicineId: 'm24',
-        name: 'Lisinopril 10mg',
-        totalPills: 410,
-        price: 1.6,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d39',
-        customMedicineId: 'm25',
-        name: 'Vitamin D3 1000IU',
-        totalPills: 790,
-        price: 0.4,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d40',
-        customMedicineId: 'm26',
-        name: 'Folic Acid 5mg',
-        totalPills: 870,
-        price: 0.3,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d41',
-        customMedicineId: 'm27',
-        name: 'Calcium Carbonate 500mg',
-        totalPills: 680,
-        price: 0.5,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d42',
-        customMedicineId: 'm28',
-        name: 'Azithromycin 500mg',
-        totalPills: 220,
-        price: 3.8,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d43',
-        customMedicineId: 'm29',
-        name: 'Ciprofloxacin 500mg',
-        totalPills: 250,
-        price: 2.9,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96d44',
-        customMedicineId: 'm30',
-        name: 'Montelukast 10mg',
-        totalPills: 310,
-        price: 2.7,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
+    return authToken;
+};
+// Helper function để thực hiện API call có xác thực
+const authenticatedGet = async (endpoint)=>{
+    try {
+        // Lấy token từ localStorage hoặc cookies
+        let token = getAuthToken();
+        // Thử lấy token từ cookies nếu không tìm thấy trong localStorage
+        if (!token && typeof document !== 'undefined') {
+            // Check browser cookies if localStorage doesn't have the token
+            const cookies = document.cookie.split(';');
+            const tokenCookie = cookies.find((c)=>c.trim().startsWith('token='));
+            if (tokenCookie) {
+                token = tokenCookie.split('=')[1];
+                console.log("Found token in cookies, using it for API calls");
+                // Lưu lại vào authToken để sử dụng cho các lần sau
+                setAuthToken(token);
+            }
+        }
+        if (!token) {
+            console.warn('No authentication token available for API call to:', endpoint);
+            console.warn('Please login first or check token storage.');
+            return null;
+        }
+        console.log(`Making authenticated request to ${endpoint}`);
+        console.log(`Using token (first 10 chars): ${token.substring(0, 10)}...`);
+        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(`Successful response from ${endpoint}:`, response.status);
+        if (Array.isArray(response.data)) {
+            console.log(`Got ${response.data.length} items from ${endpoint}`);
+        } else {
+            console.log(`Got data from ${endpoint}:`, response.data ? 'Object returned' : 'Empty response');
+        }
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching from ${endpoint}:`, error.message);
+        // Log more detailed error info
+        if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Response data:', error.response.data);
+            if (error.response.status === 403) {
+                console.error(`Access forbidden to ${endpoint} - check user permissions`);
+            } else if (error.response.status === 401) {
+                console.error(`Unauthorized access to ${endpoint} - token may be expired`);
+                // Thử xóa token để người dùng phải đăng nhập lại
+                if ("TURBOPACK compile-time truthy", 1) {
+                    localStorage.removeItem('authToken');
+                    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                    authToken = null;
+                }
+            }
+        } else if (error.request) {
+            console.error('No response received from request. Server may be down.');
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        return null;
     }
-];
-const mockPrescriptions = [
-    {
-        _id: '685face23fc4c04e1bd96c13',
-        customPrescriptionId: 'pr1',
-        patientId: '685face13fc4c04e1bd96c06',
-        doctorId: '685face13fc4c04e1bd96c08',
-        diagnosis: 'Common Cold',
-        date: '2024-06-01T10:00:00.000+00:00',
-        status: 'PENDING_DISPENSE',
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.030+00:00',
-        updatedAt: '2025-06-28T08:50:42.030+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c14',
-        customPrescriptionId: 'pr2',
-        patientId: '685face13fc4c04e1bd96c07',
-        doctorId: '685face13fc4c04e1bd96c0f',
-        diagnosis: 'Allergic Rhinitis',
-        date: '2024-06-02T11:30:00.000+00:00',
-        status: 'DISPENSED',
-        __v: 0,
-        createdAt: '2025-06-28T09:30:10.123+00:00',
-        updatedAt: '2025-06-28T10:15:22.456+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c15',
-        customPrescriptionId: 'pr3',
-        patientId: '685face13fc4c04e1bd96c09',
-        doctorId: '685face13fc4c04e1bd96c08',
-        diagnosis: 'Gastritis',
-        date: '2024-06-03T14:45:00.000+00:00',
-        status: 'PENDING_DISPENSE',
-        __v: 0,
-        createdAt: '2025-06-28T14:50:33.789+00:00',
-        updatedAt: '2025-06-28T14:50:33.789+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c1c',
-        customPrescriptionId: 'pr4',
-        patientId: '685face13fc4c04e1bd96c0d',
-        doctorId: '685face13fc4c04e1bd96c0f',
-        diagnosis: 'Migraine',
-        date: '2024-06-04T09:15:00.000+00:00',
-        status: 'CANCELED',
-        __v: 0,
-        createdAt: '2025-06-28T09:20:45.111+00:00',
-        updatedAt: '2025-06-28T11:05:17.222+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c1d',
-        customPrescriptionId: 'pr5',
-        patientId: '685face13fc4c04e1bd96c0e',
-        doctorId: '685face13fc4c04e1bd96c08',
-        diagnosis: 'Hypertension',
-        date: '2024-06-05T16:00:00.000+00:00',
-        status: 'DISPENSED',
-        __v: 0,
-        createdAt: '2025-06-28T16:05:22.333+00:00',
-        updatedAt: '2025-06-28T17:30:14.444+00:00'
+};
+const fetchUsers = async ()=>{
+    console.log('Fetching users from API...');
+    // Đầu tiên thử lấy thông tin user hiện tại để biết role
+    try {
+        const currentUser = await authenticatedGet('/users/me');
+        if (currentUser) {
+            console.log(`Current user role: ${currentUser.role}`);
+            if (currentUser.role === 'ADMIN') {
+                // Nếu là ADMIN, có quyền lấy tất cả users
+                console.log('User is ADMIN, trying to fetch all users');
+                const data = await authenticatedGet('/users');
+                if (data && Array.isArray(data)) {
+                    console.log(`Successfully fetched ${data.length} users from API`);
+                    mockUsers = data;
+                    return data;
+                }
+            }
+            // Dù là role nào, thử dùng endpoint mới để lấy danh sách bệnh nhân
+            if ([
+                'ADMIN',
+                'DOCTOR',
+                'PHARMACIST',
+                'RECEPTIONIST'
+            ].includes(currentUser.role)) {
+                console.log(`Trying to fetch patients using /users/patients endpoint for ${currentUser.role}`);
+                const patients = await authenticatedGet('/users/patients');
+                if (patients && Array.isArray(patients)) {
+                    console.log(`Successfully fetched ${patients.length} patients from API`);
+                    // Kết hợp với dữ liệu hiện có (nếu có)
+                    // Giữ lại các user không phải bệnh nhân từ danh sách hiện có (nếu có)
+                    const nonPatients = mockUsers.filter((user)=>user.role !== 'PATIENT');
+                    mockUsers = [
+                        ...nonPatients,
+                        ...patients
+                    ];
+                    console.log(`Combined user data: ${mockUsers.length} users (${nonPatients.length} non-patients + ${patients.length} patients)`);
+                    return mockUsers;
+                }
+            }
+            // Nếu không thể lấy dữ liệu, giữ nguyên dữ liệu mockUsers hiện tại
+            console.log(`Using existing mock data with ${mockUsers.length} users`);
+            return [
+                ...mockUsers
+            ];
+        } else {
+            console.error('Could not fetch current user info, authentication may be invalid');
+            return mockUsers;
+        }
+    } catch (error) {
+        console.error('Error in fetchUsers:', error);
+        return mockUsers;
     }
-];
-const mockPrescriptionDetails = [
-    {
-        _id: '685face23fc4c04e1bd96c16',
-        customPrescriptionDetailId: 'pd1',
-        prescriptionId: '685face23fc4c04e1bd96c13',
-        medicineId: '685face13fc4c04e1bd96c10',
-        quantity: 10,
-        dosage: '1 tablet every 6 hours',
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.083+00:00',
-        updatedAt: '2025-06-28T08:50:42.083+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c17',
-        customPrescriptionDetailId: 'pd2',
-        prescriptionId: '685face23fc4c04e1bd96c13',
-        medicineId: '685face13fc4c04e1bd96c1a',
-        quantity: 5,
-        dosage: '1 tablet daily before sleep',
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.085+00:00',
-        updatedAt: '2025-06-28T08:50:42.085+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c18',
-        customPrescriptionDetailId: 'pd3',
-        prescriptionId: '685face23fc4c04e1bd96c14',
-        medicineId: '685face13fc4c04e1bd96c1a',
-        quantity: 15,
-        dosage: '1 tablet daily in the morning',
-        __v: 0,
-        createdAt: '2025-06-28T09:30:10.150+00:00',
-        updatedAt: '2025-06-28T09:30:10.150+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c19',
-        customPrescriptionDetailId: 'pd4',
-        prescriptionId: '685face23fc4c04e1bd96c15',
-        medicineId: '685face13fc4c04e1bd96c1b',
-        quantity: 14,
-        dosage: '1 tablet daily before breakfast',
-        __v: 0,
-        createdAt: '2025-06-28T14:50:33.800+00:00',
-        updatedAt: '2025-06-28T14:50:33.800+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c1e',
-        customPrescriptionDetailId: 'pd5',
-        prescriptionId: '685face23fc4c04e1bd96c1c',
-        medicineId: '685face13fc4c04e1bd96c12',
-        quantity: 20,
-        dosage: '2 tablets every 8 hours when in pain',
-        __v: 0,
-        createdAt: '2025-06-28T09:20:45.130+00:00',
-        updatedAt: '2025-06-28T09:20:45.130+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c1f',
-        customPrescriptionDetailId: 'pd6',
-        prescriptionId: '685face23fc4c04e1bd96c1d',
-        medicineId: '685face13fc4c04e1bd96c11',
-        quantity: 30,
-        dosage: '1 tablet three times daily after meals',
-        __v: 0,
-        createdAt: '2025-06-28T16:05:22.350+00:00',
-        updatedAt: '2025-06-28T16:05:22.350+00:00'
+};
+const fetchQueues = async ()=>{
+    const data = await authenticatedGet('/queues');
+    if (data && Array.isArray(data)) {
+        mockQueues = data;
+        return data;
     }
-];
-const mockInvoices = [
-    {
-        _id: '685f6f336bd59d7487de3ce8',
-        prescriptionId: '685face23fc4c04e1bd96c14',
-        patientId: '685face13fc4c04e1bd96c07',
-        totalAmount: 12.0,
-        status: 'PAID',
-        __v: 0,
-        createdAt: '2025-06-28T10:15:22.456+00:00',
-        updatedAt: '2025-06-28T10:15:22.456+00:00'
-    },
-    {
-        _id: '685f6f336bd59d7487de3ce9',
-        prescriptionId: '685face23fc4c04e1bd96c1d',
-        patientId: '685face13fc4c04e1bd96c0e',
-        totalAmount: 36.0,
-        status: 'PAID',
-        __v: 0,
-        createdAt: '2025-06-28T17:30:14.444+00:00',
-        updatedAt: '2025-06-28T17:30:14.444+00:00'
-    },
-    {
-        _id: '685f6f336bd59d7487de3cea',
-        prescriptionId: '685face23fc4c04e1bd96c13',
-        patientId: '685face13fc4c04e1bd96c06',
-        totalAmount: 9.0,
-        status: 'UNPAID',
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.030+00:00',
-        updatedAt: '2025-06-28T08:50:42.030+00:00'
+    return [];
+};
+const fetchMedicines = async ()=>{
+    const data = await authenticatedGet('/medicines');
+    if (data && Array.isArray(data)) {
+        mockMedicines = data;
+        return data;
     }
-];
-const getAllUsers = ()=>[
+    return [];
+};
+const fetchPrescriptions = async ()=>{
+    const data = await authenticatedGet('/prescriptions');
+    if (data && Array.isArray(data)) {
+        mockPrescriptions = data;
+        return data;
+    }
+    return [];
+};
+const fetchPrescriptionDetails = async ()=>{
+    const data = await authenticatedGet('/prescription-details');
+    if (data && Array.isArray(data)) {
+        mockPrescriptionDetails = data;
+        return data;
+    }
+    return [];
+};
+const fetchInvoices = async ()=>{
+    const data = await authenticatedGet('/invoices');
+    if (data && Array.isArray(data)) {
+        mockInvoices = data;
+        return data;
+    }
+    return [];
+};
+const initializeData = async ()=>{
+    console.log('Initializing data from API or mock sources...');
+    try {
+        // Check if we have a valid token first
+        const token = getAuthToken();
+        if (!token) {
+            console.warn('No authentication token found, will use existing mock data');
+            return false;
+        }
+        // Try to validate token
+        try {
+            console.log('Validating token before fetching data...');
+            const currentUser = await authenticatedGet('/users/me');
+            if (!currentUser) {
+                console.error('Token validation failed, cannot fetch data');
+                return false;
+            }
+            console.log(`Token valid, logged in as ${currentUser.username} (${currentUser.role})`);
+        } catch (error) {
+            console.error('Error validating token:', error);
+            return false;
+        }
+        // Initialize with separate try/catch for each resource type
+        // This allows some data to load even if others fail
+        const results = {
+            users: false,
+            queues: false,
+            medicines: false,
+            prescriptions: false,
+            prescriptionDetails: false,
+            invoices: false
+        };
+        try {
+            await fetchUsers();
+            results.users = true;
+            console.log(`Users loaded: ${mockUsers.length} items`);
+        } catch (error) {
+            console.error('Error loading users:', error);
+        }
+        try {
+            await fetchQueues();
+            results.queues = true;
+            console.log(`Queues loaded: ${mockQueues.length} items`);
+        } catch (error) {
+            console.error('Error loading queues:', error);
+        }
+        try {
+            await fetchMedicines();
+            results.medicines = true;
+            console.log(`Medicines loaded: ${mockMedicines.length} items`);
+        } catch (error) {
+            console.error('Error loading medicines:', error);
+        }
+        try {
+            await fetchPrescriptions();
+            results.prescriptions = true;
+            console.log(`Prescriptions loaded: ${mockPrescriptions.length} items`);
+        } catch (error) {
+            console.error('Error loading prescriptions:', error);
+        }
+        try {
+            await fetchPrescriptionDetails();
+            results.prescriptionDetails = true;
+            console.log(`Prescription details loaded: ${mockPrescriptionDetails.length} items`);
+        } catch (error) {
+            console.error('Error loading prescription details:', error);
+        }
+        try {
+            await fetchInvoices();
+            results.invoices = true;
+            console.log(`Invoices loaded: ${mockInvoices.length} items`);
+        } catch (error) {
+            console.error('Error loading invoices:', error);
+        }
+        const successCount = Object.values(results).filter(Boolean).length;
+        console.log(`Data initialization complete: ${successCount}/6 resource types loaded successfully`);
+        return successCount > 0;
+    } catch (error) {
+        console.error('Error in data initialization:', error);
+        return false;
+    }
+};
+const getAllUsers = async ()=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
+    return [
         ...mockUsers
     ];
-const getUserById = (id)=>{
+};
+const getUserById = async (id)=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
     return mockUsers.find((user)=>user._id === id);
 };
-const getUsersByRole = (role)=>{
+const getUsersByRole = async (role)=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
     return mockUsers.filter((user)=>user.role === role);
 };
-const searchUsers = (searchTerm)=>{
+const searchUsers = async (searchTerm)=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
     const term = searchTerm.toLowerCase();
     return mockUsers.filter((user)=>user.fullName.toLowerCase().includes(term) || user.username.toLowerCase().includes(term) || user.email.toLowerCase().includes(term) || user.phone.includes(term) || user.userId.includes(term));
 };
-const getAllQueues = ()=>[
+const getAllQueues = async ()=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
+    return [
         ...mockQueues
     ];
-const getQueuesByStatus = (status)=>{
+};
+const getQueuesByStatus = async (status)=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
     return mockQueues.filter((queue)=>queue.status === status);
 };
-const getQueueByPatientId = (patientId)=>{
+const getQueueByPatientId = async (patientId)=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
     return mockQueues.find((queue)=>queue.patient === patientId);
 };
-const getAllMedicines = ()=>[
-        ...mockMedicines
-    ];
-const getMedicineById = (id)=>{
-    return mockMedicines.find((medicine)=>medicine._id === id);
-};
-const searchMedicines = (searchTerm)=>{
-    const term = searchTerm.toLowerCase();
-    return mockMedicines.filter((medicine)=>medicine.name.toLowerCase().includes(term) || medicine.customMedicineId.includes(term));
-};
-const getAllPrescriptions = ()=>[
-        ...mockPrescriptions
-    ];
-const getPrescriptionById = (id)=>{
-    return mockPrescriptions.find((prescription)=>prescription._id === id);
-};
-const getPrescriptionsByPatientId = (patientId)=>{
-    return mockPrescriptions.filter((prescription)=>prescription.patientId === patientId);
-};
-const getPrescriptionsByDoctorId = (doctorId)=>{
-    return mockPrescriptions.filter((prescription)=>prescription.doctorId === doctorId);
-};
-const getPrescriptionsByStatus = (status)=>{
-    return mockPrescriptions.filter((prescription)=>prescription.status === status);
-};
-const getAllPrescriptionDetails = ()=>[
-        ...mockPrescriptionDetails
-    ];
-const getPrescriptionDetailsByPrescriptionId = (prescriptionId)=>{
-    return mockPrescriptionDetails.filter((detail)=>detail.prescriptionId === prescriptionId);
-};
-const getMedicinesForPrescription = (prescriptionId)=>{
-    const details = getPrescriptionDetailsByPrescriptionId(prescriptionId);
-    return details.map((detail)=>{
-        const medicine = getMedicineById(detail.medicineId);
-        return {
-            ...detail,
-            medicine: medicine || null
-        };
-    });
-};
-const getAllInvoices = ()=>[
-        ...mockInvoices
-    ];
-const getInvoiceById = (id)=>{
-    return mockInvoices.find((invoice)=>invoice._id === id);
-};
-const getInvoiceByPrescriptionId = (prescriptionId)=>{
-    return mockInvoices.find((invoice)=>invoice.prescriptionId === prescriptionId);
-};
-const getInvoicesByPatientId = (patientId)=>{
-    return mockInvoices.filter((invoice)=>invoice.patientId === patientId);
-};
-const getInvoicesByStatus = (status)=>{
-    return mockInvoices.filter((invoice)=>invoice.status === status);
-};
-const getPatientFullPrescriptionDetails = (patientId)=>{
-    // Lấy tất cả đơn thuốc của bệnh nhân
-    const prescriptions = getPrescriptionsByPatientId(patientId);
-    return prescriptions.map((prescription)=>{
-        // Lấy thông tin bác sĩ
-        const doctor = getUserById(prescription.doctorId);
-        // Lấy chi tiết đơn thuốc và thông tin thuốc
-        const details = getPrescriptionDetailsByPrescriptionId(prescription._id);
-        const medicineDetails = details.map((detail)=>{
-            const medicine = getMedicineById(detail.medicineId);
-            return {
-                ...detail,
-                medicineName: medicine ? medicine.name : 'Unknown',
-                medicinePrice: medicine ? medicine.price : 0
-            };
-        });
-        // Lấy hóa đơn nếu có
-        const invoice = getInvoiceByPrescriptionId(prescription._id);
-        return {
-            ...prescription,
-            doctorName: doctor ? doctor.fullName : 'Unknown',
-            details: medicineDetails,
-            invoice: invoice || null
-        };
-    });
-};
-const getAllPatients = ()=>{
-    return mockUsers.filter((user)=>user.role === 'PATIENT');
-};
-const getAllDoctors = ()=>{
-    return mockUsers.filter((user)=>user.role === 'DOCTOR');
-};
-const mockPatients = getAllPatients();
-const generateMongoId = ()=>{
-    // MongoDB ObjectId format: 24 hex characters
-    const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
-    const randomPart = Array(16).fill(0).map(()=>Math.floor(Math.random() * 16).toString(16)).join('');
-    return timestamp + randomPart;
-};
-const generateNextUserId = ()=>{
-    // Tìm user ID lớn nhất hiện tại với pattern 'u' + number
-    const patientUserIds = mockUsers.filter((user)=>user.role === 'PATIENT' && /^u\d+$/.test(user.userId)).map((user)=>parseInt(user.userId.substring(1)));
-    const nextNumber = patientUserIds.length > 0 ? Math.max(...patientUserIds) + 1 : 1;
-    return `u${nextNumber}`;
-};
-// Hàm kiểm tra trùng lặp userId, username, email
-const checkDuplicates = (patient)=>{
-    const errors = [];
-    // Kiểm tra userId nếu được cung cấp
-    if (patient.userId && mockUsers.some((user)=>user.userId === patient.userId)) {
-        errors.push(`User ID '${patient.userId}' đã tồn tại`);
-    }
-    // Kiểm tra username nếu được cung cấp
-    if (patient.username && mockUsers.some((user)=>user.username === patient.username)) {
-        errors.push(`Username '${patient.username}' đã tồn tại`);
-    }
-    // Kiểm tra email nếu được cung cấp
-    if (patient.email && mockUsers.some((user)=>user.email === patient.email)) {
-        errors.push(`Email '${patient.email}' đã tồn tại`);
-    }
-    return errors;
-};
-const addPatient = (patient)=>{
-    // Kiểm tra thông tin trùng lặp
-    const duplicateErrors = checkDuplicates(patient);
-    if (duplicateErrors.length > 0) {
-        throw new Error(`Không thể thêm bệnh nhân: ${duplicateErrors.join(', ')}`);
-    }
-    // Tạo ID MongoDB-like mới
-    const _id = generateMongoId();
-    const now = new Date().toISOString();
-    // Tạo userId tự động nếu không được cung cấp
-    const userId = patient.userId || generateNextUserId();
-    const newPatient = {
-        _id,
-        userId,
-        username: patient.username || `patient_${userId}`,
-        email: patient.email || `${userId}@example.com`,
-        password: patient.password || '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: patient.fullName || 'Bệnh nhân mới',
-        phone: patient.phone || '',
-        role: 'PATIENT',
-        createdAt: now,
-        updatedAt: now,
-        __v: 0
-    };
-    mockUsers.push(newPatient);
-    return newPatient;
-};
-const updatePatient = (id, patientData)=>{
-    const index = mockUsers.findIndex((user)=>user._id === id);
-    if (index === -1) {
-        return null;
-    }
-    const currentUser = mockUsers[index];
-    // Kiểm tra trùng lặp với các user khác (không phải chính user này)
-    const duplicateErrors = [];
-    // Kiểm tra userId nếu thay đổi
-    if (patientData.userId && patientData.userId !== currentUser.userId) {
-        if (mockUsers.some((user)=>user.userId === patientData.userId)) {
-            duplicateErrors.push(`User ID '${patientData.userId}' đã tồn tại`);
-        }
-    }
-    // Kiểm tra username nếu thay đổi
-    if (patientData.username && patientData.username !== currentUser.username) {
-        if (mockUsers.some((user)=>user.username === patientData.username)) {
-            duplicateErrors.push(`Username '${patientData.username}' đã tồn tại`);
-        }
-    }
-    // Kiểm tra email nếu thay đổi
-    if (patientData.email && patientData.email !== currentUser.email) {
-        if (mockUsers.some((user)=>user.email === patientData.email)) {
-            duplicateErrors.push(`Email '${patientData.email}' đã tồn tại`);
-        }
-    }
-    if (duplicateErrors.length > 0) {
-        throw new Error(`Không thể cập nhật bệnh nhân: ${duplicateErrors.join(', ')}`);
-    }
-    // Cập nhật thông tin user
-    mockUsers[index] = {
-        ...currentUser,
-        ...patientData,
-        updatedAt: new Date().toISOString()
-    };
-    return mockUsers[index];
-};
-const deletePatient = (id)=>{
-    const index = mockUsers.findIndex((user)=>user._id === id);
-    if (index !== -1) {
-        const deletedPatient = mockUsers[index];
-        mockUsers.splice(index, 1);
-        return deletedPatient;
-    }
-    return null;
-};
-const addQueue = (patientId, status = 'waiting')=>{
+const addQueue = async (patientId, status = 'waiting')=>{
     // Kiểm tra xem patientId có tồn tại và là bệnh nhân không
-    const patient = getUserById(patientId);
+    const patient = await getUserById(patientId);
     if (!patient || patient.role !== 'PATIENT') {
         console.error('Invalid patient ID or user is not a patient');
         return null;
     }
     // Kiểm tra xem bệnh nhân đã có trong queue chưa
-    const existingQueue = getQueueByPatientId(patientId);
+    const existingQueue = await getQueueByPatientId(patientId);
     if (existingQueue) {
         console.warn('Patient already in queue');
         return existingQueue;
     }
     // Tạo queue mới
     const newQueue = {
-        _id: `queue_${Date.now()}`,
+        _id: generateMongoId(),
         patient: patientId,
         status: status,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         __v: 0
     };
-    mockQueues.push(newQueue);
-    return newQueue;
+    // Gọi API để tạo queue thực sự qua API
+    try {
+        // Đây là phần sẽ gọi API thực tế
+        // const response = await axiosInstance.post('/queues', newQueue, {
+        //   headers: { Authorization: `Bearer ${getAuthToken()}` }
+        // });
+        // if (response.data) {
+        //   mockQueues.push(response.data);
+        //   return response.data;
+        // }
+        // Hiện tại, chúng ta chỉ thêm vào cache
+        mockQueues.push(newQueue);
+        return newQueue;
+    } catch (error) {
+        console.error('Error creating queue:', error);
+        return null;
+    }
 };
-const updateQueueStatus = (queueId, status, doctorId)=>{
+const updateQueueStatus = async (queueId, status, doctorId)=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
     const index = mockQueues.findIndex((queue)=>queue._id === queueId);
     if (index !== -1) {
         const updatedQueue = {
@@ -2735,42 +2215,293 @@ const updateQueueStatus = (queueId, status, doctorId)=>{
             status: status,
             updatedAt: new Date().toISOString()
         };
-        // Nếu có doctorId và queue chuyển sang trạng thái in_progress, lưu doctorId vào queue
         if (doctorId && status === 'in_progress') {
             updatedQueue.doctorId = doctorId;
         }
+        // Thực tế sẽ gọi API để cập nhật queue
+        // const response = await axiosInstance.put(`/queues/${queueId}`, updatedQueue, {
+        //   headers: { Authorization: `Bearer ${getAuthToken()}` }
+        // });
+        // Hiện tại chỉ cập nhật trong cache
         mockQueues[index] = updatedQueue;
         return mockQueues[index];
     }
     return null;
 };
-const deleteQueue = (queueId)=>{
+const deleteQueue = async (queueId)=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
     const index = mockQueues.findIndex((queue)=>queue._id === queueId);
     if (index !== -1) {
         const deletedQueue = mockQueues[index];
+        // Thực tế sẽ gọi API để xóa queue
+        // await axiosInstance.delete(`/queues/${queueId}`, {
+        //   headers: { Authorization: `Bearer ${getAuthToken()}` }
+        // });
+        // Hiện tại chỉ xóa trong cache
         mockQueues.splice(index, 1);
         return deletedQueue;
     }
     return null;
 };
-const getWaitingPatients = ()=>{
-    const waitingQueues = getQueuesByStatus('waiting');
-    return waitingQueues.map((queue)=>{
-        const patient = getUserById(queue.patient);
-        return {
+const getAllMedicines = async ()=>{
+    if (mockMedicines.length === 0) {
+        await fetchMedicines();
+    }
+    return [
+        ...mockMedicines
+    ];
+};
+const getMedicineById = async (id)=>{
+    if (mockMedicines.length === 0) {
+        await fetchMedicines();
+    }
+    return mockMedicines.find((medicine)=>medicine._id === id);
+};
+const searchMedicines = async (searchTerm)=>{
+    if (mockMedicines.length === 0) {
+        await fetchMedicines();
+    }
+    const term = searchTerm.toLowerCase();
+    return mockMedicines.filter((medicine)=>medicine.name.toLowerCase().includes(term) || medicine.customMedicineId.toLowerCase().includes(term));
+};
+const getAllPrescriptions = async ()=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return [
+        ...mockPrescriptions
+    ];
+};
+const getPrescriptionById = async (id)=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return mockPrescriptions.find((prescription)=>prescription._id === id);
+};
+const getPrescriptionsByPatientId = async (patientId)=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return mockPrescriptions.filter((prescription)=>prescription.patientId === patientId);
+};
+const getPrescriptionsByDoctorId = async (doctorId)=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return mockPrescriptions.filter((prescription)=>prescription.doctorId === doctorId);
+};
+const getPrescriptionsByStatus = async (status)=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return mockPrescriptions.filter((prescription)=>prescription.status === status);
+};
+const getAllPrescriptionDetails = async ()=>{
+    if (mockPrescriptionDetails.length === 0) {
+        await fetchPrescriptionDetails();
+    }
+    return [
+        ...mockPrescriptionDetails
+    ];
+};
+const getPrescriptionDetailsByPrescriptionId = async (prescriptionId)=>{
+    if (mockPrescriptionDetails.length === 0) {
+        await fetchPrescriptionDetails();
+    }
+    return mockPrescriptionDetails.filter((detail)=>detail.prescriptionId === prescriptionId);
+};
+const getMedicinesForPrescription = async (prescriptionId)=>{
+    const details = await getPrescriptionDetailsByPrescriptionId(prescriptionId);
+    const result = [];
+    for (const detail of details){
+        const medicine = await getMedicineById(detail.medicineId);
+        result.push({
+            ...detail,
+            medicine: medicine || null
+        });
+    }
+    return result;
+};
+const getAllInvoices = async ()=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return [
+        ...mockInvoices
+    ];
+};
+const getInvoiceById = async (id)=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return mockInvoices.find((invoice)=>invoice._id === id);
+};
+const getInvoiceByPrescriptionId = async (prescriptionId)=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return mockInvoices.find((invoice)=>invoice.prescriptionId === prescriptionId);
+};
+const getInvoicesByPatientId = async (patientId)=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return mockInvoices.filter((invoice)=>invoice.patientId === patientId);
+};
+const getInvoicesByStatus = async (status)=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return mockInvoices.filter((invoice)=>invoice.status === status);
+};
+const getPatientFullPrescriptionDetails = async (patientId)=>{
+    const prescriptions = await getPrescriptionsByPatientId(patientId);
+    const result = [];
+    for (const prescription of prescriptions){
+        // Lấy thông tin bác sĩ
+        const doctor = await getUserById(prescription.doctorId);
+        // Lấy chi tiết đơn thuốc và thông tin thuốc
+        const details = await getPrescriptionDetailsByPrescriptionId(prescription._id);
+        const medicineDetails = [];
+        for (const detail of details){
+            const medicine = await getMedicineById(detail.medicineId);
+            medicineDetails.push({
+                ...detail,
+                medicineName: medicine ? medicine.name : 'Unknown',
+                medicinePrice: medicine ? medicine.price : 0
+            });
+        }
+        // Lấy hóa đơn nếu có
+        const invoice = await getInvoiceByPrescriptionId(prescription._id);
+        result.push({
+            ...prescription,
+            doctorName: doctor ? doctor.fullName : 'Unknown',
+            details: medicineDetails,
+            invoice: invoice || null
+        });
+    }
+    return result;
+};
+const getAllPatients = async ()=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
+    return mockUsers.filter((user)=>user.role === 'PATIENT');
+};
+const getAllDoctors = async ()=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
+    return mockUsers.filter((user)=>user.role === 'DOCTOR');
+};
+const mockPatients = getAllPatients;
+const getWaitingPatients = async ()=>{
+    const waitingQueues = await getQueuesByStatus('waiting');
+    const result = [];
+    for (const queue of waitingQueues){
+        const patient = await getUserById(queue.patient);
+        result.push({
             queueInfo: queue,
             patientInfo: patient || null
-        };
-    });
+        });
+    }
+    return result;
 };
-const getAllQueuesWithPatientInfo = ()=>{
-    return mockQueues.map((queue)=>{
-        const patient = getUserById(queue.patient);
-        return {
+const getAllQueuesWithPatientInfo = async ()=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
+    const result = [];
+    for (const queue of mockQueues){
+        const patient = await getUserById(queue.patient);
+        result.push({
             ...queue,
             patientInfo: patient || null
-        };
-    });
+        });
+    }
+    return result;
+};
+const generateMongoId = ()=>{
+    // MongoDB ObjectId format: 24 hex characters
+    const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+    const randomPart = Array(16).fill(0).map(()=>Math.floor(Math.random() * 16).toString(16)).join('');
+    return timestamp + randomPart;
+};
+const reloadData = async (dataTypes)=>{
+    if (!dataTypes || dataTypes.length === 0) {
+        // Reload tất cả
+        return await initializeData();
+    }
+    const promises = [];
+    if (dataTypes.includes('users')) promises.push(fetchUsers());
+    if (dataTypes.includes('queues')) promises.push(fetchQueues());
+    if (dataTypes.includes('medicines')) promises.push(fetchMedicines());
+    if (dataTypes.includes('prescriptions')) promises.push(fetchPrescriptions());
+    if (dataTypes.includes('prescriptionDetails')) promises.push(fetchPrescriptionDetails());
+    if (dataTypes.includes('invoices')) promises.push(fetchInvoices());
+    await Promise.all(promises);
+    return {
+        users: mockUsers.length,
+        queues: mockQueues.length,
+        medicines: mockMedicines.length,
+        prescriptions: mockPrescriptions.length,
+        prescriptionDetails: mockPrescriptionDetails.length,
+        invoices: mockInvoices.length
+    };
+};
+const fetchUsersAlternative = async ()=>{
+    console.log('Trying alternative method to fetch users...');
+    try {
+        // Thử lấy thông tin người dùng hiện tại (me endpoint)
+        const currentUser = await authenticatedGet('/users/me');
+        if (!currentUser) {
+            console.warn('Could not fetch current user');
+            return [];
+        }
+        console.log('Current user retrieved:', currentUser.role);
+        if (currentUser.role === 'ADMIN') {
+            // Nếu là admin, thử lại với endpoint /users
+            return await fetchUsers();
+        }
+        // Không phải admin, phải dùng cách khác
+        // 1. Nếu là bác sĩ, có thể lấy danh sách bệnh nhân được chỉ định
+        // 2. Nếu là receptionist, thử lấy dữ liệu theo cách khác
+        // Endpoint hoặc API call thích hợp theo role
+        // Ví dụ: const patients = await authenticatedGet('/appointments/patients');
+        // Tạm thời giữ nguyên dữ liệu hiện tại nếu có
+        return mockUsers.length > 0 ? mockUsers : [];
+    } catch (error) {
+        console.error('Alternative user fetch failed:', error);
+        return [];
+    }
+};
+const sendQueueToDoctor = async (queueId)=>{
+    try {
+        // Lấy thông tin queue
+        const queue = mockQueues.find((q)=>q._id === queueId);
+        if (!queue) {
+            console.error(`Queue with ID ${queueId} not found.`);
+            return null;
+        }
+        // Kiểm tra xem queue đã được gán cho bác sĩ chưa
+        if (!queue.doctorId) {
+            console.error(`Queue ${queueId} has no assigned doctor.`);
+            return null;
+        }
+        // Trong môi trường thực tế, tại đây sẽ có logic gửi thông báo đến bác sĩ
+        // Trong mock data, ta chỉ cần đảm bảo trạng thái là in_progress
+        if (queue.status !== 'in_progress') {
+            queue.status = 'in_progress';
+            queue.updatedAt = new Date().toISOString();
+        }
+        console.log(`Mock: Queue ${queueId} information sent to doctor ${queue.doctorId}`);
+        return queue;
+    } catch (error) {
+        console.error('Error sending queue information to doctor:', error);
+        throw error;
+    }
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
@@ -2782,32 +2513,104 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
 __turbopack_context__.s({
+    "createPharmacyInvoice": (()=>createPharmacyInvoice),
     "getDailyRevenue": (()=>getDailyRevenue),
     "getPatientsWithPendingPrescriptions": (()=>getPatientsWithPendingPrescriptions),
-    "getPharmacyInvoices": (()=>getPharmacyInvoices)
+    "getPharmacyInvoices": (()=>getPharmacyInvoices),
+    "getPharmacyStats": (()=>getPharmacyStats)
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-client] (ecmascript)");
 ;
-const getPatientsWithPendingPrescriptions = ()=>{
-    const pendingPrescriptions = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionsByStatus"])('PENDING_DISPENSE');
-    return pendingPrescriptions.map((prescription)=>{
+;
+const getPatientsWithPendingPrescriptions = async ()=>{
+    try {
+        // Try to get authentication token from localStorage
+        const tokenFromStorage = localStorage.getItem('token');
+        if (tokenFromStorage) {
+            try {
+                // If we have a token, try to use the real API
+                const prescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptions"])({
+                    status: 'PENDING_DISPENSE'
+                }, tokenFromStorage);
+                const result = [];
+                for (const prescription of prescriptions){
+                    // The API already populates patientId and doctorId
+                    const patient = prescription.patientId;
+                    const doctor = prescription.doctorId;
+                    // Get prescription details
+                    const prescriptionDetails = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionDetails"])(prescription._id, tokenFromStorage);
+                    // Map prescription details to medicines
+                    const medicines = [];
+                    for (const detail of prescriptionDetails){
+                        // We need to get medicine details for each prescription detail
+                        try {
+                            const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId, tokenFromStorage);
+                            medicines.push({
+                                name: medicine?.name || 'Unknown',
+                                quantity: detail.quantity,
+                                dosage: detail.dosage,
+                                price: medicine?.price || 0
+                            });
+                        } catch (medError) {
+                            // If we can't get the medicine from API, use mock data
+                            const mockMedicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
+                            medicines.push({
+                                name: mockMedicine?.name || 'Unknown',
+                                quantity: detail.quantity,
+                                dosage: detail.dosage,
+                                price: mockMedicine?.price || 0
+                            });
+                        }
+                    }
+                    result.push({
+                        id: prescription._id,
+                        serialNumber: prescription.customPrescriptionId,
+                        fullName: patient?.fullName || 'Unknown',
+                        phone: patient?.phone || 'N/A',
+                        diagnosis: prescription.diagnosis,
+                        doctor: doctor?.fullName || 'Không xác định',
+                        prescription: medicines
+                    });
+                }
+                return result;
+            } catch (apiError) {
+                console.error("API error, falling back to mock data:", apiError);
+                // Fall back to mock data if API fails
+                return fetchMockPendingPrescriptions();
+            }
+        } else {
+            // If no token, use mock data
+            return fetchMockPendingPrescriptions();
+        }
+    } catch (error) {
+        console.error("Error fetching pending prescriptions:", error);
+        return [];
+    }
+};
+// Separate function for fetching mock data
+const fetchMockPendingPrescriptions = async ()=>{
+    const pendingPrescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionsByStatus"])('PENDING_DISPENSE');
+    const result = [];
+    for (const prescription of pendingPrescriptions){
         // Get patient details
-        const patient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])(prescription.patientId);
+        const patient = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])(prescription.patientId);
         // Get doctor details
-        const doctor = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])(prescription.doctorId);
+        const doctor = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])(prescription.doctorId);
         // Get prescription details
-        const prescriptionDetails = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionDetailsByPrescriptionId"])(prescription._id);
+        const prescriptionDetails = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionDetailsByPrescriptionId"])(prescription._id);
         // Map prescription details to medicines
-        const medicines = prescriptionDetails.map((detail)=>{
-            const medicine = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
-            return {
+        const medicines = [];
+        for (const detail of prescriptionDetails){
+            const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
+            medicines.push({
                 name: medicine?.name || 'Unknown',
                 quantity: detail.quantity,
                 dosage: detail.dosage,
                 price: medicine?.price || 0
-            };
-        });
-        return {
+            });
+        }
+        result.push({
             id: prescription._id,
             serialNumber: prescription.customPrescriptionId,
             fullName: patient?.fullName || 'Unknown',
@@ -2815,44 +2618,100 @@ const getPatientsWithPendingPrescriptions = ()=>{
             diagnosis: prescription.diagnosis,
             doctor: doctor?.fullName || 'Không xác định',
             prescription: medicines
-        };
-    });
-};
-const getPharmacyInvoices = ()=>{
-    return __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mockInvoices"].map((invoice)=>{
-        // Get pharmacist information (default to a specific ID if needed)
-        const pharmacist = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])('685face13fc4c04e1bd96c0a'); // Default pharmacist ID
-        // Return formatted invoice data
-        return {
-            id: invoice._id,
-            date: invoice.createdAt,
-            patientId: invoice.patientId,
-            pharmacistName: pharmacist?.fullName || 'Nhân viên phát thuốc',
-            totalAmount: invoice.totalAmount
-        };
-    });
-};
-const getDailyRevenue = ()=>{
-    const today = new Date();
-    const result = [];
-    // Create revenue data for the last 7 days
-    for(let i = 0; i < 7; i++){
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        const dateString = date.toISOString().split('T')[0];
-        // Sum all invoices for this date
-        const dateInvoices = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mockInvoices"].filter((invoice)=>{
-            const invoiceDate = new Date(invoice.createdAt);
-            return invoiceDate.toISOString().split('T')[0] === dateString;
-        });
-        const totalAmount = dateInvoices.reduce((sum, invoice)=>sum + invoice.totalAmount, 0);
-        result.push({
-            date: dateString,
-            amount: totalAmount
         });
     }
-    // Sort by date ascending for easier chart rendering
-    return result.sort((a, b)=>new Date(a.date).getTime() - new Date(b.date).getTime());
+    return result;
+};
+const getPharmacyInvoices = async ()=>{
+    try {
+        const invoices = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAllInvoices"])();
+        const result = [];
+        for (const invoice of invoices){
+            // Get pharmacist information (default to a specific ID if needed)
+            const pharmacist = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])('685face13fc4c04e1bd96c0a'); // Default pharmacist ID
+            // Return formatted invoice data
+            result.push({
+                id: invoice._id,
+                date: invoice.createdAt,
+                patientId: invoice.patientId,
+                pharmacistName: pharmacist?.fullName || 'Nhân viên phát thuốc',
+                totalAmount: invoice.totalAmount
+            });
+        }
+        return result;
+    } catch (error) {
+        console.error("Error fetching pharmacy invoices:", error);
+        return [];
+    }
+};
+const getDailyRevenue = async ()=>{
+    try {
+        const today = new Date();
+        const result = [];
+        // Get all invoices
+        const allInvoices = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAllInvoices"])();
+        // Create revenue data for the last 7 days
+        for(let i = 0; i < 7; i++){
+            const date = new Date(today);
+            date.setDate(today.getDate() - i);
+            const dateString = date.toISOString().split('T')[0];
+            // Sum all invoices for this date
+            const dateInvoices = allInvoices.filter((invoice)=>{
+                const invoiceDate = new Date(invoice.createdAt);
+                return invoiceDate.toISOString().split('T')[0] === dateString;
+            });
+            const totalAmount = dateInvoices.reduce((sum, invoice)=>sum + invoice.totalAmount, 0);
+            result.push({
+                date: dateString,
+                amount: totalAmount
+            });
+        }
+        // Sort by date ascending for easier chart rendering
+        return result.sort((a, b)=>new Date(a.date).getTime() - new Date(b.date).getTime());
+    } catch (error) {
+        console.error("Error getting daily revenue:", error);
+        return [];
+    }
+};
+const createPharmacyInvoice = async (prescriptionId, totalAmount, token)=>{
+    try {
+        if (!token) {
+            console.error("No authentication token provided");
+            return false;
+        }
+        // 1. Update prescription status to DISPENSED
+        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["updatePrescriptionStatus"])(prescriptionId, 'DISPENSED', token);
+        console.log(`Updated prescription ${prescriptionId} status to DISPENSED`);
+        // TODO: In a real implementation, we would also create an actual invoice record
+        // For now we just mark the prescription as dispensed
+        return true;
+    } catch (error) {
+        console.error("Error creating pharmacy invoice:", error);
+        return false;
+    }
+};
+const getPharmacyStats = async (token)=>{
+    try {
+        if (token) {
+        // TODO: Add real API implementation for statistics
+        // For now returning mock data
+        }
+        // Return mock statistics
+        return {
+            dispensedToday: 5,
+            pendingDispense: 3,
+            totalRevenue: 1250000,
+            averageValue: 250000
+        };
+    } catch (error) {
+        console.error("Error getting pharmacy stats:", error);
+        return {
+            dispensedToday: 0,
+            pendingDispense: 0,
+            totalRevenue: 0,
+            averageValue: 0
+        };
+    }
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
@@ -2872,8 +2731,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SearchIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/search.js [app-client] (ecmascript) <export default as SearchIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$InvoiceDetailModal$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/InvoiceDetailModal.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/pharmacyUtils.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
+;
 ;
 ;
 ;
@@ -2887,21 +2748,34 @@ const Statistics = ()=>{
     const [revenueData, setRevenueData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [invoicesData, setInvoicesData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [patients, setPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
-    // Tải dữ liệu doanh thu và hóa đơn từ mockPatients
+    // Tải dữ liệu doanh thu và hóa đơn từ API
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "Statistics.useEffect": ()=>{
-            // Khởi tạo dữ liệu từ mockPatients
-            const revenue = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getDailyRevenue"])();
-            const invoices = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPharmacyInvoices"])();
-            const patientsList = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])();
-            setRevenueData(revenue);
-            setInvoicesData(invoices);
-            setPatients(patientsList);
-            // Mặc định chọn ngày hôm nay nếu có dữ liệu
-            if (revenue && revenue.length > 0) {
-                // Lấy ngày đầu tiên trong danh sách doanh thu (thường là ngày gần nhất)
-                setSelectedDate(revenue[0].date);
-            }
+            const fetchData = {
+                "Statistics.useEffect.fetchData": async ()=>{
+                    try {
+                        // Khởi tạo dữ liệu từ API trước
+                        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["initializeData"])();
+                        // Sau đó lấy dữ liệu thống kê, hóa đơn, và danh sách bệnh nhân
+                        const [revenue, invoices, patientsList] = await Promise.all([
+                            (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getDailyRevenue"])(),
+                            (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPharmacyInvoices"])(),
+                            (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])()
+                        ]);
+                        setRevenueData(revenue);
+                        setInvoicesData(invoices);
+                        setPatients(patientsList);
+                        // Mặc định chọn ngày hôm nay nếu có dữ liệu
+                        if (revenue && revenue.length > 0) {
+                            // Lấy ngày đầu tiên trong danh sách doanh thu (thường là ngày gần nhất)
+                            setSelectedDate(revenue[0].date);
+                        }
+                    } catch (error) {
+                        console.error("Error fetching statistics data:", error);
+                    }
+                }
+            }["Statistics.useEffect.fetchData"];
+            fetchData();
         }
     }["Statistics.useEffect"], []);
     const formatDate = (dateString)=>{
@@ -2935,12 +2809,12 @@ const Statistics = ()=>{
                             children: "Xem Thống Kê Doanh Thu"
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                            lineNumber: 65,
+                            lineNumber: 79,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                        lineNumber: 64,
+                        lineNumber: 78,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2957,7 +2831,7 @@ const Statistics = ()=>{
                                                 children: "Chọn ngày"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                lineNumber: 74,
+                                                lineNumber: 88,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2970,12 +2844,12 @@ const Statistics = ()=>{
                                                             className: "text-black"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                            lineNumber: 79,
+                                                            lineNumber: 93,
                                                             columnNumber: 19
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                        lineNumber: 78,
+                                                        lineNumber: 92,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2986,26 +2860,26 @@ const Statistics = ()=>{
                                                         className: "pl-10 pr-4 py-2.5 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-black focus:border-black text-black border"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                        lineNumber: 81,
+                                                        lineNumber: 95,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                lineNumber: 77,
+                                                lineNumber: 91,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 73,
+                                        lineNumber: 87,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "flex-grow"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 91,
+                                        lineNumber: 105,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3018,25 +2892,25 @@ const Statistics = ()=>{
                                                     className: "h-4 w-4 mr-1"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                    lineNumber: 99,
+                                                    lineNumber: 113,
                                                     columnNumber: 17
                                                 }, this),
                                                 showDetails ? 'Ẩn chi tiết' : 'Xem chi tiết'
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                            lineNumber: 95,
+                                            lineNumber: 109,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 94,
+                                        lineNumber: 108,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                lineNumber: 71,
+                                lineNumber: 85,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3047,7 +2921,7 @@ const Statistics = ()=>{
                                         children: "Tổng doanh thu"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 107,
+                                        lineNumber: 121,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3061,7 +2935,7 @@ const Statistics = ()=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                lineNumber: 111,
+                                                lineNumber: 125,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3072,19 +2946,19 @@ const Statistics = ()=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                lineNumber: 114,
+                                                lineNumber: 128,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 124,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                lineNumber: 106,
+                                lineNumber: 120,
                                 columnNumber: 11
                             }, this),
                             showDetails && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3094,7 +2968,7 @@ const Statistics = ()=>{
                                         children: "Chi tiết hóa đơn"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 123,
+                                        lineNumber: 137,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3112,7 +2986,7 @@ const Statistics = ()=>{
                                                                 children: "Mã hóa đơn"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 130,
+                                                                lineNumber: 144,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3121,7 +2995,7 @@ const Statistics = ()=>{
                                                                 children: "Tên bệnh nhân"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 133,
+                                                                lineNumber: 147,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3130,7 +3004,7 @@ const Statistics = ()=>{
                                                                 children: "Nhân viên phát thuốc"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 136,
+                                                                lineNumber: 150,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3139,7 +3013,7 @@ const Statistics = ()=>{
                                                                 children: "Tổng tiền"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 139,
+                                                                lineNumber: 153,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3148,18 +3022,18 @@ const Statistics = ()=>{
                                                                 children: "Thao tác"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 142,
+                                                                lineNumber: 156,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                        lineNumber: 129,
+                                                        lineNumber: 143,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                    lineNumber: 128,
+                                                    lineNumber: 142,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -3178,7 +3052,7 @@ const Statistics = ()=>{
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 154,
+                                                                        lineNumber: 168,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3186,7 +3060,7 @@ const Statistics = ()=>{
                                                                         children: patient?.fullName || 'N/A'
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 157,
+                                                                        lineNumber: 171,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3194,7 +3068,7 @@ const Statistics = ()=>{
                                                                         children: invoice.pharmacistName
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 160,
+                                                                        lineNumber: 174,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3205,7 +3079,7 @@ const Statistics = ()=>{
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 163,
+                                                                        lineNumber: 177,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3220,18 +3094,18 @@ const Statistics = ()=>{
                                                                             children: "Xem chi tiết"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                            lineNumber: 167,
+                                                                            lineNumber: 181,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                        lineNumber: 166,
+                                                                        lineNumber: 180,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, invoice.id, true, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 153,
+                                                                lineNumber: 167,
                                                                 columnNumber: 25
                                                             }, this);
                                                         }),
@@ -3242,47 +3116,47 @@ const Statistics = ()=>{
                                                                 children: "Không có hóa đơn nào cho ngày đã chọn."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                                lineNumber: 182,
+                                                                lineNumber: 196,
                                                                 columnNumber: 25
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                            lineNumber: 181,
+                                                            lineNumber: 195,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                                    lineNumber: 147,
+                                                    lineNumber: 161,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                            lineNumber: 127,
+                                            lineNumber: 141,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                        lineNumber: 126,
+                                        lineNumber: 140,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                                lineNumber: 122,
+                                lineNumber: 136,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                        lineNumber: 69,
+                        lineNumber: 83,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                lineNumber: 63,
+                lineNumber: 77,
                 columnNumber: 7
             }, this),
             selectedInvoice && selectedInvoice.patient && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$InvoiceDetailModal$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["InvoiceDetailModal"], {
@@ -3291,13 +3165,13 @@ const Statistics = ()=>{
                 onClose: ()=>setSelectedInvoice(null)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-                lineNumber: 197,
+                lineNumber: 211,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/Statistics.tsx",
-        lineNumber: 61,
+        lineNumber: 75,
         columnNumber: 5
     }, this);
 };
@@ -3326,8 +3200,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$PatientDetails$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/PatientDetails.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$Statistics$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/Statistics.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/pharmacyUtils.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
+;
 ;
 ;
 ;
@@ -3339,13 +3215,42 @@ const Dashboard = ({ user, onLogout })=>{
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('dispense'); // 'dispense' or 'statistics'
     const [selectedPatient, setSelectedPatient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [waitingPatients, setWaitingPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
-    // Tải dữ liệu bệnh nhân chờ phát thuốc từ mockPatients
+    // Tải dữ liệu bệnh nhân chờ phát thuốc từ API
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "Dashboard.useEffect": ()=>{
-            const patients = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])();
-            setWaitingPatients(patients);
+            const fetchPatients = {
+                "Dashboard.useEffect.fetchPatients": async ()=>{
+                    try {
+                        if (user && user._id) {
+                            // Try to use real API if user is logged in
+                            try {
+                                // Initialize data from API
+                                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["initializeData"])();
+                                // Fetch prescriptions with status PENDING_DISPENSE
+                                const patients = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])();
+                                setWaitingPatients(patients);
+                            } catch (apiError) {
+                                console.error("API error fetching pending prescriptions:", apiError);
+                                // Fallback to mock data
+                                const mockPatients = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])();
+                                setWaitingPatients(mockPatients);
+                            }
+                        } else {
+                            // Use mock data
+                            const mockPatients = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])();
+                            setWaitingPatients(mockPatients);
+                        }
+                    } catch (error) {
+                        console.error("Error fetching patients:", error);
+                        setWaitingPatients([]);
+                    }
+                }
+            }["Dashboard.useEffect.fetchPatients"];
+            fetchPatients();
         }
-    }["Dashboard.useEffect"], []);
+    }["Dashboard.useEffect"], [
+        user
+    ]);
     const handlePatientSelect = (patient)=>{
         setSelectedPatient(patient);
     };
@@ -3366,7 +3271,7 @@ const Dashboard = ({ user, onLogout })=>{
                             children: "Hệ Thống Quản Lý Nhà Thuốc"
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 50,
+                            lineNumber: 79,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3380,7 +3285,7 @@ const Dashboard = ({ user, onLogout })=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 52,
+                                    lineNumber: 81,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3391,31 +3296,31 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-4 w-4 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 56,
+                                            lineNumber: 85,
                                             columnNumber: 15
                                         }, this),
                                         " Đăng Xuất"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 55,
+                                    lineNumber: 84,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 51,
+                            lineNumber: 80,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 49,
+                    lineNumber: 78,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 48,
+                lineNumber: 77,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -3438,14 +3343,14 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-5 w-5 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 70,
+                                            lineNumber: 99,
                                             columnNumber: 17
                                         }, this),
                                         " Phát Thuốc"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 66,
+                                    lineNumber: 95,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3459,35 +3364,35 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-5 w-5 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 76,
+                                            lineNumber: 105,
                                             columnNumber: 17
                                         }, this),
                                         " Xem Thống Kê Doanh Thu"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 72,
+                                    lineNumber: 101,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 65,
+                            lineNumber: 94,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                        lineNumber: 64,
+                        lineNumber: 93,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 63,
+                    lineNumber: 92,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 62,
+                lineNumber: 91,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -3502,12 +3407,12 @@ const Dashboard = ({ user, onLogout })=>{
                                 onPatientSelect: handlePatientSelect
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 86,
+                                lineNumber: 115,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 85,
+                            lineNumber: 114,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3517,7 +3422,7 @@ const Dashboard = ({ user, onLogout })=>{
                                 onPatientComplete: handlePatientRemove
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 89,
+                                lineNumber: 118,
                                 columnNumber: 34
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center",
@@ -3526,32 +3431,32 @@ const Dashboard = ({ user, onLogout })=>{
                                     children: "Vui lòng chọn bệnh nhân từ danh sách để xem chi tiết."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 90,
+                                    lineNumber: 119,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 89,
+                                lineNumber: 118,
                                 columnNumber: 121
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 88,
+                            lineNumber: 117,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 84,
+                    lineNumber: 113,
                     columnNumber: 37
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$Statistics$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Statistics"], {}, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 95,
+                    lineNumber: 124,
                     columnNumber: 20
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 83,
+                lineNumber: 112,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -3563,23 +3468,23 @@ const Dashboard = ({ user, onLogout })=>{
                         children: "© 2023 Hệ Thống Quản Lý Nhà Thuốc. Bản quyền thuộc về Phòng Khám."
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                        lineNumber: 100,
+                        lineNumber: 129,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 99,
+                    lineNumber: 128,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 98,
+                lineNumber: 127,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-        lineNumber: 46,
+        lineNumber: 75,
         columnNumber: 10
     }, this);
 };

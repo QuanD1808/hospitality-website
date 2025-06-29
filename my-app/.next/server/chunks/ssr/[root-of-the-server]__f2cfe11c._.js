@@ -29,15 +29,18 @@ module.exports = mod;
 
 var { g: global, __dirname } = __turbopack_context__;
 {
-// Mock database dựa trên cấu trúc MongoDB
-// Khai báo các interface
+// Dữ liệu được fetched từ API thay vì dùng static data
 __turbopack_context__.s({
-    "addPatient": (()=>addPatient),
     "addQueue": (()=>addQueue),
-    "deletePatient": (()=>deletePatient),
     "deleteQueue": (()=>deleteQueue),
+    "fetchInvoices": (()=>fetchInvoices),
+    "fetchMedicines": (()=>fetchMedicines),
+    "fetchPrescriptionDetails": (()=>fetchPrescriptionDetails),
+    "fetchPrescriptions": (()=>fetchPrescriptions),
+    "fetchQueues": (()=>fetchQueues),
+    "fetchUsers": (()=>fetchUsers),
+    "fetchUsersAlternative": (()=>fetchUsersAlternative),
     "generateMongoId": (()=>generateMongoId),
-    "generateNextUserId": (()=>generateNextUserId),
     "getAllDoctors": (()=>getAllDoctors),
     "getAllInvoices": (()=>getAllInvoices),
     "getAllMedicines": (()=>getAllMedicines),
@@ -47,6 +50,7 @@ __turbopack_context__.s({
     "getAllQueues": (()=>getAllQueues),
     "getAllQueuesWithPatientInfo": (()=>getAllQueuesWithPatientInfo),
     "getAllUsers": (()=>getAllUsers),
+    "getAuthToken": (()=>getAuthToken),
     "getInvoiceById": (()=>getInvoiceById),
     "getInvoiceByPrescriptionId": (()=>getInvoiceByPrescriptionId),
     "getInvoicesByPatientId": (()=>getInvoicesByPatientId),
@@ -64,6 +68,7 @@ __turbopack_context__.s({
     "getUserById": (()=>getUserById),
     "getUsersByRole": (()=>getUsersByRole),
     "getWaitingPatients": (()=>getWaitingPatients),
+    "initializeData": (()=>initializeData),
     "mockInvoices": (()=>mockInvoices),
     "mockMedicines": (()=>mockMedicines),
     "mockPatients": (()=>mockPatients),
@@ -71,638 +76,361 @@ __turbopack_context__.s({
     "mockPrescriptions": (()=>mockPrescriptions),
     "mockQueues": (()=>mockQueues),
     "mockUsers": (()=>mockUsers),
+    "reloadData": (()=>reloadData),
     "searchMedicines": (()=>searchMedicines),
     "searchUsers": (()=>searchUsers),
-    "updatePatient": (()=>updatePatient),
+    "sendQueueToDoctor": (()=>sendQueueToDoctor),
+    "setAuthToken": (()=>setAuthToken),
     "updateQueueStatus": (()=>updateQueueStatus)
 });
-const mockUsers = [
-    {
-        _id: '685face13fc4c04e1bd96c06',
-        userId: 'u1',
-        username: 'nguyen.an',
-        email: 'an.nguyen@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Nguyễn Văn An',
-        phone: '0901234567',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T08:50:41.269+00:00',
-        updatedAt: '2025-06-28T08:50:41.269+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c07',
-        userId: 'u2',
-        username: 'tran.binh',
-        email: 'binh.tran@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Trần Văn Bình',
-        phone: '0912345678',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T09:15:22.123+00:00',
-        updatedAt: '2025-06-28T09:15:22.123+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c08',
-        userId: 'd1',
-        username: 'dr.hoa',
-        email: 'hoa.doctor@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Bác sĩ Trần Thị Hoa',
-        phone: '0923456789',
-        role: 'DOCTOR',
-        createdAt: '2025-06-28T10:05:17.456+00:00',
-        updatedAt: '2025-06-28T10:05:17.456+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c09',
-        userId: 'u3',
-        username: 'le.chi',
-        email: 'chi.le@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Lê Thị Chi',
-        phone: '0934567890',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T11:30:45.789+00:00',
-        updatedAt: '2025-06-28T11:30:45.789+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0a',
-        userId: 'p1',
-        username: 'pham.dung',
-        email: 'dung.pham@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Phạm Văn Dũng',
-        phone: '0945678901',
-        role: 'PHARMACIST',
-        createdAt: '2025-06-28T12:45:33.012+00:00',
-        updatedAt: '2025-06-28T12:45:33.012+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0b',
-        userId: 'r1',
-        username: 'receptionist.minh',
-        email: 'minh.receptionist@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Nguyễn Thị Minh',
-        phone: '0956789012',
-        role: 'RECEPTIONIST',
-        createdAt: '2025-06-28T14:20:10.345+00:00',
-        updatedAt: '2025-06-28T14:20:10.345+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0c',
-        userId: 'a1',
-        username: 'admin.tuan',
-        email: 'tuan.admin@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Lê Minh Tuấn',
-        phone: '0967890123',
-        role: 'ADMIN',
-        createdAt: '2025-06-28T15:55:27.678+00:00',
-        updatedAt: '2025-06-28T15:55:27.678+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0d',
-        userId: 'u4',
-        username: 'hoang.em',
-        email: 'em.hoang@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Hoàng Thị Em',
-        phone: '0978901234',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T16:30:50.901+00:00',
-        updatedAt: '2025-06-28T16:30:50.901+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0e',
-        userId: 'u5',
-        username: 'nguyen.khang',
-        email: 'khang.nguyen@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Nguyễn Minh Khang',
-        phone: '0989012345',
-        role: 'PATIENT',
-        createdAt: '2025-06-28T17:15:42.234+00:00',
-        updatedAt: '2025-06-28T17:15:42.234+00:00',
-        __v: 0
-    },
-    {
-        _id: '685face13fc4c04e1bd96c0f',
-        userId: 'd2',
-        username: 'dr.trang',
-        email: 'trang.doctor@mediclinic.com',
-        password: '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: 'Bác sĩ Lê Thị Trang',
-        phone: '0990123456',
-        role: 'DOCTOR',
-        createdAt: '2025-06-28T18:40:15.567+00:00',
-        updatedAt: '2025-06-28T18:40:15.567+00:00',
-        __v: 0
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/axios.customize.service.ts [app-ssr] (ecmascript)");
+;
+let mockUsers = [];
+let mockQueues = [];
+let mockMedicines = [];
+let mockPrescriptions = [];
+let mockPrescriptionDetails = [];
+let mockInvoices = [];
+// Biến toàn cục để lưu token xác thực
+let authToken = null;
+const setAuthToken = (token)=>{
+    authToken = token;
+    if ("TURBOPACK compile-time falsy", 0) {
+        "TURBOPACK unreachable";
     }
-];
-const mockQueues = [
-    {
-        _id: '685f10baa8040f24f1a9014d',
-        patient: '685face13fc4c04e1bd96c06',
-        status: 'waiting',
-        createdAt: '2025-06-27T21:44:26.099+00:00',
-        updatedAt: '2025-06-27T21:44:26.102+00:00',
-        __v: 0
-    },
-    {
-        _id: '685f10baa8040f24f1a9014e',
-        patient: '685face13fc4c04e1bd96c07',
-        status: 'in_progress',
-        createdAt: '2025-06-27T22:30:15.456+00:00',
-        updatedAt: '2025-06-27T22:45:20.789+00:00',
-        __v: 0
-    },
-    {
-        _id: '685f10baa8040f24f1a9014f',
-        patient: '685face13fc4c04e1bd96c09',
-        status: 'completed',
-        createdAt: '2025-06-27T20:15:33.222+00:00',
-        updatedAt: '2025-06-27T21:05:42.111+00:00',
-        __v: 0
-    },
-    {
-        _id: '685f10baa8040f24f1a90150',
-        patient: '685face13fc4c04e1bd96c0d',
-        status: 'waiting',
-        createdAt: '2025-06-28T08:22:17.345+00:00',
-        updatedAt: '2025-06-28T08:22:17.345+00:00',
-        __v: 0
-    },
-    {
-        _id: '685f10baa8040f24f1a90151',
-        patient: '685face13fc4c04e1bd96c0e',
-        status: 'canceled',
-        createdAt: '2025-06-28T07:45:10.123+00:00',
-        updatedAt: '2025-06-28T08:15:23.456+00:00',
-        __v: 0
+};
+const getAuthToken = ()=>{
+    // Nếu không có token trong memory, thử lấy từ localStorage
+    if ("TURBOPACK compile-time falsy", 0) {
+        "TURBOPACK unreachable";
     }
-];
-const mockMedicines = [
-    {
-        _id: '685face13fc4c04e1bd96c10',
-        customMedicineId: 'm1',
-        name: 'Paracetamol 500mg',
-        totalPills: 980,
-        price: 0.5,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:41.969+00:00',
-        updatedAt: '2025-06-28T10:57:49.516+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96c11',
-        customMedicineId: 'm2',
-        name: 'Amoxicillin 500mg',
-        totalPills: 850,
-        price: 1.2,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.001+00:00',
-        updatedAt: '2025-06-28T08:50:42.001+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96c12',
-        customMedicineId: 'm3',
-        name: 'Ibuprofen 200mg',
-        totalPills: 1200,
-        price: 0.7,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.010+00:00',
-        updatedAt: '2025-06-28T08:50:42.010+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96c1a',
-        customMedicineId: 'm4',
-        name: 'Cetirizine 10mg',
-        totalPills: 750,
-        price: 0.8,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.022+00:00',
-        updatedAt: '2025-06-28T08:50:42.022+00:00'
-    },
-    {
-        _id: '685face13fc4c04e1bd96c1b',
-        customMedicineId: 'm5',
-        name: 'Omeprazole 20mg',
-        totalPills: 630,
-        price: 1.5,
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.029+00:00',
-        updatedAt: '2025-06-28T08:50:42.029+00:00'
+    return authToken;
+};
+// Helper function để thực hiện API call có xác thực
+const authenticatedGet = async (endpoint)=>{
+    try {
+        // Lấy token từ localStorage hoặc cookies
+        let token = getAuthToken();
+        // Thử lấy token từ cookies nếu không tìm thấy trong localStorage
+        if (!token && typeof document !== 'undefined') {
+            // Check browser cookies if localStorage doesn't have the token
+            const cookies = document.cookie.split(';');
+            const tokenCookie = cookies.find((c)=>c.trim().startsWith('token='));
+            if (tokenCookie) {
+                token = tokenCookie.split('=')[1];
+                console.log("Found token in cookies, using it for API calls");
+                // Lưu lại vào authToken để sử dụng cho các lần sau
+                setAuthToken(token);
+            }
+        }
+        if (!token) {
+            console.warn('No authentication token available for API call to:', endpoint);
+            console.warn('Please login first or check token storage.');
+            return null;
+        }
+        console.log(`Making authenticated request to ${endpoint}`);
+        console.log(`Using token (first 10 chars): ${token.substring(0, 10)}...`);
+        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(endpoint, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(`Successful response from ${endpoint}:`, response.status);
+        if (Array.isArray(response.data)) {
+            console.log(`Got ${response.data.length} items from ${endpoint}`);
+        } else {
+            console.log(`Got data from ${endpoint}:`, response.data ? 'Object returned' : 'Empty response');
+        }
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching from ${endpoint}:`, error.message);
+        // Log more detailed error info
+        if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Response data:', error.response.data);
+            if (error.response.status === 403) {
+                console.error(`Access forbidden to ${endpoint} - check user permissions`);
+            } else if (error.response.status === 401) {
+                console.error(`Unauthorized access to ${endpoint} - token may be expired`);
+                // Thử xóa token để người dùng phải đăng nhập lại
+                if ("TURBOPACK compile-time falsy", 0) {
+                    "TURBOPACK unreachable";
+                }
+            }
+        } else if (error.request) {
+            console.error('No response received from request. Server may be down.');
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        return null;
     }
-];
-const mockPrescriptions = [
-    {
-        _id: '685face23fc4c04e1bd96c13',
-        customPrescriptionId: 'pr1',
-        patientId: '685face13fc4c04e1bd96c06',
-        doctorId: '685face13fc4c04e1bd96c08',
-        diagnosis: 'Common Cold',
-        date: '2024-06-01T10:00:00.000+00:00',
-        status: 'PENDING_DISPENSE',
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.030+00:00',
-        updatedAt: '2025-06-28T08:50:42.030+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c14',
-        customPrescriptionId: 'pr2',
-        patientId: '685face13fc4c04e1bd96c07',
-        doctorId: '685face13fc4c04e1bd96c0f',
-        diagnosis: 'Allergic Rhinitis',
-        date: '2024-06-02T11:30:00.000+00:00',
-        status: 'DISPENSED',
-        __v: 0,
-        createdAt: '2025-06-28T09:30:10.123+00:00',
-        updatedAt: '2025-06-28T10:15:22.456+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c15',
-        customPrescriptionId: 'pr3',
-        patientId: '685face13fc4c04e1bd96c09',
-        doctorId: '685face13fc4c04e1bd96c08',
-        diagnosis: 'Gastritis',
-        date: '2024-06-03T14:45:00.000+00:00',
-        status: 'PENDING_DISPENSE',
-        __v: 0,
-        createdAt: '2025-06-28T14:50:33.789+00:00',
-        updatedAt: '2025-06-28T14:50:33.789+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c1c',
-        customPrescriptionId: 'pr4',
-        patientId: '685face13fc4c04e1bd96c0d',
-        doctorId: '685face13fc4c04e1bd96c0f',
-        diagnosis: 'Migraine',
-        date: '2024-06-04T09:15:00.000+00:00',
-        status: 'CANCELED',
-        __v: 0,
-        createdAt: '2025-06-28T09:20:45.111+00:00',
-        updatedAt: '2025-06-28T11:05:17.222+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c1d',
-        customPrescriptionId: 'pr5',
-        patientId: '685face13fc4c04e1bd96c0e',
-        doctorId: '685face13fc4c04e1bd96c08',
-        diagnosis: 'Hypertension',
-        date: '2024-06-05T16:00:00.000+00:00',
-        status: 'DISPENSED',
-        __v: 0,
-        createdAt: '2025-06-28T16:05:22.333+00:00',
-        updatedAt: '2025-06-28T17:30:14.444+00:00'
+};
+const fetchUsers = async ()=>{
+    console.log('Fetching users from API...');
+    // Đầu tiên thử lấy thông tin user hiện tại để biết role
+    try {
+        const currentUser = await authenticatedGet('/users/me');
+        if (currentUser) {
+            console.log(`Current user role: ${currentUser.role}`);
+            if (currentUser.role === 'ADMIN') {
+                // Nếu là ADMIN, có quyền lấy tất cả users
+                console.log('User is ADMIN, trying to fetch all users');
+                const data = await authenticatedGet('/users');
+                if (data && Array.isArray(data)) {
+                    console.log(`Successfully fetched ${data.length} users from API`);
+                    mockUsers = data;
+                    return data;
+                }
+            }
+            // Dù là role nào, thử dùng endpoint mới để lấy danh sách bệnh nhân
+            if ([
+                'ADMIN',
+                'DOCTOR',
+                'PHARMACIST',
+                'RECEPTIONIST'
+            ].includes(currentUser.role)) {
+                console.log(`Trying to fetch patients using /users/patients endpoint for ${currentUser.role}`);
+                const patients = await authenticatedGet('/users/patients');
+                if (patients && Array.isArray(patients)) {
+                    console.log(`Successfully fetched ${patients.length} patients from API`);
+                    // Kết hợp với dữ liệu hiện có (nếu có)
+                    // Giữ lại các user không phải bệnh nhân từ danh sách hiện có (nếu có)
+                    const nonPatients = mockUsers.filter((user)=>user.role !== 'PATIENT');
+                    mockUsers = [
+                        ...nonPatients,
+                        ...patients
+                    ];
+                    console.log(`Combined user data: ${mockUsers.length} users (${nonPatients.length} non-patients + ${patients.length} patients)`);
+                    return mockUsers;
+                }
+            }
+            // Nếu không thể lấy dữ liệu, giữ nguyên dữ liệu mockUsers hiện tại
+            console.log(`Using existing mock data with ${mockUsers.length} users`);
+            return [
+                ...mockUsers
+            ];
+        } else {
+            console.error('Could not fetch current user info, authentication may be invalid');
+            return mockUsers;
+        }
+    } catch (error) {
+        console.error('Error in fetchUsers:', error);
+        return mockUsers;
     }
-];
-const mockPrescriptionDetails = [
-    {
-        _id: '685face23fc4c04e1bd96c16',
-        customPrescriptionDetailId: 'pd1',
-        prescriptionId: '685face23fc4c04e1bd96c13',
-        medicineId: '685face13fc4c04e1bd96c10',
-        quantity: 10,
-        dosage: '1 tablet every 6 hours',
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.083+00:00',
-        updatedAt: '2025-06-28T08:50:42.083+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c17',
-        customPrescriptionDetailId: 'pd2',
-        prescriptionId: '685face23fc4c04e1bd96c13',
-        medicineId: '685face13fc4c04e1bd96c1a',
-        quantity: 5,
-        dosage: '1 tablet daily before sleep',
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.085+00:00',
-        updatedAt: '2025-06-28T08:50:42.085+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c18',
-        customPrescriptionDetailId: 'pd3',
-        prescriptionId: '685face23fc4c04e1bd96c14',
-        medicineId: '685face13fc4c04e1bd96c1a',
-        quantity: 15,
-        dosage: '1 tablet daily in the morning',
-        __v: 0,
-        createdAt: '2025-06-28T09:30:10.150+00:00',
-        updatedAt: '2025-06-28T09:30:10.150+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c19',
-        customPrescriptionDetailId: 'pd4',
-        prescriptionId: '685face23fc4c04e1bd96c15',
-        medicineId: '685face13fc4c04e1bd96c1b',
-        quantity: 14,
-        dosage: '1 tablet daily before breakfast',
-        __v: 0,
-        createdAt: '2025-06-28T14:50:33.800+00:00',
-        updatedAt: '2025-06-28T14:50:33.800+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c1e',
-        customPrescriptionDetailId: 'pd5',
-        prescriptionId: '685face23fc4c04e1bd96c1c',
-        medicineId: '685face13fc4c04e1bd96c12',
-        quantity: 20,
-        dosage: '2 tablets every 8 hours when in pain',
-        __v: 0,
-        createdAt: '2025-06-28T09:20:45.130+00:00',
-        updatedAt: '2025-06-28T09:20:45.130+00:00'
-    },
-    {
-        _id: '685face23fc4c04e1bd96c1f',
-        customPrescriptionDetailId: 'pd6',
-        prescriptionId: '685face23fc4c04e1bd96c1d',
-        medicineId: '685face13fc4c04e1bd96c11',
-        quantity: 30,
-        dosage: '1 tablet three times daily after meals',
-        __v: 0,
-        createdAt: '2025-06-28T16:05:22.350+00:00',
-        updatedAt: '2025-06-28T16:05:22.350+00:00'
+};
+const fetchQueues = async ()=>{
+    const data = await authenticatedGet('/queues');
+    if (data && Array.isArray(data)) {
+        mockQueues = data;
+        return data;
     }
-];
-const mockInvoices = [
-    {
-        _id: '685f6f336bd59d7487de3ce8',
-        prescriptionId: '685face23fc4c04e1bd96c14',
-        patientId: '685face13fc4c04e1bd96c07',
-        totalAmount: 12.0,
-        status: 'PAID',
-        __v: 0,
-        createdAt: '2025-06-28T10:15:22.456+00:00',
-        updatedAt: '2025-06-28T10:15:22.456+00:00'
-    },
-    {
-        _id: '685f6f336bd59d7487de3ce9',
-        prescriptionId: '685face23fc4c04e1bd96c1d',
-        patientId: '685face13fc4c04e1bd96c0e',
-        totalAmount: 36.0,
-        status: 'PAID',
-        __v: 0,
-        createdAt: '2025-06-28T17:30:14.444+00:00',
-        updatedAt: '2025-06-28T17:30:14.444+00:00'
-    },
-    {
-        _id: '685f6f336bd59d7487de3cea',
-        prescriptionId: '685face23fc4c04e1bd96c13',
-        patientId: '685face13fc4c04e1bd96c06',
-        totalAmount: 9.0,
-        status: 'UNPAID',
-        __v: 0,
-        createdAt: '2025-06-28T08:50:42.030+00:00',
-        updatedAt: '2025-06-28T08:50:42.030+00:00'
+    return [];
+};
+const fetchMedicines = async ()=>{
+    const data = await authenticatedGet('/medicines');
+    if (data && Array.isArray(data)) {
+        mockMedicines = data;
+        return data;
     }
-];
-const getAllUsers = ()=>[
+    return [];
+};
+const fetchPrescriptions = async ()=>{
+    const data = await authenticatedGet('/prescriptions');
+    if (data && Array.isArray(data)) {
+        mockPrescriptions = data;
+        return data;
+    }
+    return [];
+};
+const fetchPrescriptionDetails = async ()=>{
+    const data = await authenticatedGet('/prescription-details');
+    if (data && Array.isArray(data)) {
+        mockPrescriptionDetails = data;
+        return data;
+    }
+    return [];
+};
+const fetchInvoices = async ()=>{
+    const data = await authenticatedGet('/invoices');
+    if (data && Array.isArray(data)) {
+        mockInvoices = data;
+        return data;
+    }
+    return [];
+};
+const initializeData = async ()=>{
+    console.log('Initializing data from API or mock sources...');
+    try {
+        // Check if we have a valid token first
+        const token = getAuthToken();
+        if (!token) {
+            console.warn('No authentication token found, will use existing mock data');
+            return false;
+        }
+        // Try to validate token
+        try {
+            console.log('Validating token before fetching data...');
+            const currentUser = await authenticatedGet('/users/me');
+            if (!currentUser) {
+                console.error('Token validation failed, cannot fetch data');
+                return false;
+            }
+            console.log(`Token valid, logged in as ${currentUser.username} (${currentUser.role})`);
+        } catch (error) {
+            console.error('Error validating token:', error);
+            return false;
+        }
+        // Initialize with separate try/catch for each resource type
+        // This allows some data to load even if others fail
+        const results = {
+            users: false,
+            queues: false,
+            medicines: false,
+            prescriptions: false,
+            prescriptionDetails: false,
+            invoices: false
+        };
+        try {
+            await fetchUsers();
+            results.users = true;
+            console.log(`Users loaded: ${mockUsers.length} items`);
+        } catch (error) {
+            console.error('Error loading users:', error);
+        }
+        try {
+            await fetchQueues();
+            results.queues = true;
+            console.log(`Queues loaded: ${mockQueues.length} items`);
+        } catch (error) {
+            console.error('Error loading queues:', error);
+        }
+        try {
+            await fetchMedicines();
+            results.medicines = true;
+            console.log(`Medicines loaded: ${mockMedicines.length} items`);
+        } catch (error) {
+            console.error('Error loading medicines:', error);
+        }
+        try {
+            await fetchPrescriptions();
+            results.prescriptions = true;
+            console.log(`Prescriptions loaded: ${mockPrescriptions.length} items`);
+        } catch (error) {
+            console.error('Error loading prescriptions:', error);
+        }
+        try {
+            await fetchPrescriptionDetails();
+            results.prescriptionDetails = true;
+            console.log(`Prescription details loaded: ${mockPrescriptionDetails.length} items`);
+        } catch (error) {
+            console.error('Error loading prescription details:', error);
+        }
+        try {
+            await fetchInvoices();
+            results.invoices = true;
+            console.log(`Invoices loaded: ${mockInvoices.length} items`);
+        } catch (error) {
+            console.error('Error loading invoices:', error);
+        }
+        const successCount = Object.values(results).filter(Boolean).length;
+        console.log(`Data initialization complete: ${successCount}/6 resource types loaded successfully`);
+        return successCount > 0;
+    } catch (error) {
+        console.error('Error in data initialization:', error);
+        return false;
+    }
+};
+const getAllUsers = async ()=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
+    return [
         ...mockUsers
     ];
-const getUserById = (id)=>{
+};
+const getUserById = async (id)=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
     return mockUsers.find((user)=>user._id === id);
 };
-const getUsersByRole = (role)=>{
+const getUsersByRole = async (role)=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
     return mockUsers.filter((user)=>user.role === role);
 };
-const searchUsers = (searchTerm)=>{
+const searchUsers = async (searchTerm)=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
     const term = searchTerm.toLowerCase();
     return mockUsers.filter((user)=>user.fullName.toLowerCase().includes(term) || user.username.toLowerCase().includes(term) || user.email.toLowerCase().includes(term) || user.phone.includes(term) || user.userId.includes(term));
 };
-const getAllQueues = ()=>[
+const getAllQueues = async ()=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
+    return [
         ...mockQueues
     ];
-const getQueuesByStatus = (status)=>{
+};
+const getQueuesByStatus = async (status)=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
     return mockQueues.filter((queue)=>queue.status === status);
 };
-const getQueueByPatientId = (patientId)=>{
+const getQueueByPatientId = async (patientId)=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
     return mockQueues.find((queue)=>queue.patient === patientId);
 };
-const getAllMedicines = ()=>[
-        ...mockMedicines
-    ];
-const getMedicineById = (id)=>{
-    return mockMedicines.find((medicine)=>medicine._id === id);
-};
-const searchMedicines = (searchTerm)=>{
-    const term = searchTerm.toLowerCase();
-    return mockMedicines.filter((medicine)=>medicine.name.toLowerCase().includes(term) || medicine.customMedicineId.includes(term));
-};
-const getAllPrescriptions = ()=>[
-        ...mockPrescriptions
-    ];
-const getPrescriptionById = (id)=>{
-    return mockPrescriptions.find((prescription)=>prescription._id === id);
-};
-const getPrescriptionsByPatientId = (patientId)=>{
-    return mockPrescriptions.filter((prescription)=>prescription.patientId === patientId);
-};
-const getPrescriptionsByDoctorId = (doctorId)=>{
-    return mockPrescriptions.filter((prescription)=>prescription.doctorId === doctorId);
-};
-const getPrescriptionsByStatus = (status)=>{
-    return mockPrescriptions.filter((prescription)=>prescription.status === status);
-};
-const getAllPrescriptionDetails = ()=>[
-        ...mockPrescriptionDetails
-    ];
-const getPrescriptionDetailsByPrescriptionId = (prescriptionId)=>{
-    return mockPrescriptionDetails.filter((detail)=>detail.prescriptionId === prescriptionId);
-};
-const getMedicinesForPrescription = (prescriptionId)=>{
-    const details = getPrescriptionDetailsByPrescriptionId(prescriptionId);
-    return details.map((detail)=>{
-        const medicine = getMedicineById(detail.medicineId);
-        return {
-            ...detail,
-            medicine: medicine || null
-        };
-    });
-};
-const getAllInvoices = ()=>[
-        ...mockInvoices
-    ];
-const getInvoiceById = (id)=>{
-    return mockInvoices.find((invoice)=>invoice._id === id);
-};
-const getInvoiceByPrescriptionId = (prescriptionId)=>{
-    return mockInvoices.find((invoice)=>invoice.prescriptionId === prescriptionId);
-};
-const getInvoicesByPatientId = (patientId)=>{
-    return mockInvoices.filter((invoice)=>invoice.patientId === patientId);
-};
-const getInvoicesByStatus = (status)=>{
-    return mockInvoices.filter((invoice)=>invoice.status === status);
-};
-const getPatientFullPrescriptionDetails = (patientId)=>{
-    // Lấy tất cả đơn thuốc của bệnh nhân
-    const prescriptions = getPrescriptionsByPatientId(patientId);
-    return prescriptions.map((prescription)=>{
-        // Lấy thông tin bác sĩ
-        const doctor = getUserById(prescription.doctorId);
-        // Lấy chi tiết đơn thuốc và thông tin thuốc
-        const details = getPrescriptionDetailsByPrescriptionId(prescription._id);
-        const medicineDetails = details.map((detail)=>{
-            const medicine = getMedicineById(detail.medicineId);
-            return {
-                ...detail,
-                medicineName: medicine ? medicine.name : 'Unknown',
-                medicinePrice: medicine ? medicine.price : 0
-            };
-        });
-        // Lấy hóa đơn nếu có
-        const invoice = getInvoiceByPrescriptionId(prescription._id);
-        return {
-            ...prescription,
-            doctorName: doctor ? doctor.fullName : 'Unknown',
-            details: medicineDetails,
-            invoice: invoice || null
-        };
-    });
-};
-const getAllPatients = ()=>{
-    return mockUsers.filter((user)=>user.role === 'PATIENT');
-};
-const getAllDoctors = ()=>{
-    return mockUsers.filter((user)=>user.role === 'DOCTOR');
-};
-const mockPatients = getAllPatients();
-const generateMongoId = ()=>{
-    // MongoDB ObjectId format: 24 hex characters
-    const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
-    const randomPart = Array(16).fill(0).map(()=>Math.floor(Math.random() * 16).toString(16)).join('');
-    return timestamp + randomPart;
-};
-const generateNextUserId = ()=>{
-    // Tìm user ID lớn nhất hiện tại với pattern 'u' + number
-    const patientUserIds = mockUsers.filter((user)=>user.role === 'PATIENT' && /^u\d+$/.test(user.userId)).map((user)=>parseInt(user.userId.substring(1)));
-    const nextNumber = patientUserIds.length > 0 ? Math.max(...patientUserIds) + 1 : 1;
-    return `u${nextNumber}`;
-};
-// Hàm kiểm tra trùng lặp userId, username, email
-const checkDuplicates = (patient)=>{
-    const errors = [];
-    // Kiểm tra userId nếu được cung cấp
-    if (patient.userId && mockUsers.some((user)=>user.userId === patient.userId)) {
-        errors.push(`User ID '${patient.userId}' đã tồn tại`);
-    }
-    // Kiểm tra username nếu được cung cấp
-    if (patient.username && mockUsers.some((user)=>user.username === patient.username)) {
-        errors.push(`Username '${patient.username}' đã tồn tại`);
-    }
-    // Kiểm tra email nếu được cung cấp
-    if (patient.email && mockUsers.some((user)=>user.email === patient.email)) {
-        errors.push(`Email '${patient.email}' đã tồn tại`);
-    }
-    return errors;
-};
-const addPatient = (patient)=>{
-    // Kiểm tra thông tin trùng lặp
-    const duplicateErrors = checkDuplicates(patient);
-    if (duplicateErrors.length > 0) {
-        throw new Error(`Không thể thêm bệnh nhân: ${duplicateErrors.join(', ')}`);
-    }
-    // Tạo ID MongoDB-like mới
-    const _id = generateMongoId();
-    const now = new Date().toISOString();
-    // Tạo userId tự động nếu không được cung cấp
-    const userId = patient.userId || generateNextUserId();
-    const newPatient = {
-        _id,
-        userId,
-        username: patient.username || `patient_${userId}`,
-        email: patient.email || `${userId}@example.com`,
-        password: patient.password || '$2a$10$iC8rd3mgPjzq/0USw63zquFgGmqpSJpECiKvlK',
-        fullName: patient.fullName || 'Bệnh nhân mới',
-        phone: patient.phone || '',
-        role: 'PATIENT',
-        createdAt: now,
-        updatedAt: now,
-        __v: 0
-    };
-    mockUsers.push(newPatient);
-    return newPatient;
-};
-const updatePatient = (id, patientData)=>{
-    const index = mockUsers.findIndex((user)=>user._id === id);
-    if (index === -1) {
-        return null;
-    }
-    const currentUser = mockUsers[index];
-    // Kiểm tra trùng lặp với các user khác (không phải chính user này)
-    const duplicateErrors = [];
-    // Kiểm tra userId nếu thay đổi
-    if (patientData.userId && patientData.userId !== currentUser.userId) {
-        if (mockUsers.some((user)=>user.userId === patientData.userId)) {
-            duplicateErrors.push(`User ID '${patientData.userId}' đã tồn tại`);
-        }
-    }
-    // Kiểm tra username nếu thay đổi
-    if (patientData.username && patientData.username !== currentUser.username) {
-        if (mockUsers.some((user)=>user.username === patientData.username)) {
-            duplicateErrors.push(`Username '${patientData.username}' đã tồn tại`);
-        }
-    }
-    // Kiểm tra email nếu thay đổi
-    if (patientData.email && patientData.email !== currentUser.email) {
-        if (mockUsers.some((user)=>user.email === patientData.email)) {
-            duplicateErrors.push(`Email '${patientData.email}' đã tồn tại`);
-        }
-    }
-    if (duplicateErrors.length > 0) {
-        throw new Error(`Không thể cập nhật bệnh nhân: ${duplicateErrors.join(', ')}`);
-    }
-    // Cập nhật thông tin user
-    mockUsers[index] = {
-        ...currentUser,
-        ...patientData,
-        updatedAt: new Date().toISOString()
-    };
-    return mockUsers[index];
-};
-const deletePatient = (id)=>{
-    const index = mockUsers.findIndex((user)=>user._id === id);
-    if (index !== -1) {
-        const deletedPatient = mockUsers[index];
-        mockUsers.splice(index, 1);
-        return deletedPatient;
-    }
-    return null;
-};
-const addQueue = (patientId, status = 'waiting')=>{
+const addQueue = async (patientId, status = 'waiting')=>{
     // Kiểm tra xem patientId có tồn tại và là bệnh nhân không
-    const patient = getUserById(patientId);
+    const patient = await getUserById(patientId);
     if (!patient || patient.role !== 'PATIENT') {
         console.error('Invalid patient ID or user is not a patient');
         return null;
     }
     // Kiểm tra xem bệnh nhân đã có trong queue chưa
-    const existingQueue = getQueueByPatientId(patientId);
+    const existingQueue = await getQueueByPatientId(patientId);
     if (existingQueue) {
         console.warn('Patient already in queue');
         return existingQueue;
     }
     // Tạo queue mới
     const newQueue = {
-        _id: `queue_${Date.now()}`,
+        _id: generateMongoId(),
         patient: patientId,
         status: status,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         __v: 0
     };
-    mockQueues.push(newQueue);
-    return newQueue;
+    // Gọi API để tạo queue thực sự qua API
+    try {
+        // Đây là phần sẽ gọi API thực tế
+        // const response = await axiosInstance.post('/queues', newQueue, {
+        //   headers: { Authorization: `Bearer ${getAuthToken()}` }
+        // });
+        // if (response.data) {
+        //   mockQueues.push(response.data);
+        //   return response.data;
+        // }
+        // Hiện tại, chúng ta chỉ thêm vào cache
+        mockQueues.push(newQueue);
+        return newQueue;
+    } catch (error) {
+        console.error('Error creating queue:', error);
+        return null;
+    }
 };
-const updateQueueStatus = (queueId, status, doctorId)=>{
+const updateQueueStatus = async (queueId, status, doctorId)=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
     const index = mockQueues.findIndex((queue)=>queue._id === queueId);
     if (index !== -1) {
         const updatedQueue = {
@@ -710,42 +438,293 @@ const updateQueueStatus = (queueId, status, doctorId)=>{
             status: status,
             updatedAt: new Date().toISOString()
         };
-        // Nếu có doctorId và queue chuyển sang trạng thái in_progress, lưu doctorId vào queue
         if (doctorId && status === 'in_progress') {
             updatedQueue.doctorId = doctorId;
         }
+        // Thực tế sẽ gọi API để cập nhật queue
+        // const response = await axiosInstance.put(`/queues/${queueId}`, updatedQueue, {
+        //   headers: { Authorization: `Bearer ${getAuthToken()}` }
+        // });
+        // Hiện tại chỉ cập nhật trong cache
         mockQueues[index] = updatedQueue;
         return mockQueues[index];
     }
     return null;
 };
-const deleteQueue = (queueId)=>{
+const deleteQueue = async (queueId)=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
     const index = mockQueues.findIndex((queue)=>queue._id === queueId);
     if (index !== -1) {
         const deletedQueue = mockQueues[index];
+        // Thực tế sẽ gọi API để xóa queue
+        // await axiosInstance.delete(`/queues/${queueId}`, {
+        //   headers: { Authorization: `Bearer ${getAuthToken()}` }
+        // });
+        // Hiện tại chỉ xóa trong cache
         mockQueues.splice(index, 1);
         return deletedQueue;
     }
     return null;
 };
-const getWaitingPatients = ()=>{
-    const waitingQueues = getQueuesByStatus('waiting');
-    return waitingQueues.map((queue)=>{
-        const patient = getUserById(queue.patient);
-        return {
+const getAllMedicines = async ()=>{
+    if (mockMedicines.length === 0) {
+        await fetchMedicines();
+    }
+    return [
+        ...mockMedicines
+    ];
+};
+const getMedicineById = async (id)=>{
+    if (mockMedicines.length === 0) {
+        await fetchMedicines();
+    }
+    return mockMedicines.find((medicine)=>medicine._id === id);
+};
+const searchMedicines = async (searchTerm)=>{
+    if (mockMedicines.length === 0) {
+        await fetchMedicines();
+    }
+    const term = searchTerm.toLowerCase();
+    return mockMedicines.filter((medicine)=>medicine.name.toLowerCase().includes(term) || medicine.customMedicineId.toLowerCase().includes(term));
+};
+const getAllPrescriptions = async ()=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return [
+        ...mockPrescriptions
+    ];
+};
+const getPrescriptionById = async (id)=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return mockPrescriptions.find((prescription)=>prescription._id === id);
+};
+const getPrescriptionsByPatientId = async (patientId)=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return mockPrescriptions.filter((prescription)=>prescription.patientId === patientId);
+};
+const getPrescriptionsByDoctorId = async (doctorId)=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return mockPrescriptions.filter((prescription)=>prescription.doctorId === doctorId);
+};
+const getPrescriptionsByStatus = async (status)=>{
+    if (mockPrescriptions.length === 0) {
+        await fetchPrescriptions();
+    }
+    return mockPrescriptions.filter((prescription)=>prescription.status === status);
+};
+const getAllPrescriptionDetails = async ()=>{
+    if (mockPrescriptionDetails.length === 0) {
+        await fetchPrescriptionDetails();
+    }
+    return [
+        ...mockPrescriptionDetails
+    ];
+};
+const getPrescriptionDetailsByPrescriptionId = async (prescriptionId)=>{
+    if (mockPrescriptionDetails.length === 0) {
+        await fetchPrescriptionDetails();
+    }
+    return mockPrescriptionDetails.filter((detail)=>detail.prescriptionId === prescriptionId);
+};
+const getMedicinesForPrescription = async (prescriptionId)=>{
+    const details = await getPrescriptionDetailsByPrescriptionId(prescriptionId);
+    const result = [];
+    for (const detail of details){
+        const medicine = await getMedicineById(detail.medicineId);
+        result.push({
+            ...detail,
+            medicine: medicine || null
+        });
+    }
+    return result;
+};
+const getAllInvoices = async ()=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return [
+        ...mockInvoices
+    ];
+};
+const getInvoiceById = async (id)=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return mockInvoices.find((invoice)=>invoice._id === id);
+};
+const getInvoiceByPrescriptionId = async (prescriptionId)=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return mockInvoices.find((invoice)=>invoice.prescriptionId === prescriptionId);
+};
+const getInvoicesByPatientId = async (patientId)=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return mockInvoices.filter((invoice)=>invoice.patientId === patientId);
+};
+const getInvoicesByStatus = async (status)=>{
+    if (mockInvoices.length === 0) {
+        await fetchInvoices();
+    }
+    return mockInvoices.filter((invoice)=>invoice.status === status);
+};
+const getPatientFullPrescriptionDetails = async (patientId)=>{
+    const prescriptions = await getPrescriptionsByPatientId(patientId);
+    const result = [];
+    for (const prescription of prescriptions){
+        // Lấy thông tin bác sĩ
+        const doctor = await getUserById(prescription.doctorId);
+        // Lấy chi tiết đơn thuốc và thông tin thuốc
+        const details = await getPrescriptionDetailsByPrescriptionId(prescription._id);
+        const medicineDetails = [];
+        for (const detail of details){
+            const medicine = await getMedicineById(detail.medicineId);
+            medicineDetails.push({
+                ...detail,
+                medicineName: medicine ? medicine.name : 'Unknown',
+                medicinePrice: medicine ? medicine.price : 0
+            });
+        }
+        // Lấy hóa đơn nếu có
+        const invoice = await getInvoiceByPrescriptionId(prescription._id);
+        result.push({
+            ...prescription,
+            doctorName: doctor ? doctor.fullName : 'Unknown',
+            details: medicineDetails,
+            invoice: invoice || null
+        });
+    }
+    return result;
+};
+const getAllPatients = async ()=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
+    return mockUsers.filter((user)=>user.role === 'PATIENT');
+};
+const getAllDoctors = async ()=>{
+    if (mockUsers.length === 0) {
+        await fetchUsers();
+    }
+    return mockUsers.filter((user)=>user.role === 'DOCTOR');
+};
+const mockPatients = getAllPatients;
+const getWaitingPatients = async ()=>{
+    const waitingQueues = await getQueuesByStatus('waiting');
+    const result = [];
+    for (const queue of waitingQueues){
+        const patient = await getUserById(queue.patient);
+        result.push({
             queueInfo: queue,
             patientInfo: patient || null
-        };
-    });
+        });
+    }
+    return result;
 };
-const getAllQueuesWithPatientInfo = ()=>{
-    return mockQueues.map((queue)=>{
-        const patient = getUserById(queue.patient);
-        return {
+const getAllQueuesWithPatientInfo = async ()=>{
+    if (mockQueues.length === 0) {
+        await fetchQueues();
+    }
+    const result = [];
+    for (const queue of mockQueues){
+        const patient = await getUserById(queue.patient);
+        result.push({
             ...queue,
             patientInfo: patient || null
-        };
-    });
+        });
+    }
+    return result;
+};
+const generateMongoId = ()=>{
+    // MongoDB ObjectId format: 24 hex characters
+    const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+    const randomPart = Array(16).fill(0).map(()=>Math.floor(Math.random() * 16).toString(16)).join('');
+    return timestamp + randomPart;
+};
+const reloadData = async (dataTypes)=>{
+    if (!dataTypes || dataTypes.length === 0) {
+        // Reload tất cả
+        return await initializeData();
+    }
+    const promises = [];
+    if (dataTypes.includes('users')) promises.push(fetchUsers());
+    if (dataTypes.includes('queues')) promises.push(fetchQueues());
+    if (dataTypes.includes('medicines')) promises.push(fetchMedicines());
+    if (dataTypes.includes('prescriptions')) promises.push(fetchPrescriptions());
+    if (dataTypes.includes('prescriptionDetails')) promises.push(fetchPrescriptionDetails());
+    if (dataTypes.includes('invoices')) promises.push(fetchInvoices());
+    await Promise.all(promises);
+    return {
+        users: mockUsers.length,
+        queues: mockQueues.length,
+        medicines: mockMedicines.length,
+        prescriptions: mockPrescriptions.length,
+        prescriptionDetails: mockPrescriptionDetails.length,
+        invoices: mockInvoices.length
+    };
+};
+const fetchUsersAlternative = async ()=>{
+    console.log('Trying alternative method to fetch users...');
+    try {
+        // Thử lấy thông tin người dùng hiện tại (me endpoint)
+        const currentUser = await authenticatedGet('/users/me');
+        if (!currentUser) {
+            console.warn('Could not fetch current user');
+            return [];
+        }
+        console.log('Current user retrieved:', currentUser.role);
+        if (currentUser.role === 'ADMIN') {
+            // Nếu là admin, thử lại với endpoint /users
+            return await fetchUsers();
+        }
+        // Không phải admin, phải dùng cách khác
+        // 1. Nếu là bác sĩ, có thể lấy danh sách bệnh nhân được chỉ định
+        // 2. Nếu là receptionist, thử lấy dữ liệu theo cách khác
+        // Endpoint hoặc API call thích hợp theo role
+        // Ví dụ: const patients = await authenticatedGet('/appointments/patients');
+        // Tạm thời giữ nguyên dữ liệu hiện tại nếu có
+        return mockUsers.length > 0 ? mockUsers : [];
+    } catch (error) {
+        console.error('Alternative user fetch failed:', error);
+        return [];
+    }
+};
+const sendQueueToDoctor = async (queueId)=>{
+    try {
+        // Lấy thông tin queue
+        const queue = mockQueues.find((q)=>q._id === queueId);
+        if (!queue) {
+            console.error(`Queue with ID ${queueId} not found.`);
+            return null;
+        }
+        // Kiểm tra xem queue đã được gán cho bác sĩ chưa
+        if (!queue.doctorId) {
+            console.error(`Queue ${queueId} has no assigned doctor.`);
+            return null;
+        }
+        // Trong môi trường thực tế, tại đây sẽ có logic gửi thông báo đến bác sĩ
+        // Trong mock data, ta chỉ cần đảm bảo trạng thái là in_progress
+        if (queue.status !== 'in_progress') {
+            queue.status = 'in_progress';
+            queue.updatedAt = new Date().toISOString();
+        }
+        console.log(`Mock: Queue ${queueId} information sent to doctor ${queue.doctorId}`);
+        return queue;
+    } catch (error) {
+        console.error('Error sending queue information to doctor:', error);
+        throw error;
+    }
 };
 }}),
 "[project]/src/app/receptionistPage/Dashboard.tsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {
@@ -764,44 +743,78 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/calendar.js [app-ssr] (ecmascript) <export default as CalendarIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__UserIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/user.js [app-ssr] (ecmascript) <export default as UserIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOutIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/log-out.js [app-ssr] (ecmascript) <export default as LogOutIcon>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2d$big$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircleIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/circle-check-big.js [app-ssr] (ecmascript) <export default as CheckCircleIcon>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$ccw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCcw$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/refresh-ccw.js [app-ssr] (ecmascript) <export default as RefreshCcw>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-ssr] (ecmascript)");
+;
 ;
 ;
 ;
 ;
 ;
 function Dashboard({ onNavigate }) {
-    const { user, logout } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
-    // State for dashboard statistics
+    const { user, logout, token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
+    // State cho các thống kê từ mock data
     const [patientCount, setPatientCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(0);
     const [waitingCount, setWaitingCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(0);
     const [completedTodayCount, setCompletedTodayCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(0);
     const [newPatientsToday, setNewPatientsToday] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(0);
-    // Load data on component mount
+    // State cho danh sách queue đã hoàn thành
+    const [completedQueues, setCompletedQueues] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [loadingQueues, setLoadingQueues] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [queueError, setQueueError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    // Load dữ liệu từ API khi component mount
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        // Get total patient count
-        const patients = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPatients"])();
-        setPatientCount(patients.length);
-        // Calculate new patients added today
-        const today = new Date().toISOString().split('T')[0];
-        const newPatients = patients.filter((p)=>p.createdAt.startsWith(today)).length;
-        setNewPatientsToday(newPatients);
-        // Get waiting queue count
-        const waitingQueues = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesByStatus"])('waiting');
-        setWaitingCount(waitingQueues.length);
-        // Get completed queue count for today
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0);
-        const completedQueues = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesByStatus"])('completed');
-        const completedToday = completedQueues.filter((q)=>{
-            const queueDate = new Date(q.updatedAt);
-            return queueDate >= todayStart;
-        });
-        setCompletedTodayCount(completedToday.length);
-    }, []);
-    // Dashboard statistics
+        const loadData = async ()=>{
+            try {
+                // Initialize data from API
+                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["initializeData"])();
+                // Lấy tổng số bệnh nhân
+                const patients = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPatients"])();
+                setPatientCount(patients.length);
+                // Tính số bệnh nhân mới hôm nay
+                const today = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại dạng YYYY-MM-DD
+                const newPatients = patients.filter((p)=>p.createdAt.startsWith(today)).length;
+                setNewPatientsToday(newPatients);
+                // Lấy số bệnh nhân đang chờ
+                const waitingQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesByStatus"])('waiting');
+                setWaitingCount(waitingQueues.length);
+                // Lấy số bệnh nhân đã hoàn thành khám hôm nay
+                const todayStart = new Date();
+                todayStart.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
+                const completedQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesByStatus"])('completed');
+                const completedToday = completedQueues.filter((q)=>{
+                    const queueDate = new Date(q.updatedAt);
+                    return queueDate >= todayStart;
+                });
+                setCompletedTodayCount(completedToday.length);
+                // Lấy danh sách queue đã hoàn thành
+                await fetchCompletedQueues();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        };
+        loadData();
+    }, [
+        token
+    ]);
+    // Thống kê hiển thị với dữ liệu từ mock data
     const stats = [
+        {
+            title: 'Lịch hẹn hôm nay',
+            value: `${waitingCount + completedTodayCount}`,
+            icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarIcon$3e$__["CalendarIcon"], {
+                className: "h-6 w-6 text-blue-600"
+            }, void 0, false, {
+                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                lineNumber: 76,
+                columnNumber: 13
+            }, this),
+            change: `${waitingCount} chờ`,
+            changeType: 'neutral'
+        },
         {
             title: 'Đang chờ khám',
             value: `${waitingCount}`,
@@ -809,7 +822,7 @@ function Dashboard({ onNavigate }) {
                 className: "h-6 w-6 text-yellow-600"
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                lineNumber: 57,
+                lineNumber: 83,
                 columnNumber: 13
             }, this),
             change: waitingCount > 0 ? `${waitingCount} bệnh nhân` : 'Không có',
@@ -822,10 +835,10 @@ function Dashboard({ onNavigate }) {
                 className: "h-6 w-6 text-green-600"
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                lineNumber: 64,
+                lineNumber: 90,
                 columnNumber: 13
             }, this),
-            change: completedTodayCount > 0 ? `${Math.round(completedTodayCount / (waitingCount + completedTodayCount) * 100)}%` : '0%',
+            change: completedTodayCount > 0 ? `${Math.round(completedTodayCount / (completedTodayCount + waitingCount || 1) * 100)}%` : '0%',
             changeType: 'increase'
         },
         {
@@ -835,13 +848,121 @@ function Dashboard({ onNavigate }) {
                 className: "h-6 w-6 text-purple-600"
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                lineNumber: 73,
+                lineNumber: 99,
                 columnNumber: 13
             }, this),
             change: `+${newPatientsToday} mới`,
             changeType: 'increase'
         }
     ];
+    const appointments = [
+        {
+            id: 1,
+            patient: 'Nguyễn Văn A',
+            time: '9:00 AM',
+            doctor: 'Dr. Nguyễn Thị Hương',
+            department: 'Nội khoa',
+            status: 'Đang chờ'
+        },
+        {
+            id: 2,
+            patient: 'Trần Văn B',
+            time: '9:30 AM',
+            doctor: 'Dr. Lê Minh Tuấn',
+            department: 'Tim mạch',
+            status: 'Đang khám'
+        },
+        {
+            id: 3,
+            patient: 'Phạm Thị C',
+            time: '10:00 AM',
+            doctor: 'Dr. Trần Thị Mai',
+            department: 'Da liễu',
+            status: 'Đặt trước'
+        },
+        {
+            id: 4,
+            patient: 'Hoàng Văn D',
+            time: '10:30 AM',
+            doctor: 'Dr. Nguyễn Thị Hương',
+            department: 'Nội khoa',
+            status: 'Đặt trước'
+        },
+        {
+            id: 5,
+            patient: 'Lê Thị E',
+            time: '11:00 AM',
+            doctor: 'Dr. Phạm Văn Nam',
+            department: 'Nhãn khoa',
+            status: 'Đặt trước'
+        }
+    ];
+    // Hàm lấy danh sách queue đã hoàn thành
+    const fetchCompletedQueues = async ()=>{
+        setLoadingQueues(true);
+        setQueueError(null);
+        try {
+            if (token) {
+                // Sử dụng API với token
+                try {
+                    console.log("Fetching completed queues from API...");
+                    const response = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesByStatus"])('completed', token);
+                    console.log("API response:", response);
+                    // Format lại dữ liệu nếu cần
+                    const formattedQueues = response.map((queue)=>({
+                            ...queue,
+                            patientName: queue.patient && typeof queue.patient === 'object' ? queue.patient.fullName : 'Không có tên',
+                            doctorName: queue.doctorId && typeof queue.doctorId === 'object' ? queue.doctorId.fullName : 'Không rõ bác sĩ'
+                        }));
+                    setCompletedQueues(formattedQueues);
+                } catch (apiError) {
+                    console.error("API error:", apiError);
+                    setQueueError(`Lỗi khi lấy dữ liệu từ API: ${apiError.message}`);
+                    // Fallback to mock data
+                    await fetchCompletedQueuesMock();
+                }
+            } else {
+                // Sử dụng mock data nếu không có token
+                await fetchCompletedQueuesMock();
+            }
+        } catch (error) {
+            console.error("Error fetching completed queues:", error);
+            setQueueError(`Lỗi: ${error.message}`);
+        } finally{
+            setLoadingQueues(false);
+        }
+    };
+    // Hàm fallback sử dụng mock data
+    const fetchCompletedQueuesMock = async ()=>{
+        try {
+            console.log("Using mock data for completed queues...");
+            await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["initializeData"])();
+            // Lấy danh sách queue đã hoàn thành từ mock data
+            const mockCompletedQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesByStatus"])('completed');
+            // Format lại dữ liệu để hiển thị
+            const formattedMockQueues = await Promise.all(mockCompletedQueues.map(async (queue)=>{
+                // Giả sử bạn có các hàm mock để lấy thông tin bệnh nhân và bác sĩ
+                let patientName = 'Không có tên';
+                // Xử lý các cấu trúc dữ liệu khác nhau có thể có
+                if (queue.patientInfo && queue.patientInfo.fullName) {
+                    patientName = queue.patientInfo.fullName;
+                } else if (queue.patient && typeof queue.patient === 'object' && queue.patient.fullName) {
+                    patientName = queue.patient.fullName;
+                }
+                return {
+                    ...queue,
+                    patientName: patientName,
+                    doctorName: queue.doctorId ? `Bác sĩ ${queue._id.substring(0, 5)}` : 'Không rõ bác sĩ',
+                    completedAt: new Date(queue.updatedAt).toLocaleString('vi-VN')
+                };
+            }));
+            setCompletedQueues(formattedMockQueues);
+        } catch (mockError) {
+            console.error("Error loading mock data for completed queues:", mockError);
+            setQueueError(`Không thể tải dữ liệu mô phỏng: ${mockError.message}`);
+            setCompletedQueues([]);
+        }
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "min-h-screen bg-gray-50",
         children: [
@@ -855,7 +976,7 @@ function Dashboard({ onNavigate }) {
                             children: "Hệ thống Lễ tân MediClinic"
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                            lineNumber: 84,
+                            lineNumber: 197,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -869,7 +990,7 @@ function Dashboard({ onNavigate }) {
                                             children: user?.fullName || 'Người dùng'
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                            lineNumber: 87,
+                                            lineNumber: 200,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -877,13 +998,13 @@ function Dashboard({ onNavigate }) {
                                             children: "Lễ tân"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                            lineNumber: 88,
+                                            lineNumber: 201,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                    lineNumber: 86,
+                                    lineNumber: 199,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -892,12 +1013,12 @@ function Dashboard({ onNavigate }) {
                                         className: "h-5 w-5 text-gray-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                        lineNumber: 91,
+                                        lineNumber: 204,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                    lineNumber: 90,
+                                    lineNumber: 203,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -908,29 +1029,29 @@ function Dashboard({ onNavigate }) {
                                         size: 20
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                        lineNumber: 98,
+                                        lineNumber: 211,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                    lineNumber: 93,
+                                    lineNumber: 206,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                            lineNumber: 85,
+                            lineNumber: 198,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                    lineNumber: 83,
+                    lineNumber: 196,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                lineNumber: 82,
+                lineNumber: 195,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -951,7 +1072,7 @@ function Dashboard({ onNavigate }) {
                                                     children: stat.icon
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 112,
+                                                    lineNumber: 225,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -963,7 +1084,7 @@ function Dashboard({ onNavigate }) {
                                                                 children: stat.title
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                                lineNumber: 115,
+                                                                lineNumber: 228,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("dd", {
@@ -972,34 +1093,34 @@ function Dashboard({ onNavigate }) {
                                                                     children: stat.value
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                                    lineNumber: 117,
+                                                                    lineNumber: 230,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                                lineNumber: 116,
+                                                                lineNumber: 229,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                        lineNumber: 114,
+                                                        lineNumber: 227,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 113,
+                                                    lineNumber: 226,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                            lineNumber: 111,
+                                            lineNumber: 224,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 223,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1012,7 +1133,7 @@ function Dashboard({ onNavigate }) {
                                                     children: stat.change
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 125,
+                                                    lineNumber: 238,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1020,36 +1141,316 @@ function Dashboard({ onNavigate }) {
                                                     children: " so với hôm qua"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 131,
+                                                    lineNumber: 244,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                            lineNumber: 124,
+                                            lineNumber: 237,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                        lineNumber: 123,
+                                        lineNumber: 236,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, index, true, {
                                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                lineNumber: 109,
+                                lineNumber: 222,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                        lineNumber: 107,
+                        lineNumber: 220,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "h-6"
-                    }, void 0, false, {
+                        className: "bg-white shadow rounded-lg mb-6",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "px-4 py-5 sm:px-6 flex justify-between items-center",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        className: "text-lg font-medium leading-6 text-gray-900",
+                                        children: "Danh sách bệnh nhân đã hoàn thành khám"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                        lineNumber: 254,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        onClick: fetchCompletedQueues,
+                                        className: "px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded flex items-center",
+                                        disabled: loadingQueues,
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$ccw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCcw$3e$__["RefreshCcw"], {
+                                                size: 14,
+                                                className: `mr-1 ${loadingQueues ? 'animate-spin' : ''}`
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                lineNumber: 260,
+                                                columnNumber: 15
+                                            }, this),
+                                            "Làm mới"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                        lineNumber: 255,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                lineNumber: 253,
+                                columnNumber: 11
+                            }, this),
+                            queueError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "px-4 py-3 bg-red-50 text-red-700 border-t border-b border-red-200",
+                                children: queueError
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                lineNumber: 266,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "border-t border-gray-200",
+                                children: loadingQueues ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "flex justify-center items-center py-8",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                            lineNumber: 274,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                            className: "ml-2 text-gray-600",
+                                            children: "Đang tải dữ liệu..."
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                            lineNumber: 275,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                    lineNumber: 273,
+                                    columnNumber: 15
+                                }, this) : completedQueues.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "overflow-x-auto",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
+                                            className: "min-w-full divide-y divide-gray-200",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
+                                                    className: "bg-gray-50",
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                                scope: "col",
+                                                                className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+                                                                children: "Bệnh nhân"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                lineNumber: 282,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                                scope: "col",
+                                                                className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+                                                                children: "Bác sĩ"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                lineNumber: 285,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                                scope: "col",
+                                                                className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+                                                                children: "Ngày hoàn thành"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                lineNumber: 288,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                                                scope: "col",
+                                                                className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+                                                                children: "Trạng thái"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                lineNumber: 291,
+                                                                columnNumber: 23
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                        lineNumber: 281,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                    lineNumber: 280,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
+                                                    className: "bg-white divide-y divide-gray-200",
+                                                    children: completedQueues.slice(0, 5).map((queue)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                            className: "hover:bg-gray-50",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                    className: "px-6 py-4 whitespace-nowrap",
+                                                                    children: [
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                            className: "text-sm font-medium text-gray-900",
+                                                                            children: queue.patientName || (queue.patient && typeof queue.patient === 'object' ? queue.patient.fullName : 'Không có tên')
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                            lineNumber: 300,
+                                                                            columnNumber: 27
+                                                                        }, this),
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                            className: "text-sm text-gray-500",
+                                                                            children: [
+                                                                                "ID: ",
+                                                                                queue.patient && typeof queue.patient === 'object' ? queue.patient.userId : queue.patient || 'N/A'
+                                                                            ]
+                                                                        }, void 0, true, {
+                                                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                            lineNumber: 304,
+                                                                            columnNumber: 27
+                                                                        }, this)
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                    lineNumber: 299,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                    className: "px-6 py-4 whitespace-nowrap",
+                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                        className: "text-sm text-gray-900",
+                                                                        children: queue.doctorName || (queue.doctorId && typeof queue.doctorId === 'object' ? queue.doctorId.fullName : 'Không rõ bác sĩ')
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                        lineNumber: 310,
+                                                                        columnNumber: 27
+                                                                    }, this)
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                    lineNumber: 309,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                    className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500",
+                                                                    children: new Date(queue.updatedAt).toLocaleString('vi-VN')
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                    lineNumber: 315,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                                    className: "px-6 py-4 whitespace-nowrap",
+                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                        className: "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800",
+                                                                        children: [
+                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2d$big$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircleIcon$3e$__["CheckCircleIcon"], {
+                                                                                size: 14,
+                                                                                className: "mr-1"
+                                                                            }, void 0, false, {
+                                                                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                                lineNumber: 320,
+                                                                                columnNumber: 29
+                                                                            }, this),
+                                                                            " Hoàn thành"
+                                                                        ]
+                                                                    }, void 0, true, {
+                                                                        fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                        lineNumber: 319,
+                                                                        columnNumber: 27
+                                                                    }, this)
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                                    lineNumber: 318,
+                                                                    columnNumber: 25
+                                                                }, this)
+                                                            ]
+                                                        }, queue._id, true, {
+                                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                            lineNumber: 298,
+                                                            columnNumber: 23
+                                                        }, this))
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                    lineNumber: 296,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                            lineNumber: 279,
+                                            columnNumber: 17
+                                        }, this),
+                                        completedQueues.length > 5 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "bg-gray-50 px-4 py-3 border-t border-gray-200 sm:px-6",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-sm text-gray-700",
+                                                children: [
+                                                    "Hiển thị 5/",
+                                                    completedQueues.length,
+                                                    " bệnh nhân đã hoàn thành khám"
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                lineNumber: 330,
+                                                columnNumber: 21
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                            lineNumber: 329,
+                                            columnNumber: 19
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                    lineNumber: 278,
+                                    columnNumber: 15
+                                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "text-center py-8 text-gray-500",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2d$big$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircleIcon$3e$__["CheckCircleIcon"], {
+                                            className: "mx-auto h-12 w-12 text-gray-400 mb-2"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                            lineNumber: 338,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "text-gray-500",
+                                            children: "Không có bệnh nhân nào đã hoàn thành khám"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                            lineNumber: 339,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                    lineNumber: 337,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                lineNumber: 271,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                        lineNumber: 139,
+                        lineNumber: 252,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1062,12 +1463,12 @@ function Dashboard({ onNavigate }) {
                                     children: "Thao tác nhanh"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                    lineNumber: 144,
+                                    lineNumber: 348,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                lineNumber: 143,
+                                lineNumber: 347,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1085,12 +1486,12 @@ function Dashboard({ onNavigate }) {
                                                         className: "h-6 w-6 text-blue-600"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                        lineNumber: 154,
+                                                        lineNumber: 358,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 153,
+                                                    lineNumber: 357,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1101,7 +1502,7 @@ function Dashboard({ onNavigate }) {
                                                             children: "Quản lý bệnh nhân"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                            lineNumber: 157,
+                                                            lineNumber: 361,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1109,19 +1510,19 @@ function Dashboard({ onNavigate }) {
                                                             children: "Xem và quản lý thông tin bệnh nhân"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                            lineNumber: 158,
+                                                            lineNumber: 362,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 156,
+                                                    lineNumber: 360,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                            lineNumber: 149,
+                                            lineNumber: 353,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1134,61 +1535,12 @@ function Dashboard({ onNavigate }) {
                                                         className: "h-6 w-6 text-green-600"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                        lineNumber: 168,
+                                                        lineNumber: 372,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 167,
-                                                    columnNumber: 17
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "flex-1 min-w-0",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                            className: "text-sm font-medium text-gray-900",
-                                                            children: "Quản lý phòng chờ"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                            lineNumber: 171,
-                                                            columnNumber: 19
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                            className: "text-sm text-gray-500",
-                                                            children: "Quản lý bệnh nhân chờ khám"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                            lineNumber: 172,
-                                                            columnNumber: 19
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 170,
-                                                    columnNumber: 17
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                            lineNumber: 163,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 cursor-pointer",
-                                            onClick: ()=>onNavigate('AppointmentBooking'),
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "flex-shrink-0 bg-purple-100 rounded-md p-2",
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clock$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ClockIcon$3e$__["ClockIcon"], {
-                                                        className: "h-6 w-6 text-purple-600"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                        lineNumber: 182,
-                                                        columnNumber: 19
-                                                    }, this)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 181,
+                                                    lineNumber: 371,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1199,56 +1551,105 @@ function Dashboard({ onNavigate }) {
                                                             children: "Quản lý lịch hẹn"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                            lineNumber: 185,
+                                                            lineNumber: 375,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                             className: "text-sm text-gray-500",
-                                                            children: "Đặt và quản lý lịch hẹn"
+                                                            children: "Thêm và chỉnh sửa lịch hẹn"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                            lineNumber: 186,
+                                                            lineNumber: 376,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                                    lineNumber: 184,
+                                                    lineNumber: 374,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                            lineNumber: 177,
+                                            lineNumber: 367,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 cursor-pointer",
+                                            onClick: ()=>onNavigate('MedicationHistory'),
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "flex-shrink-0 bg-purple-100 rounded-md p-2",
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clock$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ClockIcon$3e$__["ClockIcon"], {
+                                                        className: "h-6 w-6 text-purple-600"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                        lineNumber: 386,
+                                                        columnNumber: 19
+                                                    }, this)
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                    lineNumber: 385,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "flex-1 min-w-0",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                            className: "text-sm font-medium text-gray-900",
+                                                            children: "Báo cáo"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                            lineNumber: 389,
+                                                            columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                            className: "text-sm text-gray-500",
+                                                            children: "Xem báo cáo hoạt động"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                            lineNumber: 390,
+                                                            columnNumber: 19
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                                    lineNumber: 388,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
+                                            lineNumber: 381,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                    lineNumber: 147,
+                                    lineNumber: 351,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                                lineNumber: 146,
+                                lineNumber: 350,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                        lineNumber: 142,
+                        lineNumber: 346,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-                lineNumber: 105,
+                lineNumber: 218,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/receptionistPage/Dashboard.tsx",
-        lineNumber: 80,
+        lineNumber: 193,
         columnNumber: 5
     }, this);
 }
@@ -1267,11 +1668,15 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__UserIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/user.js [app-ssr] (ecmascript) <export default as UserIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$save$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__SaveIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/save.js [app-ssr] (ecmascript) <export default as SaveIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-ssr] (ecmascript)");
 ;
 ;
 ;
 ;
-function PatientForm({ patient, onClose, onSave }) {
+;
+;
+function PatientForm({ patient, onClose, onSave, isLoading = false }) {
     const [formData, setFormData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
         fullName: '',
         userId: '',
@@ -1282,6 +1687,48 @@ function PatientForm({ patient, onClose, onSave }) {
         role: 'PATIENT'
     });
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [fieldErrors, setFieldErrors] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({});
+    const [internalLoading, setInternalLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    // Combine external and internal loading states
+    const loading = isLoading || internalLoading;
+    const [successMessage, setSuccessMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const { token, user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
+    // Define mock functions for fallback
+    const addPatient = async (patientData)=>{
+        try {
+            // Create a new patient object with MongoDB-like ID
+            const newPatient = {
+                ...patientData,
+                _id: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["generateMongoId"])(),
+                userId: patientData.userId || `PA${Date.now()}`,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                __v: 0
+            };
+            console.log("Using mock function to add patient:", newPatient);
+            return newPatient;
+        } catch (error) {
+            console.error("Error in mock addPatient:", error);
+            return null;
+        }
+    };
+    const updatePatient = (id, patientData)=>{
+        try {
+            // In a real implementation with a database, this would update the record
+            // Here we just return the merged data as if it was updated
+            const updatedPatient = {
+                ...patient,
+                ...patientData,
+                _id: id,
+                updatedAt: new Date().toISOString()
+            };
+            console.log(`Using mock function to update patient with ID ${id}:`, updatedPatient);
+            return updatedPatient;
+        } catch (error) {
+            console.error(`Error in mock updatePatient for ${id}:`, error);
+            return null;
+        }
+    };
     const isEditing = !!patient;
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (patient) {
@@ -1298,6 +1745,17 @@ function PatientForm({ patient, onClose, onSave }) {
     }, [
         patient
     ]);
+    // Clear success message after 5 seconds
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if (successMessage) {
+            const timer = setTimeout(()=>{
+                setSuccessMessage(null);
+            }, 5000);
+            return ()=>clearTimeout(timer);
+        }
+    }, [
+        successMessage
+    ]);
     const handleChange = (e)=>{
         const { name, value } = e.target;
         setFormData((prev)=>({
@@ -1306,11 +1764,59 @@ function PatientForm({ patient, onClose, onSave }) {
             }));
         // Xóa lỗi khi người dùng thay đổi input
         setError(null);
+        setFieldErrors((prev)=>({
+                ...prev,
+                [name]: ''
+            }));
     };
-    const handleSubmit = (e)=>{
+    const validateForm = ()=>{
+        const errors = {};
+        let isValid = true;
+        // Validate required fields
+        if (!formData.fullName.trim()) {
+            errors.fullName = 'Họ và tên là bắt buộc';
+            isValid = false;
+        }
+        if (!formData.username.trim()) {
+            errors.username = 'Tên đăng nhập là bắt buộc';
+            isValid = false;
+        }
+        if (!formData.email.trim()) {
+            errors.email = 'Email là bắt buộc';
+            isValid = false;
+        }
+        if (!formData.phone.trim()) {
+            errors.phone = 'Số điện thoại là bắt buộc';
+            isValid = false;
+        }
+        // Validate email format
+        if (formData.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
+            errors.email = 'Email không hợp lệ. Vui lòng kiểm tra lại.';
+            isValid = false;
+        }
+        // Validate phone number (adjust for Vietnamese phone numbers)
+        if (formData.phone && !/^[0-9]{10,11}$/.test(formData.phone.replace(/\s/g, ''))) {
+            errors.phone = 'Số điện thoại phải có 10-11 số.';
+            isValid = false;
+        }
+        // Validate password requirement for new users
+        if (!isEditing && (!formData.password || formData.password.length < 6)) {
+            errors.password = 'Mật khẩu phải có ít nhất 6 ký tự.';
+            isValid = false;
+        }
+        setFieldErrors(errors);
+        return isValid;
+    };
+    const handleSubmit = async (e)=>{
         e.preventDefault();
         // Xóa lỗi trước khi submit
         setError(null);
+        setSuccessMessage(null);
+        // Validate form first
+        if (!validateForm()) {
+            return;
+        }
+        setInternalLoading(true);
         // Chuẩn bị dữ liệu người dùng
         const userData = {
             ...formData,
@@ -1322,30 +1828,119 @@ function PatientForm({ patient, onClose, onSave }) {
             role: formData.role
         };
         try {
+            let resultPatient = null;
             if (isEditing && patient && patient._id) {
                 // Cập nhật bệnh nhân hiện có
-                const updatedPatient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updatePatient"])(patient._id, userData);
-                if (updatedPatient) {
-                    alert(`Đã cập nhật thông tin bệnh nhân: ${updatedPatient.fullName}`);
+                if (token) {
+                    try {
+                        // Attempt to use the API first
+                        console.log('Using API to update patient');
+                        const response = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updateUser"])(patient._id, userData, token);
+                        resultPatient = response;
+                        console.log('API update successful:', response);
+                    } catch (apiError) {
+                        console.error('API error when updating patient:', apiError);
+                        // Hiển thị chi tiết lỗi từ API
+                        if (apiError.response) {
+                            if (apiError.response.data && apiError.response.data.field) {
+                                const fieldName = apiError.response.data.field;
+                                setFieldErrors({
+                                    [fieldName]: apiError.response.data.message || `Lỗi với trường ${fieldName}`
+                                });
+                            } else {
+                                setError(`Lỗi từ server: ${apiError.response.data?.message || apiError.message}`);
+                            }
+                        } else {
+                            setError(`Lỗi kết nối: ${apiError.message}`);
+                        }
+                        console.log('Falling back to mock update function');
+                        // Fallback to mock update if API fails
+                        resultPatient = updatePatient(patient._id, userData);
+                    }
+                } else {
+                    // Use mock update if no token is available
+                    console.log('No token available, using mock update function');
+                    resultPatient = updatePatient(patient._id, userData);
+                }
+                if (resultPatient) {
+                    setSuccessMessage(`Đã cập nhật thông tin bệnh nhân: ${resultPatient.fullName}`);
                 } else {
                     setError('Không thể cập nhật thông tin bệnh nhân. Vui lòng thử lại.');
+                    setInternalLoading(false);
                     return;
                 }
             } else {
                 // Thêm bệnh nhân mới
-                const newPatient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addPatient"])(userData);
-                if (newPatient) {
-                    alert(`Đã thêm bệnh nhân mới: ${newPatient.fullName} (ID: ${newPatient.userId})`);
+                if (token) {
+                    try {
+                        // Attempt to use the API first
+                        console.log('Using API to create new patient');
+                        console.log('User role:', user?.role);
+                        console.log('Data being sent:', userData);
+                        const response = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createUser"])(userData, token);
+                        resultPatient = response;
+                        console.log('API creation successful:', response);
+                    } catch (apiError) {
+                        console.error('API error when creating patient:', apiError);
+                        // Hiển thị chi tiết lỗi từ API
+                        if (apiError.response) {
+                            console.log('API error response:', apiError.response.data);
+                            if (apiError.response.data && apiError.response.data.field) {
+                                const fieldName = apiError.response.data.field;
+                                setFieldErrors({
+                                    [fieldName]: apiError.response.data.message || `Lỗi với trường ${fieldName}`
+                                });
+                            } else {
+                                setError(`Lỗi từ server: ${apiError.response.data?.message || apiError.message}`);
+                            }
+                            // Nếu lỗi là không có quyền, không fallback
+                            if (apiError.response.status === 403) {
+                                setError(`Bạn không có quyền tạo bệnh nhân mới. Vui lòng liên hệ admin.`);
+                                setInternalLoading(false);
+                                return;
+                            }
+                        } else {
+                            setError(`Lỗi kết nối: ${apiError.message}`);
+                        }
+                        console.log('Falling back to mock creation function');
+                        // Fallback to mock creation if API fails
+                        resultPatient = await addPatient(userData);
+                    }
+                } else {
+                    // Use mock creation if no token is available
+                    console.log('No token available, using mock creation function');
+                    resultPatient = await addPatient(userData);
+                }
+                if (resultPatient) {
+                    setSuccessMessage(`Đã thêm bệnh nhân mới: ${resultPatient.fullName} (ID: ${resultPatient.userId})`);
+                    // Reset form after successful creation if not using API or if specifically requested
+                    if (!token) {
+                        setFormData({
+                            fullName: '',
+                            userId: '',
+                            username: '',
+                            email: '',
+                            phone: '',
+                            password: '',
+                            role: 'PATIENT'
+                        });
+                    }
                 } else {
                     setError('Không thể thêm bệnh nhân mới. Vui lòng thử lại.');
+                    setInternalLoading(false);
                     return;
                 }
             }
             // Gọi onSave callback nếu có để thông báo lên component cha
             if (onSave) {
-                onSave(userData);
+                onSave(resultPatient || userData);
             }
-            onClose();
+            // Nếu thành công và đang chỉnh sửa, đóng form sau 1 giây
+            if (isEditing) {
+                setTimeout(()=>{
+                    onClose();
+                }, 1000);
+            }
         } catch (error) {
             console.error('Lỗi khi lưu bệnh nhân:', error);
             // Hiển thị thông báo lỗi
@@ -1354,6 +1949,8 @@ function PatientForm({ patient, onClose, onSave }) {
             } else {
                 setError('Đã xảy ra lỗi khi lưu thông tin bệnh nhân.');
             }
+        } finally{
+            setInternalLoading(false);
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1370,7 +1967,7 @@ function PatientForm({ patient, onClose, onSave }) {
                                 className: "mr-2 text-black"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 106,
+                                lineNumber: 324,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -1378,34 +1975,35 @@ function PatientForm({ patient, onClose, onSave }) {
                                 children: isEditing ? 'Sửa thông tin bệnh nhân' : 'Thêm bệnh nhân mới'
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 107,
+                                lineNumber: 325,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                        lineNumber: 105,
+                        lineNumber: 323,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: onClose,
                         className: "p-1.5 rounded-full hover:bg-gray-200 text-black transition-colors",
+                        disabled: loading,
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__XIcon$3e$__["XIcon"], {
                             size: 20
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                            lineNumber: 115,
+                            lineNumber: 334,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                        lineNumber: 111,
+                        lineNumber: 329,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                lineNumber: 104,
+                lineNumber: 322,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1419,12 +2017,27 @@ function PatientForm({ patient, onClose, onSave }) {
                             children: error
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                            lineNumber: 124,
+                            lineNumber: 343,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                        lineNumber: 123,
+                        lineNumber: 342,
+                        columnNumber: 11
+                    }, this),
+                    successMessage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "font-medium",
+                            children: successMessage
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                            lineNumber: 350,
+                            columnNumber: 13
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                        lineNumber: 349,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1442,13 +2055,13 @@ function PatientForm({ patient, onClose, onSave }) {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                                lineNumber: 131,
+                                                lineNumber: 357,
                                                 columnNumber: 25
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 130,
+                                        lineNumber: 356,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1457,18 +2070,27 @@ function PatientForm({ patient, onClose, onSave }) {
                                         name: "fullName",
                                         required: true,
                                         placeholder: "Nhập họ và tên...",
-                                        className: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm",
+                                        className: `w-full border ${fieldErrors.fullName ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm`,
                                         value: formData.fullName,
-                                        onChange: handleChange
+                                        onChange: handleChange,
+                                        disabled: loading
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 133,
+                                        lineNumber: 359,
                                         columnNumber: 13
+                                    }, this),
+                                    fieldErrors.fullName && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-1 text-sm text-red-600",
+                                        children: fieldErrors.fullName
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                                        lineNumber: 371,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 129,
+                                lineNumber: 355,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1483,7 +2105,7 @@ function PatientForm({ patient, onClose, onSave }) {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                                lineNumber: 147,
+                                                lineNumber: 377,
                                                 columnNumber: 37
                                             }, this),
                                             !isEditing && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1491,13 +2113,13 @@ function PatientForm({ patient, onClose, onSave }) {
                                                 children: "(Tự động nếu để trống)"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                                lineNumber: 148,
+                                                lineNumber: 378,
                                                 columnNumber: 30
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 146,
+                                        lineNumber: 376,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1506,18 +2128,27 @@ function PatientForm({ patient, onClose, onSave }) {
                                         name: "userId",
                                         required: isEditing,
                                         placeholder: isEditing ? "Nhập User ID..." : "Để trống để tạo ID tự động...",
-                                        className: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm",
+                                        className: `w-full border ${fieldErrors.userId ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm`,
                                         value: formData.userId,
-                                        onChange: handleChange
+                                        onChange: handleChange,
+                                        disabled: loading
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 150,
+                                        lineNumber: 380,
                                         columnNumber: 13
+                                    }, this),
+                                    fieldErrors.userId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-1 text-sm text-red-600",
+                                        children: fieldErrors.userId
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                                        lineNumber: 392,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 145,
+                                lineNumber: 375,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1532,13 +2163,13 @@ function PatientForm({ patient, onClose, onSave }) {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                                lineNumber: 164,
+                                                lineNumber: 398,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 163,
+                                        lineNumber: 397,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1547,18 +2178,27 @@ function PatientForm({ patient, onClose, onSave }) {
                                         name: "username",
                                         required: true,
                                         placeholder: "Nhập tên đăng nhập...",
-                                        className: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm",
+                                        className: `w-full border ${fieldErrors.username ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm`,
                                         value: formData.username,
-                                        onChange: handleChange
+                                        onChange: handleChange,
+                                        disabled: loading
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 166,
+                                        lineNumber: 400,
                                         columnNumber: 13
+                                    }, this),
+                                    fieldErrors.username && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-1 text-sm text-red-600",
+                                        children: fieldErrors.username
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                                        lineNumber: 412,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 162,
+                                lineNumber: 396,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1573,13 +2213,13 @@ function PatientForm({ patient, onClose, onSave }) {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                                lineNumber: 180,
+                                                lineNumber: 418,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 179,
+                                        lineNumber: 417,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1588,18 +2228,27 @@ function PatientForm({ patient, onClose, onSave }) {
                                         name: "email",
                                         required: true,
                                         placeholder: "Nhập email...",
-                                        className: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm",
+                                        className: `w-full border ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm`,
                                         value: formData.email,
-                                        onChange: handleChange
+                                        onChange: handleChange,
+                                        disabled: loading
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 182,
+                                        lineNumber: 420,
                                         columnNumber: 13
+                                    }, this),
+                                    fieldErrors.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-1 text-sm text-red-600",
+                                        children: fieldErrors.email
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                                        lineNumber: 432,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 178,
+                                lineNumber: 416,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1614,13 +2263,13 @@ function PatientForm({ patient, onClose, onSave }) {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                                lineNumber: 196,
+                                                lineNumber: 438,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 195,
+                                        lineNumber: 437,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1629,18 +2278,27 @@ function PatientForm({ patient, onClose, onSave }) {
                                         name: "phone",
                                         required: true,
                                         placeholder: "Nhập số điện thoại...",
-                                        className: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm",
+                                        className: `w-full border ${fieldErrors.phone ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm`,
                                         value: formData.phone,
-                                        onChange: handleChange
+                                        onChange: handleChange,
+                                        disabled: loading
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 198,
+                                        lineNumber: 440,
                                         columnNumber: 13
+                                    }, this),
+                                    fieldErrors.phone && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-1 text-sm text-red-600",
+                                        children: fieldErrors.phone
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                                        lineNumber: 452,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 194,
+                                lineNumber: 436,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1655,13 +2313,13 @@ function PatientForm({ patient, onClose, onSave }) {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                                lineNumber: 212,
+                                                lineNumber: 458,
                                                 columnNumber: 39
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 211,
+                                        lineNumber: 457,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1670,24 +2328,33 @@ function PatientForm({ patient, onClose, onSave }) {
                                         name: "password",
                                         required: !isEditing,
                                         placeholder: isEditing ? "Để trống nếu không thay đổi..." : "Nhập mật khẩu...",
-                                        className: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm",
+                                        className: `w-full border ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black shadow-sm`,
                                         value: formData.password,
-                                        onChange: handleChange
+                                        onChange: handleChange,
+                                        disabled: loading
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 214,
+                                        lineNumber: 460,
                                         columnNumber: 13
+                                    }, this),
+                                    fieldErrors.password && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-1 text-sm text-red-600",
+                                        children: fieldErrors.password
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                                        lineNumber: 472,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 210,
+                                lineNumber: 456,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                        lineNumber: 128,
+                        lineNumber: 354,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1697,47 +2364,63 @@ function PatientForm({ patient, onClose, onSave }) {
                                 type: "button",
                                 onClick: onClose,
                                 className: "px-5 py-2 border border-gray-300 rounded-lg text-black font-medium hover:bg-gray-50 transition-colors",
+                                disabled: loading,
                                 children: "Hủy"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 229,
+                                lineNumber: 479,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "submit",
-                                className: "px-5 py-2 bg-green-600 rounded-lg text-white font-medium hover:bg-green-700 transition-colors flex items-center shadow-sm",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$save$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__SaveIcon$3e$__["SaveIcon"], {
-                                        size: 18,
-                                        className: "mr-2"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                        lineNumber: 240,
-                                        columnNumber: 13
-                                    }, this),
-                                    isEditing ? 'Cập nhật' : 'Lưu'
-                                ]
-                            }, void 0, true, {
+                                className: `px-5 py-2 rounded-lg text-white font-medium transition-colors flex items-center shadow-sm ${loading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`,
+                                disabled: loading,
+                                children: loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                            className: "animate-spin mr-2",
+                                            children: "⏳"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                                            lineNumber: 496,
+                                            columnNumber: 17
+                                        }, this),
+                                        isEditing ? 'Đang cập nhật...' : 'Đang lưu...'
+                                    ]
+                                }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$save$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__SaveIcon$3e$__["SaveIcon"], {
+                                            size: 18,
+                                            className: "mr-2"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
+                                            lineNumber: 501,
+                                            columnNumber: 17
+                                        }, this),
+                                        isEditing ? 'Cập nhật' : 'Lưu'
+                                    ]
+                                }, void 0, true)
+                            }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                                lineNumber: 236,
+                                lineNumber: 487,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                        lineNumber: 228,
+                        lineNumber: 478,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-                lineNumber: 120,
+                lineNumber: 339,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx",
-        lineNumber: 102,
+        lineNumber: 320,
         columnNumber: 5
     }, this);
 }
@@ -1762,88 +2445,475 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2d$plus$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__UserPlusIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/user-plus.js [app-ssr] (ecmascript) <export default as UserPlusIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$receptionistPage$2f$components$2f$Patients$2f$PatientForm$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/receptionistPage/components/Patients/PatientForm.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/axios.customize.service.ts [app-ssr] (ecmascript)");
 ;
 ;
 ;
 ;
 ;
+;
+;
+;
+// Custom CRUD functions for patients with API integration
+const addPatient = async (patientData, authToken)=>{
+    try {
+        if (authToken) {
+            // Sử dụng API nếu có token
+            try {
+                console.log("Adding patient via API:", patientData);
+                const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createUser"])(patientData, authToken);
+                console.log("API success - new patient added:", result);
+                return result;
+            } catch (apiError) {
+                console.error("API error when adding patient:", apiError);
+                // Fallback to mock data nếu API lỗi
+                console.log("Falling back to mock data for adding patient");
+            }
+        }
+        // Sử dụng mock data nếu không có token hoặc API lỗi
+        const newPatient = {
+            ...patientData,
+            _id: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["generateMongoId"])(),
+            userId: patientData.userId || `PA${Date.now()}`,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            __v: 0
+        };
+        console.log("Added patient using mock data:", newPatient);
+        return newPatient;
+    } catch (error) {
+        console.error("Error adding patient:", error);
+        return null;
+    }
+};
+const updatePatient = async (id, patientData, authToken)=>{
+    try {
+        if (authToken) {
+            // Sử dụng API nếu có token
+            try {
+                console.log(`Updating patient via API - ID ${id}:`, patientData);
+                // Kiểm tra tính hợp lệ của token trước khi gọi API
+                const tokenStatus = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["validateToken"])(authToken);
+                if (!tokenStatus.valid) {
+                    console.error("Invalid token when updating patient:", tokenStatus);
+                    throw new Error(`Authentication error: ${tokenStatus.reason}`);
+                }
+                // Gọi API để cập nhật thông tin bệnh nhân
+                const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updateUser"])(id, patientData, authToken);
+                console.log("API success - patient updated:", result);
+                // Trả về dữ liệu từ API để cập nhật UI
+                return result;
+            } catch (apiError) {
+                // Log chi tiết lỗi từ API để debug
+                console.error(`API error when updating patient ${id}:`, apiError);
+                if (apiError.response) {
+                    console.error("Error status:", apiError.response.status);
+                    console.error("Error data:", apiError.response.data);
+                }
+                // Hiển thị thông báo lỗi cụ thể
+                if (apiError.response && apiError.response.status === 403) {
+                    // Thử lại với vai trò tiếp tân
+                    try {
+                        console.log("Trying to update patient as receptionist...");
+                        const currentUser = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getUserById"])('me', authToken);
+                        // Nếu người dùng là tiếp tân, thử gửi với tham số đặc biệt
+                        if (currentUser && currentUser.role === 'RECEPTIONIST') {
+                            console.log("User is a receptionist, trying with receptionist parameter");
+                            // Thêm tham số isReceptionist: true để backend biết đây là tiếp tân
+                            const updatedData = {
+                                ...patientData,
+                                isReceptionist: true
+                            };
+                            const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updateUser"])(id, updatedData, authToken);
+                            console.log("Success updating patient as receptionist:", result);
+                            return result;
+                        } else {
+                            throw new Error("Bạn không có quyền cập nhật thông tin bệnh nhân");
+                        }
+                    } catch (retryError) {
+                        console.error("Error when retrying as receptionist:", retryError);
+                        throw new Error("Bạn không có quyền cập nhật thông tin bệnh nhân");
+                    }
+                } else if (apiError.response && apiError.response.status === 401) {
+                    throw new Error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
+                } else if (apiError.response && apiError.response.status === 404) {
+                    throw new Error("Không tìm thấy bệnh nhân với ID đã cung cấp");
+                } else {
+                    throw new Error(`Lỗi cập nhật thông tin: ${apiError.message || 'Không thể kết nối đến máy chủ'}`);
+                }
+            }
+        }
+        // Sử dụng mock data nếu không có token
+        console.log("No token available, using mock data for updating patient");
+        const updatedPatient = {
+            ...patientData,
+            _id: id,
+            updatedAt: new Date().toISOString()
+        };
+        console.log(`Updated patient using mock data - ID ${id}:`, updatedPatient);
+        return updatedPatient;
+    } catch (error) {
+        // Re-throw để component xử lý và hiển thị
+        console.error(`Error updating patient ${id}:`, error);
+        throw error;
+    }
+};
+const deletePatient = async (id, authToken)=>{
+    try {
+        if (authToken) {
+            // Sử dụng API nếu có token
+            try {
+                console.log(`Deleting patient via API - ID ${id}`);
+                // Kiểm tra tính hợp lệ của token trước khi gọi API
+                const tokenStatus = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["validateToken"])(authToken);
+                if (!tokenStatus.valid) {
+                    console.error("Invalid token when deleting patient:", tokenStatus);
+                    throw new Error(`Authentication error: ${tokenStatus.reason}`);
+                }
+                // Gọi API để xóa bệnh nhân
+                await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].delete(`/users/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${authToken}`
+                    }
+                });
+                console.log("API success - patient deleted");
+                return true;
+            } catch (apiError) {
+                // Log chi tiết lỗi từ API để debug
+                console.error(`API error when deleting patient ${id}:`, apiError);
+                if (apiError.response) {
+                    console.error("Error status:", apiError.response.status);
+                    console.error("Error data:", apiError.response.data);
+                }
+                // Hiển thị thông báo lỗi cụ thể
+                if (apiError.response && apiError.response.status === 403) {
+                    // Thử lại với vai trò tiếp tân
+                    try {
+                        console.log("Trying to delete patient as receptionist...");
+                        const currentUser = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getUserById"])('me', authToken);
+                        // Nếu người dùng là tiếp tân, thử gửi với tham số đặc biệt
+                        if (currentUser && currentUser.role === 'RECEPTIONIST') {
+                            console.log("User is a receptionist, trying with receptionist parameter");
+                            // Thêm tham số query isReceptionist=true để backend biết đây là tiếp tân
+                            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].delete(`/users/${id}?isReceptionist=true`, {
+                                headers: {
+                                    Authorization: `Bearer ${authToken}`
+                                }
+                            });
+                            console.log("Success deleting patient as receptionist");
+                            return true;
+                        } else {
+                            throw new Error("Bạn không có quyền xóa bệnh nhân");
+                        }
+                    } catch (retryError) {
+                        console.error("Error when retrying delete as receptionist:", retryError);
+                        throw new Error("Bạn không có quyền xóa bệnh nhân");
+                    }
+                } else if (apiError.response && apiError.response.status === 401) {
+                    throw new Error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
+                } else if (apiError.response && apiError.response.status === 404) {
+                    throw new Error("Không tìm thấy bệnh nhân với ID đã cung cấp");
+                } else if (apiError.response && apiError.response.status === 400) {
+                    throw new Error("Không thể xóa bệnh nhân này. Bệnh nhân có thể đang có dữ liệu liên quan.");
+                } else {
+                    throw new Error(`Lỗi xóa bệnh nhân: ${apiError.message || 'Không thể kết nối đến máy chủ'}`);
+                }
+            }
+        }
+        // Sử dụng mock data nếu không có token
+        console.log(`No token available, using mock data for deleting patient - ID ${id}`);
+        return true;
+    } catch (error) {
+        // Re-throw để component xử lý và hiển thị
+        console.error(`Error deleting patient ${id}:`, error);
+        throw error;
+    }
+};
 function PatientManagement({ onBack }) {
     const [showForm, setShowForm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [searchTerm, setSearchTerm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [editingPatient, setEditingPatient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     // Thêm state để theo dõi thay đổi và buộc giao diện cập nhật
     const [refreshData, setRefreshData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(0);
-    // Sử dụng dữ liệu bệnh nhân từ mockPatients - hàm này sẽ lấy danh sách mới mỗi khi gọi
+    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    // Sử dụng dữ liệu bệnh nhân từ API hoặc mock data
     const [patients, setPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    // Lấy token xác thực từ context
+    const { token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
     // Cập nhật danh sách bệnh nhân khi có thay đổi
+    // State để theo dõi lỗi xác thực
+    const [authError, setAuthError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    // State để hiển thị thông báo
+    const [notification, setNotification] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        // Sử dụng getAllPatients() để luôn lấy danh sách mới nhất
-        const latestPatients = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPatients"])();
-        setPatients(latestPatients);
+        const loadData = async ()=>{
+            setLoading(true);
+            setAuthError(null);
+            try {
+                let patientData = [];
+                if (token) {
+                    try {
+                        // Kiểm tra tính hợp lệ của token trước
+                        const tokenStatus = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["validateToken"])(token);
+                        if (!tokenStatus.valid) {
+                            console.error("Invalid token:", tokenStatus.reason);
+                            throw new Error(`Auth token invalid: ${tokenStatus.reason}`);
+                        }
+                        // Nếu có token hợp lệ, thử lấy dữ liệu từ API
+                        console.log("Fetching patients from API...");
+                        patientData = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getPatients"])(token);
+                        console.log("Successfully fetched patients from API:", patientData.length, "patients");
+                    } catch (apiError) {
+                        console.error("API error when loading patients:", apiError);
+                        // Kiểm tra lỗi cụ thể
+                        if (apiError.response && apiError.response.status === 403) {
+                            setAuthError("Không có quyền truy cập dữ liệu bệnh nhân. Vui lòng đăng nhập lại với tài khoản có quyền.");
+                        }
+                        console.log("Falling back to mock data...");
+                        // Nếu API lỗi, sử dụng mock data
+                        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["initializeData"])();
+                        patientData = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPatients"])();
+                    }
+                } else {
+                    // Nếu không có token, sử dụng mock data
+                    console.log("No authentication token, using mock data...");
+                    await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["initializeData"])();
+                    patientData = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPatients"])();
+                }
+                setPatients(patientData);
+            } catch (error) {
+                console.error("Error loading patients data:", error);
+                setPatients([]);
+            } finally{
+                setLoading(false);
+            }
+        };
+        loadData();
     }, [
-        refreshData
+        refreshData,
+        token
     ]);
     const handleEdit = (patient)=>{
         setEditingPatient(patient);
         setShowForm(true);
     };
-    const handleDelete = (id)=>{
+    const handleDelete = async (id)=>{
         const confirmed = window.confirm("Bạn có chắc chắn muốn xóa bệnh nhân này không?");
         if (confirmed) {
-            (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["deletePatient"])(id);
-            // Kích hoạt cập nhật giao diện
-            setRefreshData((prev)=>prev + 1);
+            setLoading(true);
+            setNotification(null);
+            try {
+                await deletePatient(id, token || undefined);
+                // Hiển thị thông báo thành công
+                setNotification({
+                    type: 'success',
+                    message: 'Xóa bệnh nhân thành công'
+                });
+                // Kích hoạt cập nhật giao diện
+                setRefreshData((prev)=>prev + 1);
+            } catch (error) {
+                console.error("Error deleting patient:", error);
+                setNotification({
+                    type: 'error',
+                    message: error.message || 'Không thể xóa bệnh nhân. Vui lòng thử lại sau.'
+                });
+            } finally{
+                setLoading(false);
+                // Tự động ẩn thông báo sau 5 giây
+                setTimeout(()=>{
+                    setNotification(null);
+                }, 5000);
+            }
         }
     };
-    const handleSavePatient = (patientData)=>{
-        if (editingPatient && editingPatient._id) {
-            // Cập nhật bệnh nhân hiện có
-            (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updatePatient"])(editingPatient._id, patientData);
-        } else {
-            // Thêm bệnh nhân mới
-            (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addPatient"])({
-                ...patientData,
-                role: 'PATIENT'
+    const handleSavePatient = async (patientData)=>{
+        setLoading(true);
+        setNotification(null);
+        try {
+            let result;
+            if (editingPatient && editingPatient._id) {
+                // Cập nhật bệnh nhân hiện có
+                console.log("Updating existing patient:", editingPatient._id);
+                result = await updatePatient(editingPatient._id, patientData, token || undefined);
+                setNotification({
+                    type: 'success',
+                    message: `Cập nhật thông tin bệnh nhân ${result.fullName || ''} thành công`
+                });
+            } else {
+                // Thêm bệnh nhân mới với role là PATIENT
+                console.log("Adding new patient");
+                result = await addPatient({
+                    ...patientData,
+                    role: 'PATIENT'
+                }, token || undefined);
+                setNotification({
+                    type: 'success',
+                    message: `Thêm bệnh nhân ${result.fullName || ''} thành công`
+                });
+            }
+            // Kích hoạt cập nhật giao diện
+            setRefreshData((prev)=>prev + 1);
+            handleCloseForm();
+        } catch (error) {
+            console.error("Error saving patient:", error);
+            setNotification({
+                type: 'error',
+                message: error.message || 'Không thể lưu thông tin bệnh nhân. Vui lòng thử lại sau.'
             });
+        // Không đóng form để người dùng có thể sửa lỗi và thử lại
+        } finally{
+            setLoading(false);
+            // Tự động ẩn thông báo sau 5 giây
+            setTimeout(()=>{
+                setNotification(null);
+            }, 5000);
         }
-        // Kích hoạt cập nhật giao diện
-        setRefreshData((prev)=>prev + 1);
-        handleCloseForm();
     };
     const handleCloseForm = ()=>{
         setShowForm(false);
         setEditingPatient(null);
     };
     // Hàm thêm bệnh nhân vào phòng chờ
-    const addToWaitingRoom = (patientId)=>{
-        // Kiểm tra xem bệnh nhân đã có trong phòng chờ chưa
-        const existingQueue = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueueByPatientId"])(patientId);
-        if (existingQueue) {
-            if (existingQueue.status === 'waiting' || existingQueue.status === 'in_progress') {
-                alert(`Bệnh nhân này đã có trong phòng chờ hoặc đang khám!`);
-                return;
-            } else if (existingQueue.status === 'completed' || existingQueue.status === 'canceled') {
-                // Nếu bệnh nhân đã từng được thêm vào phòng chờ trước đó,
-                // nhưng đã hoàn thành hoặc hủy, ta có thể thêm họ vào lại phòng chờ
-                const newQueue = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addQueue"])(patientId);
-                if (newQueue) {
-                    alert(`Đã thêm bệnh nhân vào phòng chờ!`);
-                } else {
-                    alert(`Có lỗi khi thêm bệnh nhân vào phòng chờ!`);
+    const addToWaitingRoom = async (patientId)=>{
+        try {
+            setLoading(true);
+            setNotification(null);
+            if (token) {
+                // Thử sử dụng API nếu có token
+                try {
+                    console.log(`Adding patient ${patientId} to queue via API`);
+                    // Kiểm tra tính hợp lệ của token
+                    const tokenStatus = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["validateToken"])(token);
+                    if (!tokenStatus.valid) {
+                        console.error("Invalid token when adding to queue:", tokenStatus);
+                        throw new Error(`Authentication error: ${tokenStatus.reason}`);
+                    }
+                    // Kiểm tra xem bệnh nhân đã có trong phòng chờ chưa bằng API
+                    const allQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueues"])(token);
+                    const existingQueue = allQueues.find((queue)=>queue.patient === patientId && [
+                            'waiting',
+                            'in_progress'
+                        ].includes(queue.status));
+                    if (existingQueue) {
+                        setNotification({
+                            type: 'error',
+                            message: 'Bệnh nhân này đã có trong phòng chờ hoặc đang khám!'
+                        });
+                        return;
+                    }
+                    // Gọi API để tạo queue mới
+                    const newQueue = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createQueue"])(patientId, token);
+                    console.log("Successfully added patient to queue via API:", newQueue);
+                    setNotification({
+                        type: 'success',
+                        message: 'Đã thêm bệnh nhân vào phòng chờ!'
+                    });
+                    return;
+                } catch (apiError) {
+                    console.error("API error when adding to queue:", apiError);
+                    if (apiError.response) {
+                        console.error("Error status:", apiError.response.status);
+                        console.error("Error data:", apiError.response.data);
+                    }
+                    // Hiển thị lỗi cụ thể
+                    if (apiError.response && apiError.response.status === 403) {
+                        setNotification({
+                            type: 'error',
+                            message: 'Bạn không có quyền thêm bệnh nhân vào phòng chờ'
+                        });
+                        return;
+                    } else if (apiError.response && apiError.response.status === 401) {
+                        setNotification({
+                            type: 'error',
+                            message: 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại'
+                        });
+                        return;
+                    }
+                    console.log("Falling back to mock data for adding to queue");
+                // Không return, tiếp tục xuống phần fallback
                 }
             }
-        } else {
-            // Nếu bệnh nhân chưa từng được thêm vào phòng chờ
-            const newQueue = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addQueue"])(patientId);
-            if (newQueue) {
-                alert(`Đã thêm bệnh nhân vào phòng chờ!`);
+            // Fallback to mock data
+            // Kiểm tra xem bệnh nhân đã có trong phòng chờ chưa
+            const existingQueue = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueueByPatientId"])(patientId);
+            if (existingQueue) {
+                if (existingQueue.status === 'waiting' || existingQueue.status === 'in_progress') {
+                    setNotification({
+                        type: 'error',
+                        message: 'Bệnh nhân này đã có trong phòng chờ hoặc đang khám!'
+                    });
+                    return;
+                } else if (existingQueue.status === 'completed' || existingQueue.status === 'canceled') {
+                    // Nếu bệnh nhân đã từng được thêm vào phòng chờ trước đó,
+                    // nhưng đã hoàn thành hoặc hủy, ta có thể thêm họ vào lại phòng chờ
+                    const newQueue = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addQueue"])(patientId);
+                    if (newQueue) {
+                        setNotification({
+                            type: 'success',
+                            message: 'Đã thêm bệnh nhân vào phòng chờ! (dữ liệu mô phỏng)'
+                        });
+                    } else {
+                        setNotification({
+                            type: 'error',
+                            message: 'Có lỗi khi thêm bệnh nhân vào phòng chờ!'
+                        });
+                    }
+                }
             } else {
-                alert(`Có lỗi khi thêm bệnh nhân vào phòng chờ!`);
+                // Nếu bệnh nhân chưa từng được thêm vào phòng chờ
+                const newQueue = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addQueue"])(patientId);
+                if (newQueue) {
+                    setNotification({
+                        type: 'success',
+                        message: 'Đã thêm bệnh nhân vào phòng chờ! (dữ liệu mô phỏng)'
+                    });
+                } else {
+                    setNotification({
+                        type: 'error',
+                        message: 'Có lỗi khi thêm bệnh nhân vào phòng chờ!'
+                    });
+                }
             }
+        } catch (error) {
+            console.error("Error adding patient to waiting room:", error);
+            setNotification({
+                type: 'error',
+                message: 'Có lỗi xảy ra khi thêm bệnh nhân vào phòng chờ!'
+            });
+        } finally{
+            setLoading(false);
+            // Tự động ẩn thông báo sau 5 giây
+            setTimeout(()=>{
+                setNotification(null);
+            }, 5000);
         }
     };
-    // Sử dụng hàm searchUsers từ mockPatients.ts để tìm kiếm bệnh nhân
-    const filteredPatients = searchTerm.trim() === '' ? patients : (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["searchUsers"])(searchTerm).filter((user)=>user.role === 'PATIENT');
+    // State for handling search results
+    const [searchResults, setSearchResults] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    // Effect to handle search
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        const handleSearch = async ()=>{
+            if (searchTerm.trim() === '') {
+                setSearchResults([]);
+                return;
+            }
+            try {
+                const results = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["searchUsers"])(searchTerm);
+                const filteredResults = results.filter((user)=>user.role === 'PATIENT');
+                setSearchResults(filteredResults);
+            } catch (error) {
+                console.error("Error searching patients:", error);
+                setSearchResults([]);
+            }
+        };
+        handleSearch();
+    }, [
+        searchTerm
+    ]);
+    // Use either search results or all patients
+    const filteredPatients = searchTerm.trim() === '' ? patients : searchResults;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "w-full px-4 sm:px-6",
         children: [
@@ -1855,12 +2925,12 @@ function PatientManagement({ onBack }) {
                     children: "← Quay lại"
                 }, void 0, false, {
                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                    lineNumber: 110,
+                    lineNumber: 536,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                lineNumber: 109,
+                lineNumber: 535,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1874,7 +2944,7 @@ function PatientManagement({ onBack }) {
                                 children: "Quản lý bệnh nhân"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 120,
+                                lineNumber: 546,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1886,20 +2956,20 @@ function PatientManagement({ onBack }) {
                                         className: "mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 125,
+                                        lineNumber: 551,
                                         columnNumber: 13
                                     }, this),
                                     "Thêm bệnh nhân"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 121,
+                                lineNumber: 547,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 119,
+                        lineNumber: 545,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1907,18 +2977,101 @@ function PatientManagement({ onBack }) {
                         children: "Quản lý thông tin bệnh nhân và thêm vào phòng chờ"
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 129,
+                        lineNumber: 555,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                lineNumber: 118,
+                lineNumber: 544,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "border border-gray-300 rounded-xl shadow-sm overflow-hidden bg-white",
                 children: [
+                    authError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "bg-red-50 border border-red-200 text-red-700 px-6 py-4 mb-4 rounded-lg mx-6 mt-6",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "flex",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "flex-shrink-0",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                        className: "h-5 w-5 text-red-500",
+                                        xmlns: "http://www.w3.org/2000/svg",
+                                        viewBox: "0 0 20 20",
+                                        fill: "currentColor",
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                            fillRule: "evenodd",
+                                            d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z",
+                                            clipRule: "evenodd"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                            lineNumber: 568,
+                                            columnNumber: 19
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                        lineNumber: 567,
+                                        columnNumber: 17
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                    lineNumber: 566,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "ml-3",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                            className: "text-sm font-medium text-red-800",
+                                            children: "Lỗi xác thực"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                            lineNumber: 572,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "mt-1 text-sm text-red-700",
+                                            children: authError
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                            lineNumber: 573,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "mt-2",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                className: "text-sm font-medium text-red-700 hover:text-red-600 underline",
+                                                onClick: ()=>setRefreshData((prev)=>prev + 1),
+                                                children: "Thử lại"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                                lineNumber: 575,
+                                                columnNumber: 19
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                            lineNumber: 574,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                    lineNumber: 571,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                            lineNumber: 565,
+                            columnNumber: 13
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                        lineNumber: 564,
+                        columnNumber: 11
+                    }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "p-6 border-b border-gray-300 bg-gray-50",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1934,12 +3087,12 @@ function PatientManagement({ onBack }) {
                                                 className: "text-black"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 141,
+                                                lineNumber: 592,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 140,
+                                            lineNumber: 591,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1950,13 +3103,13 @@ function PatientManagement({ onBack }) {
                                             onChange: (e)=>setSearchTerm(e.target.value)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 143,
+                                            lineNumber: 594,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                    lineNumber: 139,
+                                    lineNumber: 590,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1973,7 +3126,7 @@ function PatientManagement({ onBack }) {
                                                             children: "Tất cả vai trò"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 155,
+                                                            lineNumber: 606,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1981,7 +3134,7 @@ function PatientManagement({ onBack }) {
                                                             children: "Bệnh nhân"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 156,
+                                                            lineNumber: 607,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1989,7 +3142,7 @@ function PatientManagement({ onBack }) {
                                                             children: "Bác sĩ"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 157,
+                                                            lineNumber: 608,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1997,7 +3150,7 @@ function PatientManagement({ onBack }) {
                                                             children: "Nhân viên quầy thuốc"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 158,
+                                                            lineNumber: 609,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2005,7 +3158,7 @@ function PatientManagement({ onBack }) {
                                                             children: "Lễ tân"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 159,
+                                                            lineNumber: 610,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2013,13 +3166,13 @@ function PatientManagement({ onBack }) {
                                                             children: "Quản trị viên"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 160,
+                                                            lineNumber: 611,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 154,
+                                                    lineNumber: 605,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2029,12 +3182,12 @@ function PatientManagement({ onBack }) {
                                                         className: "text-black"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 163,
+                                                        lineNumber: 614,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 162,
+                                                    lineNumber: 613,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2050,23 +3203,23 @@ function PatientManagement({ onBack }) {
                                                             clipRule: "evenodd"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 167,
+                                                            lineNumber: 618,
                                                             columnNumber: 21
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 166,
+                                                        lineNumber: 617,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 165,
+                                                    lineNumber: 616,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 153,
+                                            lineNumber: 604,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2080,7 +3233,7 @@ function PatientManagement({ onBack }) {
                                                             children: "Sắp xếp theo"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 174,
+                                                            lineNumber: 625,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2088,7 +3241,7 @@ function PatientManagement({ onBack }) {
                                                             children: "Tên"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 175,
+                                                            lineNumber: 626,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2096,7 +3249,7 @@ function PatientManagement({ onBack }) {
                                                             children: "Tên đăng nhập"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 176,
+                                                            lineNumber: 627,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2104,13 +3257,13 @@ function PatientManagement({ onBack }) {
                                                             children: "Ngày tạo"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 177,
+                                                            lineNumber: 628,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 173,
+                                                    lineNumber: 624,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2120,12 +3273,12 @@ function PatientManagement({ onBack }) {
                                                         className: "text-black"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 180,
+                                                        lineNumber: 631,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 179,
+                                                    lineNumber: 630,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2141,40 +3294,40 @@ function PatientManagement({ onBack }) {
                                                             clipRule: "evenodd"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 184,
+                                                            lineNumber: 635,
                                                             columnNumber: 21
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 183,
+                                                        lineNumber: 634,
                                                         columnNumber: 19
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 182,
+                                                    lineNumber: 633,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 172,
+                                            lineNumber: 623,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                    lineNumber: 152,
+                                    lineNumber: 603,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                            lineNumber: 138,
+                            lineNumber: 589,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 137,
+                        lineNumber: 588,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2194,7 +3347,7 @@ function PatientManagement({ onBack }) {
                                                         children: "Họ và tên"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 199,
+                                                        lineNumber: 650,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2202,15 +3355,15 @@ function PatientManagement({ onBack }) {
                                                         children: "User ID"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 202,
+                                                        lineNumber: 653,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                                         className: "px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider border-b border-gray-200",
-                                                        children: "Tên đăng nhập"
+                                                        children: "Username"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 205,
+                                                        lineNumber: 656,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2218,15 +3371,15 @@ function PatientManagement({ onBack }) {
                                                         children: "Email"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 208,
+                                                        lineNumber: 659,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                                         className: "px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider border-b border-gray-200",
-                                                        children: "Số điện thoại"
+                                                        children: "Điện thoại"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 211,
+                                                        lineNumber: 662,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2234,7 +3387,7 @@ function PatientManagement({ onBack }) {
                                                         children: "Vai trò"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 214,
+                                                        lineNumber: 665,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2242,23 +3395,74 @@ function PatientManagement({ onBack }) {
                                                         children: "Thao tác"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 217,
+                                                        lineNumber: 668,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 198,
+                                                lineNumber: 649,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 197,
+                                            lineNumber: 648,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
                                             className: "bg-white divide-y divide-gray-200",
-                                            children: filteredPatients.map((patient, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                            children: loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                    colSpan: 7,
+                                                    className: "px-6 py-10 text-center",
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "flex justify-center items-center space-x-2",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                className: "animate-spin",
+                                                                children: "⏳"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                                                lineNumber: 678,
+                                                                columnNumber: 27
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                children: "Đang tải dữ liệu..."
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                                                lineNumber: 679,
+                                                                columnNumber: 27
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                                        lineNumber: 677,
+                                                        columnNumber: 25
+                                                    }, this)
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                                    lineNumber: 676,
+                                                    columnNumber: 23
+                                                }, this)
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                                lineNumber: 675,
+                                                columnNumber: 21
+                                            }, this) : filteredPatients.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                                    colSpan: 7,
+                                                    className: "px-6 py-10 text-center",
+                                                    children: "Không tìm thấy bệnh nhân nào."
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                                    lineNumber: 685,
+                                                    columnNumber: 23
+                                                }, this)
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                                lineNumber: 684,
+                                                columnNumber: 21
+                                            }, this) : filteredPatients.map((patient, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     className: index % 2 === 0 ? 'bg-white' : 'bg-gray-50',
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2266,48 +3470,48 @@ function PatientManagement({ onBack }) {
                                                             children: patient.fullName
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 225,
-                                                            columnNumber: 23
+                                                            lineNumber: 692,
+                                                            columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "px-6 py-3.5 whitespace-nowrap text-sm text-black",
                                                             children: patient.userId
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 228,
-                                                            columnNumber: 23
+                                                            lineNumber: 695,
+                                                            columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "px-6 py-3.5 whitespace-nowrap text-sm text-black",
                                                             children: patient.username
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 231,
-                                                            columnNumber: 23
+                                                            lineNumber: 698,
+                                                            columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "px-6 py-3.5 whitespace-nowrap text-sm text-black",
                                                             children: patient.email
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 234,
-                                                            columnNumber: 23
+                                                            lineNumber: 701,
+                                                            columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "px-6 py-3.5 whitespace-nowrap text-sm text-black",
                                                             children: patient.phone
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 237,
-                                                            columnNumber: 23
+                                                            lineNumber: 704,
+                                                            columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "px-6 py-3.5 whitespace-nowrap text-sm text-black",
                                                             children: patient.role
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 240,
-                                                            columnNumber: 23
+                                                            lineNumber: 707,
+                                                            columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                             className: "px-6 py-3.5 whitespace-nowrap text-sm text-black",
@@ -2322,13 +3526,13 @@ function PatientManagement({ onBack }) {
                                                                             size: 16
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                            lineNumber: 250,
-                                                                            columnNumber: 29
+                                                                            lineNumber: 717,
+                                                                            columnNumber: 31
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                        lineNumber: 245,
-                                                                        columnNumber: 27
+                                                                        lineNumber: 712,
+                                                                        columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                         onClick: ()=>handleDelete(patient._id),
@@ -2338,13 +3542,13 @@ function PatientManagement({ onBack }) {
                                                                             size: 16
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                            lineNumber: 257,
-                                                                            columnNumber: 29
+                                                                            lineNumber: 724,
+                                                                            columnNumber: 31
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                        lineNumber: 252,
-                                                                        columnNumber: 27
+                                                                        lineNumber: 719,
+                                                                        columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                         onClick: ()=>addToWaitingRoom(patient._id),
@@ -2355,47 +3559,47 @@ function PatientManagement({ onBack }) {
                                                                                 className: "mr-1"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                                lineNumber: 263,
-                                                                                columnNumber: 29
+                                                                                lineNumber: 730,
+                                                                                columnNumber: 31
                                                                             }, this),
                                                                             "Thêm vào phòng chờ"
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                        lineNumber: 259,
-                                                                        columnNumber: 27
+                                                                        lineNumber: 726,
+                                                                        columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                lineNumber: 244,
-                                                                columnNumber: 25
+                                                                lineNumber: 711,
+                                                                columnNumber: 27
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 243,
-                                                            columnNumber: 23
+                                                            lineNumber: 710,
+                                                            columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, patient._id, true, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 224,
-                                                    columnNumber: 21
+                                                    lineNumber: 691,
+                                                    columnNumber: 23
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 222,
+                                            lineNumber: 673,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                    lineNumber: 196,
+                                    lineNumber: 647,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 195,
+                                lineNumber: 646,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex flex-col items-center justify-center py-16 border border-dashed border-gray-300 rounded-lg",
@@ -2405,7 +3609,7 @@ function PatientManagement({ onBack }) {
                                         className: "text-gray-400 mb-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 275,
+                                        lineNumber: 743,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -2413,7 +3617,7 @@ function PatientManagement({ onBack }) {
                                         children: "Không tìm thấy bệnh nhân"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 276,
+                                        lineNumber: 744,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2421,13 +3625,13 @@ function PatientManagement({ onBack }) {
                                         children: "Thử tìm kiếm với từ khóa khác hoặc thêm bệnh nhân mới"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 279,
+                                        lineNumber: 747,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 274,
+                                lineNumber: 742,
                                 columnNumber: 13
                             }, this),
                             filteredPatients.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2442,14 +3646,14 @@ function PatientManagement({ onBack }) {
                                                 children: filteredPatients.length
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 289,
+                                                lineNumber: 757,
                                                 columnNumber: 26
                                             }, this),
                                             " bệnh nhân"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 288,
+                                        lineNumber: 756,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2460,7 +3664,7 @@ function PatientManagement({ onBack }) {
                                                 children: "Trước"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 292,
+                                                lineNumber: 760,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2468,7 +3672,7 @@ function PatientManagement({ onBack }) {
                                                 children: "1"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 295,
+                                                lineNumber: 763,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2476,31 +3680,31 @@ function PatientManagement({ onBack }) {
                                                 children: "Sau"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 298,
+                                                lineNumber: 766,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 291,
+                                        lineNumber: 759,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 287,
+                                lineNumber: 755,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 193,
+                        lineNumber: 644,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                lineNumber: 135,
+                lineNumber: 561,
                 columnNumber: 7
             }, this),
             showForm && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2510,26 +3714,233 @@ function PatientManagement({ onBack }) {
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$receptionistPage$2f$components$2f$Patients$2f$PatientForm$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PatientForm"], {
                         patient: editingPatient,
                         onClose: handleCloseForm,
-                        onSave: handleSavePatient
+                        onSave: handleSavePatient,
+                        isLoading: loading
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 311,
+                        lineNumber: 779,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                    lineNumber: 310,
+                    lineNumber: 778,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                lineNumber: 309,
+                lineNumber: 777,
+                columnNumber: 9
+            }, this),
+            notification && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: `fixed bottom-6 right-6 max-w-sm w-full shadow-lg rounded-lg p-4 flex items-start space-x-4 z-50 ${notification.type === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`,
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: `flex-shrink-0 h-5 w-5 relative mt-0.5 ${notification.type === 'success' ? 'text-green-600' : 'text-red-600'}`,
+                        children: notification.type === 'success' ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                            xmlns: "http://www.w3.org/2000/svg",
+                            viewBox: "0 0 20 20",
+                            fill: "currentColor",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                fillRule: "evenodd",
+                                d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z",
+                                clipRule: "evenodd"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 799,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                            lineNumber: 798,
+                            columnNumber: 15
+                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                            xmlns: "http://www.w3.org/2000/svg",
+                            viewBox: "0 0 20 20",
+                            fill: "currentColor",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                fillRule: "evenodd",
+                                d: "M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z",
+                                clipRule: "evenodd"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 803,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                            lineNumber: 802,
+                            columnNumber: 15
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                        lineNumber: 794,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex-1",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                className: `text-sm font-medium ${notification.type === 'success' ? 'text-green-800' : 'text-red-800'}`,
+                                children: notification.type === 'success' ? 'Thành công' : 'Lỗi'
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 808,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                className: `mt-1 text-sm ${notification.type === 'success' ? 'text-green-700' : 'text-red-700'}`,
+                                children: notification.message
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 813,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                        lineNumber: 807,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        onClick: ()=>setNotification(null),
+                        className: "flex-shrink-0 text-gray-500 hover:text-gray-700 focus:outline-none",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                            className: "h-4 w-4",
+                            xmlns: "http://www.w3.org/2000/svg",
+                            viewBox: "0 0 20 20",
+                            fill: "currentColor",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                fillRule: "evenodd",
+                                d: "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z",
+                                clipRule: "evenodd"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 824,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                            lineNumber: 823,
+                            columnNumber: 13
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                        lineNumber: 819,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                lineNumber: 791,
+                columnNumber: 9
+            }, this),
+            notification && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: `fixed bottom-6 right-6 max-w-sm w-full shadow-lg rounded-lg p-4 flex items-start space-x-4 z-50 ${notification.type === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`,
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: `flex-shrink-0 h-5 w-5 relative mt-0.5 ${notification.type === 'success' ? 'text-green-600' : 'text-red-600'}`,
+                        children: notification.type === 'success' ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                            xmlns: "http://www.w3.org/2000/svg",
+                            viewBox: "0 0 20 20",
+                            fill: "currentColor",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                fillRule: "evenodd",
+                                d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z",
+                                clipRule: "evenodd"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 840,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                            lineNumber: 839,
+                            columnNumber: 15
+                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                            xmlns: "http://www.w3.org/2000/svg",
+                            viewBox: "0 0 20 20",
+                            fill: "currentColor",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                fillRule: "evenodd",
+                                d: "M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z",
+                                clipRule: "evenodd"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 844,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                            lineNumber: 843,
+                            columnNumber: 15
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                        lineNumber: 835,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex-1",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                className: `text-sm font-medium ${notification.type === 'success' ? 'text-green-800' : 'text-red-800'}`,
+                                children: notification.type === 'success' ? 'Thành công' : 'Lỗi'
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 849,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                className: `mt-1 text-sm ${notification.type === 'success' ? 'text-green-700' : 'text-red-700'}`,
+                                children: notification.message
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 854,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                        lineNumber: 848,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        onClick: ()=>setNotification(null),
+                        className: "flex-shrink-0 text-gray-500 hover:text-gray-700 focus:outline-none",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                            className: "h-4 w-4",
+                            xmlns: "http://www.w3.org/2000/svg",
+                            viewBox: "0 0 20 20",
+                            fill: "currentColor",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                fillRule: "evenodd",
+                                d: "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z",
+                                clipRule: "evenodd"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                                lineNumber: 865,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                            lineNumber: 864,
+                            columnNumber: 13
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                        lineNumber: 860,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
+                lineNumber: 832,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-        lineNumber: 108,
+        lineNumber: 534,
         columnNumber: 5
     }, this);
 }
@@ -2549,37 +3960,119 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clock$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ClockIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/clock.js [app-ssr] (ecmascript) <export default as ClockIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__UserIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/user.js [app-ssr] (ecmascript) <export default as UserIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/x.js [app-ssr] (ecmascript) <export default as X>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$ccw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCcw$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/refresh-ccw.js [app-ssr] (ecmascript) <export default as RefreshCcw>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-ssr] (ecmascript)");
+;
+;
 ;
 ;
 ;
 ;
 function QueueManagement({ onBack }) {
-    // State để lưu trữ danh sách queue đã được fetch từ mockdata
+    // State để lưu trữ danh sách queue đã được fetch từ API
     const [queues, setQueues] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     // State để lưu trữ danh sách bệnh nhân đang chờ
     const [waitingPatients, setWaitingPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     // State để lưu trữ danh sách bệnh nhân đang khám
     const [inProgressPatients, setInProgressPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    // Lấy danh sách bác sĩ từ mock data
+    // Lấy danh sách bác sĩ từ API
     const [doctors, setDoctors] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     // State để theo dõi modal chọn bác sĩ
     const [showDoctorModal, setShowDoctorModal] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [selectedQueue, setSelectedQueue] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
-    // Effect để fetch dữ liệu queue từ mockdata khi component được render
+    // State để theo dõi trạng thái loading
+    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    // Lấy authentication token từ context
+    const { token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
+    // Function để format dữ liệu từ API về đúng định dạng cần dùng
+    const formatApiQueueResponse = (apiData)=>{
+        return apiData.map((item)=>({
+                ...item,
+                // Map thông tin bệnh nhân từ phản hồi API sang format patientInfo cho tương thích
+                patientInfo: item.patient && typeof item.patient === 'object' ? {
+                    _id: item.patient._id,
+                    userId: item.patient.userId,
+                    fullName: item.patient.fullName,
+                    phone: item.patient.phone,
+                    role: item.patient.role,
+                    email: item.patient.email
+                } : null
+            }));
+    };
+    // Format dữ liệu từ mock data để tương thích với kiểu QueueWithPatientInfo
+    const formatMockQueueData = (mockData)=>{
+        return mockData.map((item)=>({
+                ...item,
+                // Đảm bảo kiểu dữ liệu phù hợp với QueueWithPatientInfo
+                patient: item.patient
+            }));
+    };
+    // Effect để fetch dữ liệu queue từ API khi component được render
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        // Lấy toàn bộ queue cùng với thông tin bệnh nhân
-        const allQueues = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllQueuesWithPatientInfo"])();
-        setQueues(allQueues);
-        // Lọc ra các trạng thái khác nhau
-        const waiting = allQueues.filter((q)=>q.status === 'waiting');
-        const inProgress = allQueues.filter((q)=>q.status === 'in_progress');
-        setWaitingPatients(waiting);
-        setInProgressPatients(inProgress);
-        // Lấy danh sách bác sĩ
-        const allDoctors = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllDoctors"])();
-        setDoctors(allDoctors);
-    }, []);
+        const loadData = async ()=>{
+            setLoading(true);
+            setError(null);
+            try {
+                if (token) {
+                    // Fetch data từ API nếu có token
+                    try {
+                        console.log("Fetching queues from API...");
+                        const apiQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesWithPatients"])(token);
+                        console.log("API response:", apiQueues);
+                        // Format lại dữ liệu từ API
+                        const formattedQueues = formatApiQueueResponse(apiQueues);
+                        setQueues(formattedQueues);
+                        // Lọc ra các trạng thái khác nhau
+                        const waiting = formattedQueues.filter((q)=>q.status === 'waiting');
+                        const inProgress = formattedQueues.filter((q)=>q.status === 'in_progress');
+                        setWaitingPatients(waiting);
+                        setInProgressPatients(inProgress);
+                    // Không lấy danh sách bác sĩ ở đây nữa, sẽ lấy khi mở modal
+                    } catch (apiError) {
+                        console.error("API error:", apiError);
+                        setError(`Lỗi khi lấy dữ liệu từ API: ${apiError.message}`);
+                        // Fallback to mock data
+                        console.log("Falling back to mock data...");
+                        await fallbackToMockData();
+                    }
+                } else {
+                    // Không có token, sử dụng mock data
+                    console.log("No token available, using mock data...");
+                    await fallbackToMockData();
+                }
+            } catch (error) {
+                console.error("Error loading data:", error);
+                setError(`Lỗi: ${error.message}`);
+            } finally{
+                setLoading(false);
+            }
+        };
+        const fallbackToMockData = async ()=>{
+            try {
+                // Đảm bảo mock data được khởi tạo
+                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["initializeData"])();
+                // Lấy toàn bộ queue cùng với thông tin bệnh nhân từ mock data
+                const allQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllQueuesWithPatientInfo"])();
+                const formattedMockQueues = formatMockQueueData(allQueues);
+                setQueues(formattedMockQueues);
+                // Lọc ra các trạng thái khác nhau
+                const waiting = formattedMockQueues.filter((q)=>q.status === 'waiting');
+                const inProgress = formattedMockQueues.filter((q)=>q.status === 'in_progress');
+                setWaitingPatients(waiting);
+                setInProgressPatients(inProgress);
+            // Không lấy danh sách bác sĩ ở đây nữa, sẽ lấy khi mở modal
+            } catch (mockError) {
+                console.error("Error loading mock data:", mockError);
+                setError(`Không thể tải dữ liệu: ${mockError}`);
+            }
+        };
+        loadData();
+    }, [
+        token
+    ]);
     // Tính thời gian chờ dựa trên createdAt (giả lập)
     const calculateWaitingTime = (createdAt)=>{
         const createdDate = new Date(createdAt);
@@ -2595,66 +4088,246 @@ function QueueManagement({ onBack }) {
         }
     };
     // Hàm xử lý khi click vào nút "Chuyển vào khám"
-    const handleMoveToExamination = (queueId)=>{
+    const handleMoveToExamination = async (queueId)=>{
         // Mở modal để chọn bác sĩ
         setSelectedQueue(queueId);
         setShowDoctorModal(true);
+        // Lấy danh sách bác sĩ vào lúc này, không phải lúc load trang
+        setLoading(true);
+        setError(null);
+        try {
+            let doctorsList = [];
+            if (token) {
+                // Thử sử dụng endpoint mới dành riêng cho việc lấy danh sách bác sĩ
+                try {
+                    console.log("Fetching doctors from API...");
+                    doctorsList = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getDoctors"])(token);
+                    console.log(`Retrieved ${doctorsList.length} doctors from API`);
+                } catch (apiError) {
+                    console.error("API error when fetching doctors:", apiError);
+                    // Fallback to mock data
+                    console.log("Falling back to mock data for doctors...");
+                    doctorsList = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getUsersByRole"])('DOCTOR');
+                }
+            } else {
+                // Sử dụng mock data nếu không có token
+                console.log("Using mock data for doctors list...");
+                doctorsList = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getUsersByRole"])('DOCTOR');
+            }
+            // Cập nhật state với danh sách bác sĩ
+            setDoctors(doctorsList);
+        } catch (error) {
+            console.error("Error loading doctors:", error);
+            setError(`Lỗi khi tải danh sách bác sĩ: ${error.message}`);
+        } finally{
+            setLoading(false);
+        }
     };
     // Hàm xử lý khi đã chọn bác sĩ và xác nhận chuyển bệnh nhân vào khám
-    const handleConfirmMoveToExamination = (doctorId)=>{
-        // Cập nhật status của queue thành 'in_progress' trong mock data và thêm doctorId
-        const updatedQueue = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updateQueueStatus"])(selectedQueue, 'in_progress', doctorId);
-        if (updatedQueue) {
-            // Cập nhật lại state để re-render UI
-            const allQueues = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllQueuesWithPatientInfo"])();
-            setQueues(allQueues);
-            // Lọc lại các danh sách
-            const waiting = allQueues.filter((q)=>q.status === 'waiting');
-            const inProgress = allQueues.filter((q)=>q.status === 'in_progress');
-            setWaitingPatients(waiting);
-            setInProgressPatients(inProgress);
+    const handleConfirmMoveToExamination = async (doctorId)=>{
+        setLoading(true);
+        try {
+            if (token) {
+                // Sử dụng API nếu có token
+                try {
+                    console.log(`Updating queue ${selectedQueue} via API...`);
+                    const updatedQueue = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updateQueueStatus"])(selectedQueue, token, 'in_progress', doctorId);
+                    console.log("API update successful:", updatedQueue);
+                    // Cập nhật UI với dữ liệu mới
+                    await refreshData();
+                } catch (apiError) {
+                    console.error("API error when updating queue:", apiError);
+                    // Fallback to mock function
+                    await fallbackUpdateQueue(selectedQueue, 'in_progress', doctorId);
+                }
+            } else {
+                // Sử dụng mock function nếu không có token
+                await fallbackUpdateQueue(selectedQueue, 'in_progress', doctorId);
+            }
             // Đóng modal
             setShowDoctorModal(false);
             setSelectedQueue('');
+        } catch (error) {
+            console.error("Error moving patient to examination:", error);
+            setError(`Lỗi khi chuyển bệnh nhân vào khám: ${error}`);
+        } finally{
+            setLoading(false);
         }
     };
     // Hàm xử lý khi hoàn thành khám bệnh
-    const handleCompleteExamination = (queueId)=>{
-        // Cập nhật status của queue thành 'completed' trong mock data
-        const updatedQueue = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updateQueueStatus"])(queueId, 'completed');
-        if (updatedQueue) {
-            // Cập nhật lại state để re-render UI
-            const allQueues = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllQueuesWithPatientInfo"])();
-            setQueues(allQueues);
-            // Lọc lại các danh sách
-            const waiting = allQueues.filter((q)=>q.status === 'waiting');
-            const inProgress = allQueues.filter((q)=>q.status === 'in_progress');
-            setWaitingPatients(waiting);
-            setInProgressPatients(inProgress);
+    const handleCompleteExamination = async (queueId)=>{
+        setLoading(true);
+        try {
+            if (token) {
+                // Sử dụng API nếu có token
+                try {
+                    // Bước 1: Gửi thông tin bệnh nhân đến bác sĩ
+                    console.log(`Sending queue ${queueId} information to doctor...`);
+                    try {
+                        const sendResult = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["sendQueueToDoctor"])(queueId, token);
+                        console.log("Queue sent to doctor successfully:", sendResult);
+                        setError(`Đã gửi thông tin bệnh nhân đến bác sĩ thành công!`);
+                    } catch (sendError) {
+                        console.error("Error sending queue to doctor:", sendError);
+                        setError(`Lỗi khi gửi thông tin đến bác sĩ: ${sendError.message}. Nhưng vẫn hoàn thành thay đổi trạng thái.`);
+                    }
+                    // Bước 2: Cập nhật trạng thái queue
+                    console.log(`Updating queue ${queueId} status to completed...`);
+                    const updatedQueue = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updateQueueStatus"])(queueId, token, 'completed');
+                    console.log("API update successful:", updatedQueue);
+                    // Cập nhật UI với dữ liệu mới
+                    await refreshData();
+                } catch (apiError) {
+                    console.error("API error when completing examination:", apiError);
+                    // Fallback to mock function
+                    await fallbackUpdateQueue(queueId, 'completed');
+                }
+            } else {
+                // Sử dụng mock function nếu không có token
+                await fallbackUpdateQueue(queueId, 'completed');
+            }
+        } catch (error) {
+            console.error("Error completing examination:", error);
+            setError(`Lỗi khi hoàn thành khám bệnh: ${error.message}`);
+        } finally{
+            setLoading(false);
+            // Tự động ẩn thông báo lỗi sau 5 giây
+            setTimeout(()=>{
+                setError(null);
+            }, 5000);
+        }
+    };
+    // Fallback function để sử dụng mock data khi API lỗi
+    const fallbackUpdateQueue = async (queueId, status, doctorId)=>{
+        try {
+            console.log(`Using mock data to update queue ${queueId} to ${status}`);
+            // Nếu đang chuyển sang trạng thái completed, gửi thông tin đến bác sĩ trước
+            if (status === 'completed') {
+                try {
+                    // Trong trường hợp thực, thông tin này đã được gửi qua API
+                    // Đối với mock data, ta giả lập việc gửi thông tin
+                    console.log(`Sending queue ${queueId} information to doctor (mock)...`);
+                    await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["sendQueueToDoctor"])(queueId);
+                    console.log('Mock: Information successfully sent to doctor');
+                } catch (sendError) {
+                    console.error("Error sending information to doctor (mock):", sendError);
+                }
+            }
+            const updatedQueue = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updateQueueStatus"])(queueId, status, doctorId);
+            if (updatedQueue) {
+                // Cập nhật lại state để re-render UI
+                const allQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllQueuesWithPatientInfo"])();
+                const formattedMockQueues = formatMockQueueData(allQueues);
+                setQueues(formattedMockQueues);
+                // Lọc lại các danh sách
+                const waiting = formattedMockQueues.filter((q)=>q.status === 'waiting');
+                const inProgress = formattedMockQueues.filter((q)=>q.status === 'in_progress');
+                setWaitingPatients(waiting);
+                setInProgressPatients(inProgress);
+            }
+        } catch (mockError) {
+            console.error("Error using mock data:", mockError);
+            setError(`Không thể cập nhật trạng thái: ${mockError.message || mockError}`);
         }
     };
     // Lấy thông tin bác sĩ được chỉ định cho bệnh nhân
     const getAssignedDoctor = (doctorId)=>{
         if (!doctorId) return null;
+        // Nếu doctorId là object (từ API)
+        if (typeof doctorId === 'object' && doctorId !== null) {
+            return doctorId;
+        }
+        // Nếu doctorId là string (từ mock data)
         return doctors.find((doctor)=>doctor._id === doctorId) || null;
+    };
+    // Hàm để refresh dữ liệu
+    const refreshData = async ()=>{
+        setLoading(true);
+        setError(null);
+        try {
+            if (token) {
+                console.log("Refreshing data from API...");
+                const apiQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesWithPatients"])(token);
+                const formattedQueues = formatApiQueueResponse(apiQueues);
+                setQueues(formattedQueues);
+                setWaitingPatients(formattedQueues.filter((q)=>q.status === 'waiting'));
+                setInProgressPatients(formattedQueues.filter((q)=>q.status === 'in_progress'));
+            } else {
+                console.log("Refreshing data from mock data...");
+                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["initializeData"])();
+                const allQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllQueuesWithPatientInfo"])();
+                const formattedMockQueues = formatMockQueueData(allQueues);
+                setQueues(formattedMockQueues);
+                setWaitingPatients(formattedMockQueues.filter((q)=>q.status === 'waiting'));
+                setInProgressPatients(formattedMockQueues.filter((q)=>q.status === 'in_progress'));
+            }
+        // Không cần refresh danh sách bác sĩ, vì danh sách này sẽ được load khi cần thiết
+        } catch (error) {
+            console.error("Error refreshing data:", error);
+            setError(`Lỗi khi làm mới dữ liệu: ${error.message}`);
+        } finally{
+            setLoading(false);
+        }
+    };
+    // Trích xuất thông tin bệnh nhân từ mỗi queue, xử lý cả từ API và mock data
+    const getPatientInfo = (queue)=>{
+        // Ưu tiên patientInfo (đã được chuẩn hoá)
+        if (queue.patientInfo) {
+            return queue.patientInfo;
+        }
+        // Nếu patient là object (từ API)
+        if (queue.patient && typeof queue.patient === 'object') {
+            return {
+                _id: queue.patient._id,
+                userId: queue.patient.userId,
+                fullName: queue.patient.fullName,
+                phone: queue.patient.phone,
+                role: queue.patient.role,
+                email: queue.patient.email
+            };
+        }
+        // Trường hợp khác (có thể là null hoặc không có thông tin)
+        return null;
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "w-full px-4 sm:px-6",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "flex items-center mb-4",
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                    onClick: onBack,
-                    className: "px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center text-gray-700",
-                    children: "← Quay lại"
-                }, void 0, false, {
-                    fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                    lineNumber: 138,
-                    columnNumber: 9
-                }, this)
-            }, void 0, false, {
+                className: "flex items-center justify-between mb-4",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        onClick: onBack,
+                        className: "px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center text-gray-700",
+                        children: "← Quay lại"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                        lineNumber: 441,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        onClick: refreshData,
+                        disabled: loading,
+                        className: `px-4 py-2 rounded-md flex items-center ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white`,
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$ccw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCcw$3e$__["RefreshCcw"], {
+                                size: 16,
+                                className: `mr-2 ${loading ? 'animate-spin' : ''}`
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                                lineNumber: 453,
+                                columnNumber: 11
+                            }, this),
+                            loading ? 'Đang tải...' : 'Làm mới dữ liệu'
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                        lineNumber: 448,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                lineNumber: 137,
+                lineNumber: 440,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2665,7 +4338,7 @@ function QueueManagement({ onBack }) {
                         children: "Quản lý phòng chờ"
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                        lineNumber: 147,
+                        lineNumber: 459,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2673,13 +4346,21 @@ function QueueManagement({ onBack }) {
                         children: "Quản lý danh sách bệnh nhân đang chờ khám và theo dõi trạng thái"
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                        lineNumber: 148,
+                        lineNumber: 460,
                         columnNumber: 9
+                    }, this),
+                    error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "mt-4 p-3 bg-red-50 border border-red-300 text-red-700 rounded-lg",
+                        children: error
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                        lineNumber: 464,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                lineNumber: 146,
+                lineNumber: 458,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2699,7 +4380,7 @@ function QueueManagement({ onBack }) {
                                                 className: "text-black mr-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 159,
+                                                lineNumber: 476,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -2707,13 +4388,13 @@ function QueueManagement({ onBack }) {
                                                 children: "Bệnh nhân đang chờ"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 160,
+                                                lineNumber: 477,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 158,
+                                        lineNumber: 475,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2724,7 +4405,7 @@ function QueueManagement({ onBack }) {
                                                 className: "mr-1.5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 165,
+                                                lineNumber: 482,
                                                 columnNumber: 15
                                             }, this),
                                             waitingPatients.length,
@@ -2732,18 +4413,44 @@ function QueueManagement({ onBack }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 164,
+                                        lineNumber: 481,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                lineNumber: 157,
+                                lineNumber: 474,
                                 columnNumber: 11
                             }, this),
-                            waitingPatients.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "p-8 text-center",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900 mx-auto mb-3"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                                        lineNumber: 489,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-black",
+                                        children: "Đang tải dữ liệu..."
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                                        lineNumber: 490,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                                lineNumber: 488,
+                                columnNumber: 13
+                            }, this) : waitingPatients.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "divide-y divide-gray-200",
-                                children: waitingPatients.map((queue, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: waitingPatients.map((queue, index)=>{
+                                    // Lấy thông tin bệnh nhân từ đúng nguồn dữ liệu
+                                    const patientInfo = getPatientInfo(queue);
+                                    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: `p-5 hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`,
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2753,53 +4460,53 @@ function QueueManagement({ onBack }) {
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                                                 className: "font-medium text-black text-base",
-                                                                children: queue.patientInfo?.fullName || 'Không có tên'
+                                                                children: patientInfo?.fullName || 'Không có tên'
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 176,
-                                                                columnNumber: 23
+                                                                lineNumber: 502,
+                                                                columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                 className: "text-sm text-black mt-1",
                                                                 children: [
                                                                     "ID: ",
-                                                                    queue.patientInfo?.userId || 'N/A'
+                                                                    patientInfo?.userId || 'N/A'
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 179,
-                                                                columnNumber: 23
+                                                                lineNumber: 505,
+                                                                columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                 className: "text-sm text-black mt-1",
                                                                 children: [
                                                                     "SĐT: ",
-                                                                    queue.patientInfo?.phone || 'N/A'
+                                                                    patientInfo?.phone || 'N/A'
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 182,
-                                                                columnNumber: 23
+                                                                lineNumber: 508,
+                                                                columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                        lineNumber: 175,
-                                                        columnNumber: 21
+                                                        lineNumber: 501,
+                                                        columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "bg-gray-200 border border-gray-300 text-black px-3 py-1 rounded-full text-sm font-medium",
                                                         children: "Chờ"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                        lineNumber: 186,
-                                                        columnNumber: 21
+                                                        lineNumber: 512,
+                                                        columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 174,
-                                                columnNumber: 19
+                                                lineNumber: 500,
+                                                columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "flex justify-between items-center",
@@ -2812,8 +4519,8 @@ function QueueManagement({ onBack }) {
                                                                 className: "mr-1.5 text-black"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 192,
-                                                                columnNumber: 23
+                                                                lineNumber: 518,
+                                                                columnNumber: 25
                                                             }, this),
                                                             "Thời gian chờ: ",
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2821,18 +4528,19 @@ function QueueManagement({ onBack }) {
                                                                 children: calculateWaitingTime(queue.createdAt)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 193,
-                                                                columnNumber: 38
+                                                                lineNumber: 519,
+                                                                columnNumber: 40
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                        lineNumber: 191,
-                                                        columnNumber: 21
+                                                        lineNumber: 517,
+                                                        columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                         onClick: ()=>handleMoveToExamination(queue._id),
-                                                        className: "flex items-center text-sm bg-green-600 hover:bg-green-700 text-white px-3.5 py-1.5 rounded-md transition-colors shadow-sm",
+                                                        disabled: loading,
+                                                        className: `flex items-center text-sm ${loading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'} text-white px-3.5 py-1.5 rounded-md transition-colors shadow-sm`,
                                                         children: [
                                                             "Chuyển vào khám",
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$move$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__MoveRightIcon$3e$__["MoveRightIcon"], {
@@ -2840,30 +4548,31 @@ function QueueManagement({ onBack }) {
                                                                 className: "ml-1.5"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 200,
-                                                                columnNumber: 23
+                                                                lineNumber: 527,
+                                                                columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                        lineNumber: 195,
-                                                        columnNumber: 21
+                                                        lineNumber: 521,
+                                                        columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 190,
-                                                columnNumber: 19
+                                                lineNumber: 516,
+                                                columnNumber: 21
                                             }, this)
                                         ]
                                     }, queue._id, true, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 173,
-                                        columnNumber: 17
-                                    }, this))
+                                        lineNumber: 499,
+                                        columnNumber: 19
+                                    }, this);
+                                })
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                lineNumber: 171,
+                                lineNumber: 493,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "p-8 text-center",
@@ -2873,7 +4582,7 @@ function QueueManagement({ onBack }) {
                                         className: "mx-auto text-gray-400 mb-3"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 208,
+                                        lineNumber: 536,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2881,7 +4590,7 @@ function QueueManagement({ onBack }) {
                                         children: "Không có bệnh nhân nào đang chờ"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 209,
+                                        lineNumber: 537,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2889,19 +4598,19 @@ function QueueManagement({ onBack }) {
                                         children: "Hãy thêm bệnh nhân vào danh sách chờ từ màn hình Quản lý bệnh nhân"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 210,
+                                        lineNumber: 538,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                lineNumber: 207,
+                                lineNumber: 535,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                        lineNumber: 156,
+                        lineNumber: 473,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2918,7 +4627,7 @@ function QueueManagement({ onBack }) {
                                                 className: "text-black mr-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 219,
+                                                lineNumber: 547,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -2926,13 +4635,13 @@ function QueueManagement({ onBack }) {
                                                 children: "Đang khám"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 220,
+                                                lineNumber: 548,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 218,
+                                        lineNumber: 546,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2943,7 +4652,7 @@ function QueueManagement({ onBack }) {
                                                 className: "mr-1.5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 223,
+                                                lineNumber: 551,
                                                 columnNumber: 15
                                             }, this),
                                             inProgressPatients.length,
@@ -2951,18 +4660,44 @@ function QueueManagement({ onBack }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 222,
+                                        lineNumber: 550,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                lineNumber: 217,
+                                lineNumber: 545,
                                 columnNumber: 11
                             }, this),
-                            inProgressPatients.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "p-8 text-center",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900 mx-auto mb-3"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                                        lineNumber: 558,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-black",
+                                        children: "Đang tải dữ liệu..."
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                                        lineNumber: 559,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                                lineNumber: 557,
+                                columnNumber: 13
+                            }, this) : inProgressPatients.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "divide-y divide-gray-200",
                                 children: inProgressPatients.map((queue, index)=>{
+                                    // Lấy thông tin bệnh nhân từ đúng nguồn dữ liệu
+                                    const patientInfo = getPatientInfo(queue);
+                                    // Lấy thông tin bác sĩ được chỉ định
                                     const assignedDoctor = getAssignedDoctor(queue.doctorId);
                                     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: `p-5 hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`,
@@ -2974,38 +4709,38 @@ function QueueManagement({ onBack }) {
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                                                 className: "font-medium text-black text-base",
-                                                                children: queue.patientInfo?.fullName || 'Không có tên'
+                                                                children: patientInfo?.fullName || 'Không có tên'
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 236,
+                                                                lineNumber: 574,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                 className: "text-sm text-black mt-1",
                                                                 children: [
                                                                     "ID: ",
-                                                                    queue.patientInfo?.userId || 'N/A'
+                                                                    patientInfo?.userId || 'N/A'
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 239,
+                                                                lineNumber: 577,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                 className: "text-sm text-black mt-1",
                                                                 children: [
                                                                     "SĐT: ",
-                                                                    queue.patientInfo?.phone || 'N/A'
+                                                                    patientInfo?.phone || 'N/A'
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 242,
+                                                                lineNumber: 580,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                        lineNumber: 235,
+                                                        lineNumber: 573,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3013,13 +4748,13 @@ function QueueManagement({ onBack }) {
                                                         children: "Đang khám"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                        lineNumber: 246,
+                                                        lineNumber: 584,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 234,
+                                                lineNumber: 572,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3032,21 +4767,21 @@ function QueueManagement({ onBack }) {
                                                                 children: "Bác sĩ khám"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 252,
+                                                                lineNumber: 590,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                 className: "text-sm font-medium text-black mt-1",
-                                                                children: assignedDoctor ? assignedDoctor.fullName : 'Chưa chỉ định'
+                                                                children: assignedDoctor ? typeof assignedDoctor === 'object' ? assignedDoctor.fullName : assignedDoctor : 'Chưa chỉ định'
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 253,
+                                                                lineNumber: 591,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                        lineNumber: 251,
+                                                        lineNumber: 589,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3056,65 +4791,39 @@ function QueueManagement({ onBack }) {
                                                                 children: "Phòng khám"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 258,
+                                                                lineNumber: 596,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                 className: "text-sm font-medium text-black mt-1",
-                                                                children: assignedDoctor ? `Phòng ${100 + parseInt(assignedDoctor._id.slice(-2), 16) % 10}` : 'N/A'
+                                                                children: assignedDoctor ? `Phòng ${typeof assignedDoctor === 'object' ? 100 + parseInt(assignedDoctor._id.slice(-2), 16) % 10 : 100 + parseInt(String(assignedDoctor).slice(-2), 16) % 10}` : 'N/A'
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                                lineNumber: 259,
+                                                                lineNumber: 597,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                        lineNumber: 257,
+                                                        lineNumber: 595,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 250,
-                                                columnNumber: 21
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "mt-4 flex justify-end",
-                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                    onClick: ()=>handleCompleteExamination(queue._id),
-                                                    className: "flex items-center text-sm bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-1.5 rounded-md transition-colors shadow-sm",
-                                                    children: [
-                                                        "Hoàn thành khám",
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2d$big$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircleIcon$3e$__["CheckCircleIcon"], {
-                                                            size: 16,
-                                                            className: "ml-1.5"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                            lineNumber: 270,
-                                                            columnNumber: 25
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                    lineNumber: 265,
-                                                    columnNumber: 23
-                                                }, this)
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                lineNumber: 264,
+                                                lineNumber: 588,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, queue._id, true, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 233,
+                                        lineNumber: 571,
                                         columnNumber: 19
                                     }, this);
                                 })
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                lineNumber: 229,
+                                lineNumber: 562,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "p-8 text-center",
@@ -3124,7 +4833,7 @@ function QueueManagement({ onBack }) {
                                         className: "mx-auto text-gray-400 mb-3"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 279,
+                                        lineNumber: 612,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3132,7 +4841,7 @@ function QueueManagement({ onBack }) {
                                         children: "Không có bệnh nhân nào đang khám"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 280,
+                                        lineNumber: 613,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3140,25 +4849,25 @@ function QueueManagement({ onBack }) {
                                         children: "Chuyển bệnh nhân từ phòng chờ vào khám"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 281,
+                                        lineNumber: 614,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                lineNumber: 278,
+                                lineNumber: 611,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                        lineNumber: 216,
+                        lineNumber: 544,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                lineNumber: 154,
+                lineNumber: 471,
                 columnNumber: 7
             }, this),
             showDoctorModal && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3174,7 +4883,7 @@ function QueueManagement({ onBack }) {
                                     children: "Chọn bác sĩ"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                    lineNumber: 292,
+                                    lineNumber: 625,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3184,18 +4893,18 @@ function QueueManagement({ onBack }) {
                                         size: 20
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                        lineNumber: 297,
+                                        lineNumber: 630,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                    lineNumber: 293,
+                                    lineNumber: 626,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                            lineNumber: 291,
+                            lineNumber: 624,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3203,14 +4912,37 @@ function QueueManagement({ onBack }) {
                             children: "Vui lòng chọn bác sĩ để chuyển bệnh nhân vào khám:"
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                            lineNumber: 301,
+                            lineNumber: 634,
                             columnNumber: 13
                         }, this),
-                        doctors.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "p-8 text-center",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900 mx-auto mb-3"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                                    lineNumber: 638,
+                                    columnNumber: 17
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-black",
+                                    children: "Đang tải..."
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                                    lineNumber: 639,
+                                    columnNumber: 17
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
+                            lineNumber: 637,
+                            columnNumber: 15
+                        }, this) : doctors.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "space-y-2 max-h-60 overflow-auto",
                             children: doctors.map((doctor)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    onClick: ()=>handleConfirmMoveToExamination(doctor._id),
-                                    className: "p-3 border border-gray-300 rounded-md hover:bg-blue-50 cursor-pointer transition-colors flex justify-between items-center",
+                                    onClick: ()=>!loading && handleConfirmMoveToExamination(doctor._id),
+                                    className: `p-3 border border-gray-300 rounded-md ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-50 cursor-pointer'} transition-colors flex justify-between items-center`,
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             children: [
@@ -3219,7 +4951,7 @@ function QueueManagement({ onBack }) {
                                                     children: doctor.fullName
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                    lineNumber: 312,
+                                                    lineNumber: 650,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3227,13 +4959,13 @@ function QueueManagement({ onBack }) {
                                                     children: doctor.email
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                                    lineNumber: 313,
+                                                    lineNumber: 651,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                            lineNumber: 311,
+                                            lineNumber: 649,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3244,25 +4976,25 @@ function QueueManagement({ onBack }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                            lineNumber: 315,
+                                            lineNumber: 653,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, doctor._id, true, {
                                     fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                    lineNumber: 306,
+                                    lineNumber: 644,
                                     columnNumber: 19
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                            lineNumber: 304,
+                            lineNumber: 642,
                             columnNumber: 15
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                             className: "text-center py-4 text-black",
                             children: "Không có bác sĩ nào"
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                            lineNumber: 322,
+                            lineNumber: 660,
                             columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3270,32 +5002,33 @@ function QueueManagement({ onBack }) {
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>setShowDoctorModal(false),
                                 className: "px-4 py-2 bg-gray-200 rounded-md mr-2 text-black hover:bg-gray-300",
+                                disabled: loading,
                                 children: "Hủy"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                                lineNumber: 326,
+                                lineNumber: 664,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                            lineNumber: 325,
+                            lineNumber: 663,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                    lineNumber: 290,
+                    lineNumber: 623,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-                lineNumber: 289,
+                lineNumber: 622,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/receptionistPage/QueueManagement.tsx",
-        lineNumber: 136,
+        lineNumber: 439,
         columnNumber: 5
     }, this);
 }
@@ -3323,47 +5056,59 @@ function MedicationHistory({ onBack }) {
     const [endDate, setEndDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [searchTerm, setSearchTerm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [medicationRecords, setMedicationRecords] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    // Load medication data from mock database
+    // Load medication data from API
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        // Get all prescriptions
-        const prescriptions = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPrescriptions"])();
-        // Transform prescriptions to the format we need for display
-        const records = prescriptions.map((prescription)=>{
-            // Get patient info
-            const patient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getUserById"])(prescription.patientId);
-            // Get doctor info
-            const doctor = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getUserById"])(prescription.doctorId);
-            // Get prescription details
-            const prescriptionDetails = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getPrescriptionDetailsByPrescriptionId"])(prescription._id);
-            // Transform prescription details to medication details
-            const medications = prescriptionDetails.map((detail)=>{
-                const medicine = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
-                // Parse dosage to extract frequency and duration
-                // In a real app, these would be separate fields
-                const dosageInfo = detail.dosage.split(' ');
-                const frequency = dosageInfo.slice(0, dosageInfo.length > 3 ? 3 : dosageInfo.length).join(' ');
-                const duration = `${detail.quantity / parseInt(dosageInfo[0])} ngày`;
-                return {
-                    name: medicine ? medicine.name : 'Unknown Medicine',
-                    dosage: medicine ? `${medicine.name.split(' ')[1]}` : 'Unknown Dosage',
-                    frequency: frequency,
-                    duration: duration
-                };
-            });
-            // Format date for display
-            const dateObj = new Date(prescription.date);
-            const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
-            return {
-                id: prescription._id,
-                name: patient ? patient.fullName : 'Unknown Patient',
-                patientId: patient ? patient.userId : 'Unknown',
-                date: formattedDate,
-                doctor: doctor ? doctor.fullName : 'Unknown Doctor',
-                diagnosis: prescription.diagnosis,
-                medications: medications
-            };
-        });
-        setMedicationRecords(records);
+        const loadData = async ()=>{
+            try {
+                // Initialize data from API first
+                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["initializeData"])();
+                // Get all prescriptions
+                const prescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPrescriptions"])();
+                // Transform prescriptions to the format we need for display
+                const records = [];
+                for (const prescription of prescriptions){
+                    // Get patient info
+                    const patient = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getUserById"])(prescription.patientId);
+                    // Get doctor info
+                    const doctor = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getUserById"])(prescription.doctorId);
+                    // Get prescription details
+                    const prescriptionDetails = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getPrescriptionDetailsByPrescriptionId"])(prescription._id);
+                    // Transform prescription details to medication details
+                    const medications = [];
+                    for (const detail of prescriptionDetails){
+                        const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
+                        // Parse dosage to extract frequency and duration
+                        // In a real app, these would be separate fields
+                        const dosageInfo = detail.dosage.split(' ');
+                        const frequency = dosageInfo.slice(0, dosageInfo.length > 3 ? 3 : dosageInfo.length).join(' ');
+                        const duration = `${detail.quantity / parseInt(dosageInfo[0])} ngày`;
+                        medications.push({
+                            name: medicine ? medicine.name : 'Unknown Medicine',
+                            dosage: medicine ? `${medicine.name.split(' ')[1]}` : 'Unknown Dosage',
+                            frequency: frequency,
+                            duration: duration
+                        });
+                    }
+                    // Format date for display
+                    const dateObj = new Date(prescription.date);
+                    const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+                    records.push({
+                        id: prescription._id,
+                        name: patient ? patient.fullName : 'Unknown Patient',
+                        patientId: patient ? patient.userId : 'Unknown',
+                        date: formattedDate,
+                        doctor: doctor ? doctor.fullName : 'Unknown Doctor',
+                        diagnosis: prescription.diagnosis,
+                        medications: medications
+                    });
+                }
+                setMedicationRecords(records);
+            } catch (error) {
+                console.error("Error loading medication data:", error);
+                setMedicationRecords([]);
+            }
+        };
+        loadData();
     }, []);
     // Filter medications based on search term and date range
     const filteredMedications = medicationRecords.filter((record)=>{
@@ -3390,12 +5135,12 @@ function MedicationHistory({ onBack }) {
                     children: "← Quay lại"
                 }, void 0, false, {
                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                    lineNumber: 113,
+                    lineNumber: 130,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                lineNumber: 112,
+                lineNumber: 129,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3406,7 +5151,7 @@ function MedicationHistory({ onBack }) {
                         children: "Lịch sử thuốc"
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                        lineNumber: 122,
+                        lineNumber: 139,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3414,13 +5159,13 @@ function MedicationHistory({ onBack }) {
                         children: "Xem lịch sử thuốc đã kê cho bệnh nhân"
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                        lineNumber: 123,
+                        lineNumber: 140,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                lineNumber: 121,
+                lineNumber: 138,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3441,12 +5186,12 @@ function MedicationHistory({ onBack }) {
                                                 className: "text-black"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 133,
+                                                lineNumber: 150,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                            lineNumber: 132,
+                                            lineNumber: 149,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3457,13 +5202,13 @@ function MedicationHistory({ onBack }) {
                                             onChange: (e)=>setSearchTerm(e.target.value)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                            lineNumber: 135,
+                                            lineNumber: 152,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                    lineNumber: 131,
+                                    lineNumber: 148,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3478,7 +5223,7 @@ function MedicationHistory({ onBack }) {
                                                     children: "Từ ngày"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                    lineNumber: 146,
+                                                    lineNumber: 163,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3491,12 +5236,12 @@ function MedicationHistory({ onBack }) {
                                                                 className: "text-black"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 149,
+                                                                lineNumber: 166,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 148,
+                                                            lineNumber: 165,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3507,19 +5252,19 @@ function MedicationHistory({ onBack }) {
                                                             onChange: (e)=>setStartDate(e.target.value)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 151,
+                                                            lineNumber: 168,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                    lineNumber: 147,
+                                                    lineNumber: 164,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                            lineNumber: 145,
+                                            lineNumber: 162,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3531,7 +5276,7 @@ function MedicationHistory({ onBack }) {
                                                     children: "Đến ngày"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                    lineNumber: 162,
+                                                    lineNumber: 179,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3544,12 +5289,12 @@ function MedicationHistory({ onBack }) {
                                                                 className: "text-black"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 165,
+                                                                lineNumber: 182,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 164,
+                                                            lineNumber: 181,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3560,36 +5305,36 @@ function MedicationHistory({ onBack }) {
                                                             onChange: (e)=>setEndDate(e.target.value)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 167,
+                                                            lineNumber: 184,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                    lineNumber: 163,
+                                                    lineNumber: 180,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                            lineNumber: 161,
+                                            lineNumber: 178,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                    lineNumber: 144,
+                                    lineNumber: 161,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                            lineNumber: 130,
+                            lineNumber: 147,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                        lineNumber: 129,
+                        lineNumber: 146,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3610,7 +5355,7 @@ function MedicationHistory({ onBack }) {
                                                                 children: record.name
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 188,
+                                                                lineNumber: 205,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3621,13 +5366,13 @@ function MedicationHistory({ onBack }) {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 191,
+                                                                lineNumber: 208,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                        lineNumber: 187,
+                                                        lineNumber: 204,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3640,7 +5385,7 @@ function MedicationHistory({ onBack }) {
                                                                         children: "Ngày khám"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 197,
+                                                                        lineNumber: 214,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3648,13 +5393,13 @@ function MedicationHistory({ onBack }) {
                                                                         children: record.date
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 198,
+                                                                        lineNumber: 215,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 196,
+                                                                lineNumber: 213,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3664,7 +5409,7 @@ function MedicationHistory({ onBack }) {
                                                                         children: "Bác sĩ"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 201,
+                                                                        lineNumber: 218,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3672,13 +5417,13 @@ function MedicationHistory({ onBack }) {
                                                                         children: record.doctor
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 202,
+                                                                        lineNumber: 219,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 200,
+                                                                lineNumber: 217,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3688,7 +5433,7 @@ function MedicationHistory({ onBack }) {
                                                                         children: "Chẩn đoán"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 205,
+                                                                        lineNumber: 222,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3696,25 +5441,25 @@ function MedicationHistory({ onBack }) {
                                                                         children: record.diagnosis
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 206,
+                                                                        lineNumber: 223,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 204,
+                                                                lineNumber: 221,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                        lineNumber: 195,
+                                                        lineNumber: 212,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 186,
+                                                lineNumber: 203,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3728,14 +5473,14 @@ function MedicationHistory({ onBack }) {
                                                                 className: "mr-2 text-indigo-600"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 213,
+                                                                lineNumber: 230,
                                                                 columnNumber: 23
                                                             }, this),
                                                             "Danh sách thuốc"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                        lineNumber: 212,
+                                                        lineNumber: 229,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3752,7 +5497,7 @@ function MedicationHistory({ onBack }) {
                                                                                 children: "Tên thuốc"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                lineNumber: 220,
+                                                                                lineNumber: 237,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3760,7 +5505,7 @@ function MedicationHistory({ onBack }) {
                                                                                 children: "Liều lượng"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                lineNumber: 223,
+                                                                                lineNumber: 240,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3768,7 +5513,7 @@ function MedicationHistory({ onBack }) {
                                                                                 children: "Tần suất"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                lineNumber: 226,
+                                                                                lineNumber: 243,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3776,18 +5521,18 @@ function MedicationHistory({ onBack }) {
                                                                                 children: "Thời gian dùng"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                lineNumber: 229,
+                                                                                lineNumber: 246,
                                                                                 columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 219,
+                                                                        lineNumber: 236,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                    lineNumber: 218,
+                                                                    lineNumber: 235,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -3800,7 +5545,7 @@ function MedicationHistory({ onBack }) {
                                                                                     children: med.name
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                    lineNumber: 237,
+                                                                                    lineNumber: 254,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3808,7 +5553,7 @@ function MedicationHistory({ onBack }) {
                                                                                     children: med.dosage
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                    lineNumber: 240,
+                                                                                    lineNumber: 257,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3816,7 +5561,7 @@ function MedicationHistory({ onBack }) {
                                                                                     children: med.frequency
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                    lineNumber: 243,
+                                                                                    lineNumber: 260,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3824,46 +5569,46 @@ function MedicationHistory({ onBack }) {
                                                                                     children: med.duration
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                    lineNumber: 246,
+                                                                                    lineNumber: 263,
                                                                                     columnNumber: 31
                                                                                 }, this)
                                                                             ]
                                                                         }, index, true, {
                                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                            lineNumber: 236,
+                                                                            lineNumber: 253,
                                                                             columnNumber: 29
                                                                         }, this))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                    lineNumber: 234,
+                                                                    lineNumber: 251,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 217,
+                                                            lineNumber: 234,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                        lineNumber: 216,
+                                                        lineNumber: 233,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 211,
+                                                lineNumber: 228,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, record.id, true, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 185,
+                                        lineNumber: 202,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                lineNumber: 183,
+                                lineNumber: 200,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "text-center py-16 border border-dashed border-gray-300 rounded-lg",
@@ -3873,7 +5618,7 @@ function MedicationHistory({ onBack }) {
                                         className: "mx-auto text-gray-400 mb-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 260,
+                                        lineNumber: 277,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -3881,7 +5626,7 @@ function MedicationHistory({ onBack }) {
                                         children: "Không tìm thấy dữ liệu"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 261,
+                                        lineNumber: 278,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3889,13 +5634,13 @@ function MedicationHistory({ onBack }) {
                                         children: "Thử tìm kiếm với từ khóa khác hoặc thay đổi bộ lọc để xem kết quả"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 264,
+                                        lineNumber: 281,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                lineNumber: 259,
+                                lineNumber: 276,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3910,14 +5655,14 @@ function MedicationHistory({ onBack }) {
                                                 children: filteredMedications.length
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 273,
+                                                lineNumber: 290,
                                                 columnNumber: 24
                                             }, this),
                                             " kết quả"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 272,
+                                        lineNumber: 289,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3928,7 +5673,7 @@ function MedicationHistory({ onBack }) {
                                                 children: "Trước"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 276,
+                                                lineNumber: 293,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3936,7 +5681,7 @@ function MedicationHistory({ onBack }) {
                                                 children: "1"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 279,
+                                                lineNumber: 296,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3944,37 +5689,37 @@ function MedicationHistory({ onBack }) {
                                                 children: "Sau"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 282,
+                                                lineNumber: 299,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 275,
+                                        lineNumber: 292,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                lineNumber: 271,
+                                lineNumber: 288,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                        lineNumber: 181,
+                        lineNumber: 198,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                lineNumber: 127,
+                lineNumber: 144,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-        lineNumber: 111,
+        lineNumber: 128,
         columnNumber: 5
     }, this);
 }
@@ -3993,6 +5738,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__UserIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/user.js [app-ssr] (ecmascript) <export default as UserIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__SearchIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/search.js [app-ssr] (ecmascript) <export default as SearchIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-ssr] (ecmascript)");
+;
+;
 ;
 ;
 ;
@@ -4000,22 +5749,40 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mock
 function AppointmentForm({ onClose }) {
     const [formData, setFormData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
         patientId: '',
-        status: 'waiting' // Mặc định là waiting
+        patientName: '',
+        patientPhone: '',
+        appointmentDate: new Date().toISOString().split('T')[0],
+        appointmentTime: '09:00',
+        status: 'pending' // Default status for appointments
     });
     const [selectedPatient, setSelectedPatient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [searchTerm, setSearchTerm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [searchResults, setSearchResults] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    // Sử dụng danh sách bệnh nhân từ mockPatients.ts
-    const patients = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["mockPatients"];
+    const [patients, setPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const { token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
+    // Tải dữ liệu bệnh nhân khi component được tạo
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        const loadPatients = async ()=>{
+            const allUsers = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllUsers"])();
+            const patientUsers = allUsers.filter((user)=>user.role === 'PATIENT');
+            setPatients(patientUsers);
+        };
+        loadPatients();
+    }, []);
     // Xử lý tìm kiếm bệnh nhân
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        if (searchTerm.length > 0) {
-            // Sử dụng hàm searchUsers từ mockPatients.ts và lọc chỉ lấy các user có role='PATIENT'
-            const results = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["searchUsers"])(searchTerm).filter((user)=>user.role === 'PATIENT');
-            setSearchResults(results);
-        } else {
-            setSearchResults([]);
-        }
+        const searchPatientsAsync = async ()=>{
+            if (searchTerm.length > 0) {
+                // Sử dụng hàm searchUsers từ mockPatients.ts và lọc chỉ lấy các user có role='PATIENT'
+                const results = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["searchUsers"])(searchTerm);
+                const filteredResults = results.filter((user)=>user.role === 'PATIENT');
+                setSearchResults(filteredResults);
+            } else {
+                setSearchResults([]);
+            }
+        };
+        searchPatientsAsync();
     }, [
         searchTerm
     ]);
@@ -4026,32 +5793,70 @@ function AppointmentForm({ onClose }) {
         setSelectedPatient(patient);
         setFormData({
             ...formData,
-            patientId: patient._id
+            patientId: patient._id,
+            patientName: patient.fullName,
+            patientPhone: patient.phone
         });
         setSearchTerm('');
         setSearchResults([]);
     };
-    const handleStatusChange = (e)=>{
+    const handleInputChange = (e)=>{
+        const { name, value } = e.target;
         setFormData({
             ...formData,
-            status: e.target.value
+            [name]: value
         });
     };
-    const handleSubmit = (e)=>{
+    const handleSubmit = async (e)=>{
         e.preventDefault();
         if (!selectedPatient) {
             alert('Vui lòng chọn bệnh nhân');
             return;
         }
-        // Sử dụng hàm addQueue từ mockPatients.ts để thêm bệnh nhân vào queue
-        const status = formData.status;
-        const newQueue = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addQueue"])(formData.patientId, status);
-        if (newQueue) {
-            console.log('Patient added to queue:', newQueue);
-            alert(`Đã thêm bệnh nhân ${selectedPatient.fullName} vào hàng chờ!`);
-            onClose();
-        } else {
-            alert('Không thể thêm bệnh nhân vào hàng chờ. Bệnh nhân có thể đã tồn tại trong hàng chờ.');
+        try {
+            setLoading(true);
+            // Create appointment object
+            const appointmentData = {
+                patientId: formData.patientId,
+                patientName: formData.patientName,
+                patientPhone: formData.patientPhone,
+                appointmentDate: formData.appointmentDate,
+                appointmentTime: formData.appointmentTime,
+                status: formData.status
+            };
+            // Create appointment via API if token exists
+            let success = false;
+            if (token) {
+                try {
+                    const createdAppointment = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createAppointment"])(appointmentData, token);
+                    if (createdAppointment && createdAppointment._id) {
+                        success = true;
+                    }
+                } catch (apiError) {
+                    console.error("API Error creating appointment:", apiError);
+                }
+            }
+            // Fallback: Add to queue directly if API fails or no token
+            if (!success) {
+                // Add the patient to queue as a fallback
+                const queueStatus = 'waiting';
+                const newQueue = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addQueue"])(formData.patientId, queueStatus);
+                if (newQueue) {
+                    console.log('Patient added to queue as fallback:', newQueue);
+                    success = true;
+                }
+            }
+            if (success) {
+                alert(`Đã đặt lịch hẹn cho bệnh nhân ${selectedPatient.fullName}!`);
+                onClose();
+            } else {
+                alert('Không thể đặt lịch hẹn. Vui lòng thử lại sau.');
+            }
+        } catch (error) {
+            console.error("Error creating appointment:", error);
+            alert('Đã xảy ra lỗi khi đặt lịch hẹn. Vui lòng thử lại sau.');
+        } finally{
+            setLoading(false);
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4065,7 +5870,7 @@ function AppointmentForm({ onClose }) {
                         children: "Đặt lịch khám"
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                        lineNumber: 78,
+                        lineNumber: 143,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4076,7 +5881,7 @@ function AppointmentForm({ onClose }) {
                                 children: "ID và version sẽ được tạo tự động"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 80,
+                                lineNumber: 145,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4087,24 +5892,24 @@ function AppointmentForm({ onClose }) {
                                     className: "text-gray-500"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                    lineNumber: 82,
+                                    lineNumber: 147,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 81,
+                                lineNumber: 146,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                        lineNumber: 79,
+                        lineNumber: 144,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                lineNumber: 77,
+                lineNumber: 142,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -4123,13 +5928,13 @@ function AppointmentForm({ onClose }) {
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                        lineNumber: 91,
+                                        lineNumber: 156,
                                         columnNumber: 37
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 90,
+                                lineNumber: 155,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4142,12 +5947,12 @@ function AppointmentForm({ onClose }) {
                                             className: "text-gray-400"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                            lineNumber: 96,
+                                            lineNumber: 161,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                        lineNumber: 95,
+                                        lineNumber: 160,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4158,13 +5963,13 @@ function AppointmentForm({ onClose }) {
                                         onChange: handleSearchChange
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                        lineNumber: 98,
+                                        lineNumber: 163,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 94,
+                                lineNumber: 159,
                                 columnNumber: 11
                             }, this),
                             searchResults.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4178,7 +5983,7 @@ function AppointmentForm({ onClose }) {
                                                 className: "text-gray-500 mr-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                                lineNumber: 115,
+                                                lineNumber: 180,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4188,7 +5993,7 @@ function AppointmentForm({ onClose }) {
                                                         children: patient.fullName
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                                        lineNumber: 117,
+                                                        lineNumber: 182,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4201,24 +6006,24 @@ function AppointmentForm({ onClose }) {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                                        lineNumber: 118,
+                                                        lineNumber: 183,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                                lineNumber: 116,
+                                                lineNumber: 181,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, patient._id, true, {
                                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 175,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 108,
+                                lineNumber: 173,
                                 columnNumber: 13
                             }, this),
                             selectedPatient && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4234,7 +6039,7 @@ function AppointmentForm({ onClose }) {
                                                     className: "text-blue-500 mr-2"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                                    lineNumber: 132,
+                                                    lineNumber: 197,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4244,7 +6049,7 @@ function AppointmentForm({ onClose }) {
                                                             children: selectedPatient.fullName
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                                            lineNumber: 134,
+                                                            lineNumber: 199,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4257,19 +6062,19 @@ function AppointmentForm({ onClose }) {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                                            lineNumber: 135,
+                                                            lineNumber: 200,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                                    lineNumber: 133,
+                                                    lineNumber: 198,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                            lineNumber: 131,
+                                            lineNumber: 196,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4278,7 +6083,9 @@ function AppointmentForm({ onClose }) {
                                                 setSelectedPatient(null);
                                                 setFormData({
                                                     ...formData,
-                                                    patientId: ''
+                                                    patientId: '',
+                                                    patientName: '',
+                                                    patientPhone: ''
                                                 });
                                             },
                                             className: "text-gray-500 hover:text-red-500",
@@ -4286,29 +6093,119 @@ function AppointmentForm({ onClose }) {
                                                 size: 18
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                                lineNumber: 148,
+                                                lineNumber: 213,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                            lineNumber: 140,
+                                            lineNumber: 205,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                    lineNumber: 130,
+                                    lineNumber: 195,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 129,
+                                lineNumber: 194,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                        lineNumber: 89,
+                        lineNumber: 154,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "grid grid-cols-1 md:grid-cols-2 gap-4 mb-6",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "block text-sm font-semibold text-gray-700 mb-2",
+                                        htmlFor: "appointmentDate",
+                                        children: [
+                                            "Ngày hẹn ",
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                className: "text-red-500",
+                                                children: "*"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
+                                                lineNumber: 225,
+                                                columnNumber: 24
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
+                                        lineNumber: 224,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "date",
+                                        id: "appointmentDate",
+                                        name: "appointmentDate",
+                                        min: new Date().toISOString().split('T')[0],
+                                        className: "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500",
+                                        value: formData.appointmentDate,
+                                        onChange: handleInputChange,
+                                        required: true
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
+                                        lineNumber: 227,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
+                                lineNumber: 223,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "block text-sm font-semibold text-gray-700 mb-2",
+                                        htmlFor: "appointmentTime",
+                                        children: [
+                                            "Thời gian ",
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                className: "text-red-500",
+                                                children: "*"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
+                                                lineNumber: 242,
+                                                columnNumber: 25
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
+                                        lineNumber: 241,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "time",
+                                        id: "appointmentTime",
+                                        name: "appointmentTime",
+                                        className: "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500",
+                                        value: formData.appointmentTime,
+                                        onChange: handleInputChange,
+                                        required: true
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
+                                        lineNumber: 244,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
+                                lineNumber: 240,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
+                        lineNumber: 221,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4317,10 +6214,10 @@ function AppointmentForm({ onClose }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                 className: "block text-sm font-semibold text-gray-700 mb-2",
                                 htmlFor: "status",
-                                children: "Trạng thái cuộc hẹn (status)"
+                                children: "Trạng thái cuộc hẹn"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 157,
+                                lineNumber: 258,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -4328,30 +6225,22 @@ function AppointmentForm({ onClose }) {
                                 name: "status",
                                 className: "w-full border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500",
                                 value: formData.status,
-                                onChange: handleStatusChange,
+                                onChange: handleInputChange,
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: "waiting",
-                                        children: "Đang chờ (waiting)"
+                                        value: "pending",
+                                        children: "Đang chờ xác nhận (pending)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                        lineNumber: 167,
+                                        lineNumber: 268,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: "in_progress",
-                                        children: "Đang thực hiện (in_progress)"
+                                        value: "confirmed",
+                                        children: "Đã xác nhận (confirmed)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                        lineNumber: 168,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: "completed",
-                                        children: "Đã hoàn thành (completed)"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                        lineNumber: 169,
+                                        lineNumber: 269,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4359,19 +6248,19 @@ function AppointmentForm({ onClose }) {
                                         children: "Đã hủy (canceled)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                        lineNumber: 170,
+                                        lineNumber: 270,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 160,
+                                lineNumber: 261,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                        lineNumber: 156,
+                        lineNumber: 257,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4381,38 +6270,39 @@ function AppointmentForm({ onClose }) {
                                 type: "button",
                                 onClick: onClose,
                                 className: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50",
+                                disabled: loading,
                                 children: "Hủy bỏ"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 175,
+                                lineNumber: 275,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "submit",
-                                className: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700",
-                                disabled: !selectedPatient,
-                                children: "Đặt lịch"
+                                className: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed",
+                                disabled: !selectedPatient || loading,
+                                children: loading ? 'Đang xử lý...' : 'Đặt lịch'
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                                lineNumber: 182,
+                                lineNumber: 283,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                        lineNumber: 174,
+                        lineNumber: 274,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-                lineNumber: 87,
+                lineNumber: 152,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx",
-        lineNumber: 76,
+        lineNumber: 141,
         columnNumber: 5
     }, this);
 }
@@ -4432,6 +6322,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2d$big$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircleIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/circle-check-big.js [app-ssr] (ecmascript) <export default as CheckCircleIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$receptionistPage$2f$components$2f$Appointments$2f$AppointmentForm$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/receptionistPage/components/Appointments/AppointmentForm.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-ssr] (ecmascript)");
+;
+;
 ;
 ;
 ;
@@ -4441,43 +6335,118 @@ function AppointmentBooking({ onBack }) {
     const [showForm, setShowForm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [searchTerm, setSearchTerm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [appointments, setAppointments] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    // Load mock patient data and generate appointments
+    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const { token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
+    // Load appointments from API
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        // Get all patients
-        const patients = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPatients"])();
-        // Generate mock appointments using patient data
-        const today = new Date();
-        const mockAppointments = patients.slice(0, 5).map((patient, index)=>{
-            const appointmentHour = 9 + index;
-            const appointmentDate = new Date();
-            appointmentDate.setDate(today.getDate() + index % 3); // Distribute over next 3 days
-            return {
-                id: patient._id,
-                name: patient.fullName,
-                userId: patient.userId,
-                phone: patient.phone,
-                appointmentDate: appointmentDate.toISOString().split('T')[0],
-                appointmentTime: `${appointmentHour < 10 ? '0' + appointmentHour : appointmentHour}:00`,
-                status: index % 2 === 0 ? 'pending' : 'confirmed'
-            };
-        });
-        setAppointments(mockAppointments);
-    }, []);
+        const loadAppointments = async ()=>{
+            try {
+                setLoading(true);
+                // Get patients for mapping 
+                const patients = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPatients"])();
+                // In a real implementation, fetch appointments from the API
+                // For now, generate mock appointments from patient data
+                if (token) {
+                    // Try to get appointments from API
+                    try {
+                        const apiAppointments = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAppointments"])(token);
+                        if (apiAppointments && Array.isArray(apiAppointments)) {
+                            // Format appointments from API
+                            const formattedAppointments = apiAppointments.map((appt)=>({
+                                    id: appt._id,
+                                    name: appt.patientName || 'Unknown',
+                                    userId: appt.patientId || '',
+                                    phone: appt.patientPhone || '',
+                                    appointmentDate: new Date(appt.appointmentDate).toISOString().split('T')[0],
+                                    appointmentTime: appt.appointmentTime,
+                                    status: appt.status
+                                }));
+                            setAppointments(formattedAppointments);
+                            setLoading(false);
+                            return;
+                        }
+                    } catch (apiError) {
+                        console.log('Could not fetch appointments from API, falling back to mock data', apiError);
+                    }
+                }
+                // Fallback: Generate mock appointments from patient data
+                const today = new Date();
+                const mockAppointments = patients.slice(0, 5).map((patient, index)=>{
+                    const appointmentHour = 9 + index;
+                    const appointmentDate = new Date();
+                    appointmentDate.setDate(today.getDate() + index % 3); // Distribute over next 3 days
+                    return {
+                        id: patient._id,
+                        name: patient.fullName,
+                        userId: patient.userId,
+                        phone: patient.phone,
+                        appointmentDate: appointmentDate.toISOString().split('T')[0],
+                        appointmentTime: `${appointmentHour < 10 ? '0' + appointmentHour : appointmentHour}:00`,
+                        status: index % 2 === 0 ? 'pending' : 'confirmed'
+                    };
+                });
+                setAppointments(mockAppointments);
+            } catch (err) {
+                console.error("Error loading appointments:", err);
+                setError("Could not load appointments. Please try again later.");
+            } finally{
+                setLoading(false);
+            }
+        };
+        loadAppointments();
+    }, [
+        token
+    ]);
     const filteredAppointments = appointments.filter((appointment)=>appointment.name.toLowerCase().includes(searchTerm.toLowerCase()) || appointment.userId.includes(searchTerm) || appointment.phone.includes(searchTerm));
-    const handleMoveToQueue = (appointmentId)=>{
-        // Add patient to queue using the addQueue function from mockPatients.ts
-        const result = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addQueue"])(appointmentId, 'waiting');
-        if (result) {
-            // Update appointment status
-            setAppointments(appointments.map((appt)=>appt.id === appointmentId ? {
-                    ...appt,
-                    status: 'completed'
-                } : appt));
-            alert('Đã chuyển bệnh nhân vào phòng chờ!');
-        } else {
-            alert('Bệnh nhân đã có trong phòng chờ hoặc không thể thêm!');
+    const handleMoveToQueue = async (appointmentId)=>{
+        try {
+            // Add patient to queue using the addQueue function (now async)
+            const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["addQueue"])(appointmentId, 'waiting');
+            if (result) {
+                // Update appointment status
+                setAppointments(appointments.map((appt)=>appt.id === appointmentId ? {
+                        ...appt,
+                        status: 'completed'
+                    } : appt));
+                // In a real implementation, update the appointment status in the API
+                if (token) {
+                    try {
+                        const appointmentToUpdate = appointments.find((a)=>a.id === appointmentId);
+                        if (appointmentToUpdate) {
+                            await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["updateAppointment"])(appointmentId, {
+                                status: 'completed'
+                            }, token);
+                        }
+                    } catch (apiError) {
+                        console.error("Failed to update appointment status in API:", apiError);
+                    }
+                }
+                alert('Đã chuyển bệnh nhân vào phòng chờ!');
+            } else {
+                alert('Bệnh nhân đã có trong phòng chờ hoặc không thể thêm!');
+            }
+        } catch (error) {
+            console.error("Error adding patient to queue:", error);
+            alert('Đã xảy ra lỗi khi chuyển bệnh nhân vào phòng chờ!');
         }
     };
+    if (loading) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "p-8 text-center",
+        children: "Đang tải dữ liệu..."
+    }, void 0, false, {
+        fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
+        lineNumber: 145,
+        columnNumber: 23
+    }, this);
+    if (error) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "p-8 text-center text-red-500",
+        children: error
+    }, void 0, false, {
+        fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
+        lineNumber: 147,
+        columnNumber: 21
+    }, this);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4488,12 +6457,12 @@ function AppointmentBooking({ onBack }) {
                     children: "← Quay lại"
                 }, void 0, false, {
                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                    lineNumber: 81,
+                    lineNumber: 151,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                lineNumber: 80,
+                lineNumber: 150,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4504,7 +6473,7 @@ function AppointmentBooking({ onBack }) {
                         children: "Đặt lịch khám"
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                        lineNumber: 89,
+                        lineNumber: 159,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4512,13 +6481,13 @@ function AppointmentBooking({ onBack }) {
                         children: "Quản lý các cuộc hẹn khám bệnh và điều phối lịch"
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                        lineNumber: 90,
+                        lineNumber: 160,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                lineNumber: 88,
+                lineNumber: 158,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4537,7 +6506,7 @@ function AppointmentBooking({ onBack }) {
                                             children: "Lịch hẹn"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                            lineNumber: 99,
+                                            lineNumber: 169,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4548,20 +6517,20 @@ function AppointmentBooking({ onBack }) {
                                                     className: "w-4 h-4 mr-2"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                    lineNumber: 104,
+                                                    lineNumber: 174,
                                                     columnNumber: 17
                                                 }, this),
                                                 "Thêm lịch hẹn"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                            lineNumber: 100,
+                                            lineNumber: 170,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                    lineNumber: 98,
+                                    lineNumber: 168,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4576,12 +6545,12 @@ function AppointmentBooking({ onBack }) {
                                                     className: "text-black"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                    lineNumber: 112,
+                                                    lineNumber: 182,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                lineNumber: 111,
+                                                lineNumber: 181,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4592,18 +6561,18 @@ function AppointmentBooking({ onBack }) {
                                                 onChange: (e)=>setSearchTerm(e.target.value)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                lineNumber: 114,
+                                                lineNumber: 184,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 180,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                    lineNumber: 109,
+                                    lineNumber: 179,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4621,7 +6590,7 @@ function AppointmentBooking({ onBack }) {
                                                             children: "Bệnh nhân"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                            lineNumber: 128,
+                                                            lineNumber: 198,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4630,7 +6599,7 @@ function AppointmentBooking({ onBack }) {
                                                             children: "Thời gian"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                            lineNumber: 131,
+                                                            lineNumber: 201,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4639,7 +6608,7 @@ function AppointmentBooking({ onBack }) {
                                                             children: "Trạng thái"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                            lineNumber: 134,
+                                                            lineNumber: 204,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4648,18 +6617,18 @@ function AppointmentBooking({ onBack }) {
                                                             children: "Thao tác"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                            lineNumber: 137,
+                                                            lineNumber: 207,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                    lineNumber: 127,
+                                                    lineNumber: 197,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                lineNumber: 126,
+                                                lineNumber: 196,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -4675,7 +6644,7 @@ function AppointmentBooking({ onBack }) {
                                                                         children: appointment.name
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                        lineNumber: 147,
+                                                                        lineNumber: 217,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4686,7 +6655,7 @@ function AppointmentBooking({ onBack }) {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                        lineNumber: 148,
+                                                                        lineNumber: 218,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4697,13 +6666,13 @@ function AppointmentBooking({ onBack }) {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                        lineNumber: 149,
+                                                                        lineNumber: 219,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                lineNumber: 146,
+                                                                lineNumber: 216,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4714,7 +6683,7 @@ function AppointmentBooking({ onBack }) {
                                                                         children: new Date(appointment.appointmentDate).toLocaleDateString('vi-VN')
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                        lineNumber: 152,
+                                                                        lineNumber: 222,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4722,13 +6691,13 @@ function AppointmentBooking({ onBack }) {
                                                                         children: appointment.appointmentTime
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                        lineNumber: 155,
+                                                                        lineNumber: 225,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                lineNumber: 151,
+                                                                lineNumber: 221,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4738,12 +6707,12 @@ function AppointmentBooking({ onBack }) {
                                                                     children: appointment.status === 'confirmed' ? 'Đã xác nhận' : appointment.status === 'canceled' ? 'Đã hủy' : appointment.status === 'completed' ? 'Đã hoàn thành' : 'Đang chờ'
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                    lineNumber: 158,
+                                                                    lineNumber: 228,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                lineNumber: 157,
+                                                                lineNumber: 227,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4756,25 +6725,25 @@ function AppointmentBooking({ onBack }) {
                                                                             className: "w-4 h-4 mr-1"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                            lineNumber: 182,
+                                                                            lineNumber: 252,
                                                                             columnNumber: 31
                                                                         }, this),
                                                                         "Chuyển vào phòng chờ"
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                    lineNumber: 178,
+                                                                    lineNumber: 248,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                lineNumber: 176,
+                                                                lineNumber: 246,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, appointment.id, true, {
                                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                        lineNumber: 145,
+                                                        lineNumber: 215,
                                                         columnNumber: 23
                                                     }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4783,28 +6752,28 @@ function AppointmentBooking({ onBack }) {
                                                         children: "Không tìm thấy lịch hẹn nào"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                        lineNumber: 191,
+                                                        lineNumber: 261,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                    lineNumber: 190,
+                                                    lineNumber: 260,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                lineNumber: 142,
+                                                lineNumber: 212,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                        lineNumber: 125,
+                                        lineNumber: 195,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                    lineNumber: 124,
+                                    lineNumber: 194,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4822,28 +6791,28 @@ function AppointmentBooking({ onBack }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                            lineNumber: 202,
+                                            lineNumber: 272,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                        lineNumber: 201,
+                                        lineNumber: 271,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                    lineNumber: 200,
+                                    lineNumber: 270,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                            lineNumber: 97,
+                            lineNumber: 167,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                        lineNumber: 96,
+                        lineNumber: 166,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4858,7 +6827,7 @@ function AppointmentBooking({ onBack }) {
                                             children: "Lịch hẹn hôm nay"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                            lineNumber: 213,
+                                            lineNumber: 283,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4871,13 +6840,13 @@ function AppointmentBooking({ onBack }) {
                                             })
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                            lineNumber: 214,
+                                            lineNumber: 284,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                    lineNumber: 212,
+                                    lineNumber: 282,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4896,7 +6865,7 @@ function AppointmentBooking({ onBack }) {
                                                                     children: appointment.appointmentTime
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                    lineNumber: 227,
+                                                                    lineNumber: 297,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4904,13 +6873,13 @@ function AppointmentBooking({ onBack }) {
                                                                     children: appointment.name
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                                    lineNumber: 228,
+                                                                    lineNumber: 298,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                            lineNumber: 226,
+                                                            lineNumber: 296,
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4918,23 +6887,23 @@ function AppointmentBooking({ onBack }) {
                                                             children: appointment.status === 'confirmed' ? 'Đã xác nhận' : appointment.status === 'canceled' ? 'Đã hủy' : appointment.status === 'completed' ? 'Đã hoàn thành' : 'Đang chờ'
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                            lineNumber: 230,
+                                                            lineNumber: 300,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                    lineNumber: 225,
+                                                    lineNumber: 295,
                                                     columnNumber: 25
                                                 }, this)
                                             }, appointment.id, false, {
                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                lineNumber: 224,
+                                                lineNumber: 294,
                                                 columnNumber: 23
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                        lineNumber: 220,
+                                        lineNumber: 290,
                                         columnNumber: 17
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "text-center py-8",
@@ -4943,7 +6912,7 @@ function AppointmentBooking({ onBack }) {
                                                 className: "mx-auto h-12 w-12 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                lineNumber: 254,
+                                                lineNumber: 324,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -4951,7 +6920,7 @@ function AppointmentBooking({ onBack }) {
                                                 children: "Không có lịch hẹn hôm nay"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                lineNumber: 255,
+                                                lineNumber: 325,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4959,7 +6928,7 @@ function AppointmentBooking({ onBack }) {
                                                 children: "Chưa có lịch hẹn nào được đặt cho hôm nay."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                lineNumber: 256,
+                                                lineNumber: 326,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4974,47 +6943,47 @@ function AppointmentBooking({ onBack }) {
                                                             "aria-hidden": "true"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                            lineNumber: 265,
+                                                            lineNumber: 335,
                                                             columnNumber: 23
                                                         }, this),
                                                         "Thêm lịch hẹn"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                    lineNumber: 260,
+                                                    lineNumber: 330,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                                lineNumber: 259,
+                                                lineNumber: 329,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                        lineNumber: 253,
+                                        lineNumber: 323,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                                    lineNumber: 218,
+                                    lineNumber: 288,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                            lineNumber: 211,
+                            lineNumber: 281,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                        lineNumber: 210,
+                        lineNumber: 280,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                lineNumber: 95,
+                lineNumber: 165,
                 columnNumber: 7
             }, this),
             showForm && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5025,23 +6994,23 @@ function AppointmentBooking({ onBack }) {
                         onClose: ()=>setShowForm(false)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                        lineNumber: 280,
+                        lineNumber: 350,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                    lineNumber: 279,
+                    lineNumber: 349,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-                lineNumber: 278,
+                lineNumber: 348,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/receptionistPage/AppointmentBooking.tsx",
-        lineNumber: 79,
+        lineNumber: 149,
         columnNumber: 10
     }, this);
 }

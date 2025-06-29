@@ -1,54 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { UsersIcon, ClockIcon, CheckSquareIcon, CalendarIcon, UserIcon, LogOutIcon } from 'lucide-react';
+import { UsersIcon, ClockIcon, CheckSquareIcon, CalendarIcon, UserIcon, LogOutIcon, CheckCircleIcon, RefreshCcw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { AppointmentForm } from './components/Appointments/AppointmentForm';
 import { 
   getAllPatients, 
   getQueuesByStatus,
-  mockQueues
+  initializeData
 } from '../datats/mockPatients';
+import * as apiService from '../services/api.service';
 
 interface DashboardProps {
   onNavigate: (view: string) => void;
 }
 
 export function Dashboard({ onNavigate }: DashboardProps) {
-  const { user, logout } = useAuth();
-  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  const { user, logout, token } = useAuth();
   
   // State cho các thống kê từ mock data
   const [patientCount, setPatientCount] = useState(0);
   const [waitingCount, setWaitingCount] = useState(0);
   const [completedTodayCount, setCompletedTodayCount] = useState(0);
   const [newPatientsToday, setNewPatientsToday] = useState(0);
+  
+  // State cho danh sách queue đã hoàn thành
+  const [completedQueues, setCompletedQueues] = useState<any[]>([]);
+  const [loadingQueues, setLoadingQueues] = useState(false);
+  const [queueError, setQueueError] = useState<string | null>(null);
 
-  // Load dữ liệu từ mock data khi component mount
+  // Load dữ liệu từ API khi component mount
   useEffect(() => {
-    // Lấy tổng số bệnh nhân
-    const patients = getAllPatients();
-    setPatientCount(patients.length);
+    const loadData = async () => {
+      try {
+        // Initialize data from API
+        await initializeData();
+        
+        // Lấy tổng số bệnh nhân
+        const patients = await getAllPatients();
+        setPatientCount(patients.length);
+        
+        // Tính số bệnh nhân mới hôm nay
+        const today = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại dạng YYYY-MM-DD
+        const newPatients = patients.filter(p => 
+          p.createdAt.startsWith(today)).length;
+        setNewPatientsToday(newPatients);
+        
+        // Lấy số bệnh nhân đang chờ
+        const waitingQueues = await getQueuesByStatus('waiting');
+        setWaitingCount(waitingQueues.length);
+        
+        // Lấy số bệnh nhân đã hoàn thành khám hôm nay
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
+        
+        const completedQueues = await getQueuesByStatus('completed');
+        const completedToday = completedQueues.filter(q => {
+          const queueDate = new Date(q.updatedAt);
+          return queueDate >= todayStart;
+        });
+        setCompletedTodayCount(completedToday.length);
+        
+        // Lấy danh sách queue đã hoàn thành
+        await fetchCompletedQueues();
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      }
+    };
     
-    // Tính số bệnh nhân mới hôm nay
-    const today = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại dạng YYYY-MM-DD
-    const newPatients = patients.filter(p => 
-      p.createdAt.startsWith(today)).length;
-    setNewPatientsToday(newPatients);
-    
-    // Lấy số bệnh nhân đang chờ
-    const waitingQueues = getQueuesByStatus('waiting');
-    setWaitingCount(waitingQueues.length);
-    
-    // Lấy số bệnh nhân đã hoàn thành khám hôm nay
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0); // Đặt thời gian về đầu ngày
-    
-    const completedQueues = getQueuesByStatus('completed');
-    const completedToday = completedQueues.filter(q => {
-      const queueDate = new Date(q.updatedAt);
-      return queueDate >= todayStart;
-    });
-    setCompletedTodayCount(completedToday.length);
-  }, []);
+    loadData();
+  }, [token]);
 
   // Thống kê hiển thị với dữ liệu từ mock data
   const stats = [
@@ -91,6 +109,85 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     { id: 4, patient: 'Hoàng Văn D', time: '10:30 AM', doctor: 'Dr. Nguyễn Thị Hương', department: 'Nội khoa', status: 'Đặt trước' },
     { id: 5, patient: 'Lê Thị E', time: '11:00 AM', doctor: 'Dr. Phạm Văn Nam', department: 'Nhãn khoa', status: 'Đặt trước' }
   ];
+
+  // Hàm lấy danh sách queue đã hoàn thành
+  const fetchCompletedQueues = async () => {
+    setLoadingQueues(true);
+    setQueueError(null);
+    
+    try {
+      if (token) {
+        // Sử dụng API với token
+        try {
+          console.log("Fetching completed queues from API...");
+          const response = await apiService.getQueuesByStatus('completed', token);
+          console.log("API response:", response);
+          
+          // Format lại dữ liệu nếu cần
+          const formattedQueues = response.map((queue: any) => ({
+            ...queue,
+            patientName: queue.patient && typeof queue.patient === 'object' ? 
+                        queue.patient.fullName : 'Không có tên',
+            doctorName: queue.doctorId && typeof queue.doctorId === 'object' ? 
+                       queue.doctorId.fullName : 'Không rõ bác sĩ'
+          }));
+          
+          setCompletedQueues(formattedQueues);
+        } catch (apiError: any) {
+          console.error("API error:", apiError);
+          setQueueError(`Lỗi khi lấy dữ liệu từ API: ${apiError.message}`);
+          
+          // Fallback to mock data
+          await fetchCompletedQueuesMock();
+        }
+      } else {
+        // Sử dụng mock data nếu không có token
+        await fetchCompletedQueuesMock();
+      }
+    } catch (error: any) {
+      console.error("Error fetching completed queues:", error);
+      setQueueError(`Lỗi: ${error.message}`);
+    } finally {
+      setLoadingQueues(false);
+    }
+  };
+  
+  // Hàm fallback sử dụng mock data
+  const fetchCompletedQueuesMock = async () => {
+    try {
+      console.log("Using mock data for completed queues...");
+      await initializeData();
+      
+      // Lấy danh sách queue đã hoàn thành từ mock data
+      const mockCompletedQueues = await getQueuesByStatus('completed');
+      
+      // Format lại dữ liệu để hiển thị
+      const formattedMockQueues = await Promise.all(mockCompletedQueues.map(async (queue: any) => {
+        // Giả sử bạn có các hàm mock để lấy thông tin bệnh nhân và bác sĩ
+        let patientName = 'Không có tên';
+        
+        // Xử lý các cấu trúc dữ liệu khác nhau có thể có
+        if (queue.patientInfo && queue.patientInfo.fullName) {
+          patientName = queue.patientInfo.fullName;
+        } else if (queue.patient && typeof queue.patient === 'object' && queue.patient.fullName) {
+          patientName = queue.patient.fullName;
+        }
+        
+        return {
+          ...queue,
+          patientName: patientName,
+          doctorName: queue.doctorId ? `Bác sĩ ${queue._id.substring(0, 5)}` : 'Không rõ bác sĩ',
+          completedAt: new Date(queue.updatedAt).toLocaleString('vi-VN')
+        };
+      }));
+      
+      setCompletedQueues(formattedMockQueues);
+    } catch (mockError: any) {
+      console.error("Error loading mock data for completed queues:", mockError);
+      setQueueError(`Không thể tải dữ liệu mô phỏng: ${mockError.message}`);
+      setCompletedQueues([]);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -151,14 +248,98 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           ))}
         </div>
 
-        {/* Add New Appointment Button */}
-        <div className="flex justify-end mb-6">
-          <button 
-            onClick={() => setShowAppointmentForm(true)}
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Thêm lịch hẹn mới
-          </button>
+        {/* Completed Queues List */}
+        <div className="bg-white shadow rounded-lg mb-6">
+          <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+            <h3 className="text-lg font-medium leading-6 text-gray-900">Danh sách bệnh nhân đã hoàn thành khám</h3>
+            <button 
+              onClick={fetchCompletedQueues}
+              className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded flex items-center"
+              disabled={loadingQueues}
+            >
+              <RefreshCcw size={14} className={`mr-1 ${loadingQueues ? 'animate-spin' : ''}`} />
+              Làm mới
+            </button>
+          </div>
+          
+          {queueError && (
+            <div className="px-4 py-3 bg-red-50 text-red-700 border-t border-b border-red-200">
+              {queueError}
+            </div>
+          )}
+          
+          <div className="border-t border-gray-200">
+            {loadingQueues ? (
+              <div className="flex justify-center items-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <span className="ml-2 text-gray-600">Đang tải dữ liệu...</span>
+              </div>
+            ) : completedQueues.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Bệnh nhân
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Bác sĩ
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Ngày hoàn thành
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Trạng thái
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {completedQueues.slice(0, 5).map((queue) => (
+                      <tr key={queue._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {queue.patientName || (queue.patient && typeof queue.patient === 'object' ? 
+                              queue.patient.fullName : 'Không có tên')}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            ID: {queue.patient && typeof queue.patient === 'object' ? 
+                              queue.patient.userId : queue.patient || 'N/A'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {queue.doctorName || (queue.doctorId && typeof queue.doctorId === 'object' ? 
+                              queue.doctorId.fullName : 'Không rõ bác sĩ')}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(queue.updatedAt).toLocaleString('vi-VN')}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            <CheckCircleIcon size={14} className="mr-1" /> Hoàn thành
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                
+                {completedQueues.length > 5 && (
+                  <div className="bg-gray-50 px-4 py-3 border-t border-gray-200 sm:px-6">
+                    <p className="text-sm text-gray-700">
+                      Hiển thị 5/{completedQueues.length} bệnh nhân đã hoàn thành khám
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <CheckCircleIcon className="mx-auto h-12 w-12 text-gray-400 mb-2" />
+                <p className="text-gray-500">Không có bệnh nhân nào đã hoàn thành khám</p>
+              </div>
+            )}
+          </div>
         </div>
         
         {/* Quick Actions */}
@@ -213,15 +394,6 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           </div>
         </div>
       </main>
-      
-      {/* Modal form đặt lịch hẹn */}
-      {showAppointmentForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <AppointmentForm onClose={() => setShowAppointmentForm(false)} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

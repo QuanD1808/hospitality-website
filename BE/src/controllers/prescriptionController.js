@@ -6,34 +6,105 @@ const User = require('../models/User'); // Để kiểm tra patientId và doctor
 // @route   POST /api/prescriptions
 // @access  DOCTOR, ADMIN
 exports.createPrescription = async (req, res) => {
-    const { customPrescriptionId, patientId, doctorId, diagnosis, date, status } = req.body;
-
+    console.log('\n========== CREATE PRESCRIPTION REQUEST ==========');
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    console.log('Auth user:', req.user ? `ID: ${req.user._id}, Role: ${req.user.role}` : 'Not authenticated');
+    console.log('Headers:', JSON.stringify({
+        authorization: req.headers.authorization ? 'Present' : 'Missing',
+        contentType: req.headers['content-type']
+    }, null, 2));
+    
     try {
-        // Kiểm tra patientId và doctorId có tồn tại và đúng vai trò không
-        const patient = await User.findById(patientId);
-        if (!patient || patient.role !== 'PATIENT') {
-            return res.status(404).json({ message: 'Patient user not found or not a patient' });
+        const { customPrescriptionId, patientId, doctorId, diagnosis, date, status } = req.body;
+        
+        // Debug thông tin gửi tới
+        console.log('Prescription Data received:');
+        console.log('- customPrescriptionId:', customPrescriptionId);
+        console.log('- patientId:', patientId);
+        console.log('- doctorId:', doctorId);
+        console.log('- diagnosis:', diagnosis);
+        console.log('- date:', date);
+        console.log('- status:', status);
+        
+        // Validate required fields
+        if (!customPrescriptionId || !patientId || !doctorId || !diagnosis) {
+            console.log('>>> Missing required fields in prescription data');
+            return res.status(400).json({ message: 'All fields are required', 
+                missing: {
+                    customPrescriptionId: !customPrescriptionId,
+                    patientId: !patientId, 
+                    doctorId: !doctorId, 
+                    diagnosis: !diagnosis
+                } 
+            });
         }
-        const doctor = await User.findById(doctorId);
-        if (!doctor || doctor.role !== 'DOCTOR') {
-            return res.status(404).json({ message: 'Doctor user not found or not a doctor' });
+        
+        // Kiểm tra patientId và doctorId có tồn tại và đúng vai trò không
+        try {
+            const patient = await User.findById(patientId);
+            console.log('>>> Patient check:', patient ? `Found: ${patient.fullName}` : 'Not found');
+            
+            if (!patient) {
+                return res.status(404).json({ message: `Patient with ID ${patientId} not found` });
+            }
+            
+            if (patient.role !== 'PATIENT') {
+                return res.status(400).json({ message: `User ${patientId} is not a patient` });
+            }
+            
+            const doctor = await User.findById(doctorId);
+            console.log('>>> Doctor check:', doctor ? `Found: ${doctor.fullName}` : 'Not found');
+            
+            if (!doctor) {
+                return res.status(404).json({ message: `Doctor with ID ${doctorId} not found` });
+            }
+            
+            if (doctor.role !== 'DOCTOR') {
+                return res.status(400).json({ message: `User ${doctorId} is not a doctor` });
+            }
+        } catch (idError) {
+            console.error('>>> Error validating IDs:', idError);
+            return res.status(400).json({ message: 'Invalid ID format', error: idError.message });
         }
 
-        // Đảm bảo bác sĩ đang đăng nhập là người tạo đơn thuốc này
+        // Đảm bảo bác sĩ đang đăng nhập là người tạo đơn thuốc này, hoặc là admin
         if (req.user.role === 'DOCTOR' && doctorId.toString() !== req.user._id.toString()) {
+            console.log('>>> Authorization failed: Doctor ID mismatch');
+            console.log(`>>> Request doctor ID: ${doctorId}, Authenticated user ID: ${req.user._id}`);
             return res.status(403).json({ message: 'Not authorized to create prescriptions for other doctors' });
         }
 
         const newPrescription = new Prescription({
-            customPrescriptionId, patientId, doctorId, diagnosis, date, status
+            customPrescriptionId, 
+            patientId,
+            doctorId,
+            diagnosis, 
+            date: date || new Date(),
+            status: status || 'PENDING_DISPENSE'
         });
+        
+        console.log('>>> Attempting to save prescription to MongoDB');
+        console.log('>>> Prescription object:', JSON.stringify(newPrescription, null, 2));
+        
         const savedPrescription = await newPrescription.save();
+        console.log('>>> Prescription saved successfully:', savedPrescription._id);
+        
         res.status(201).json(savedPrescription);
     } catch (err) {
+        console.error('Error in createPrescription:', err);
+        
         if (err.code === 11000 && err.keyPattern && err.keyPattern.customPrescriptionId) {
             return res.status(400).json({ message: 'Custom Prescription ID already exists.' });
         }
-        res.status(400).json({ message: err.message });
+        
+        // Log chi tiết hơn về lỗi
+        console.error('Error details:', JSON.stringify(err, null, 2));
+        
+        res.status(500).json({ 
+            message: 'Server Error when creating prescription', 
+            details: err.message,
+            stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+        });
     }
 };
 
@@ -41,12 +112,19 @@ exports.createPrescription = async (req, res) => {
 // @route   GET /api/prescriptions
 // @access  ADMIN, DOCTOR (của mình), PHARMACIST, PATIENT (của mình)
 exports.getAllPrescriptions = async (req, res) => {
-    const { patientId, doctorId, status } = req.query; // Lọc theo patientId, doctorId, status
+    const { patientId, doctorId, status, startDate, endDate } = req.query; // Lọc theo patientId, doctorId, status, date
     let filter = {};
 
     if (patientId) filter.patientId = patientId;
     if (doctorId) filter.doctorId = doctorId;
     if (status) filter.status = status;
+    
+    // Add date filtering capability
+    if (startDate || endDate) {
+        filter.date = {};
+        if (startDate) filter.date.$gte = new Date(startDate);
+        if (endDate) filter.date.$lte = new Date(endDate);
+    }
 
     try {
         // Phân quyền đặc biệt:

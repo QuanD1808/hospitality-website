@@ -6,6 +6,9 @@ const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 
 console.log('--- prescriptionDetailRoutes.js loaded ---');
 
+// Tạo nhiều Prescription Details cùng lúc (DOCTOR, ADMIN)
+router.post('/batch', protect, authorizeRoles('DOCTOR', 'ADMIN'), prescriptionDetailController.createBatchPrescriptionDetails);
+
 // Tạo Prescription Detail (DOCTOR, ADMIN)
 router.post('/', protect, authorizeRoles('DOCTOR', 'ADMIN'), prescriptionDetailController.createPrescriptionDetail);
 

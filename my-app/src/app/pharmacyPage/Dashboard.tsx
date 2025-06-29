@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { LogOutIcon, PillIcon, BarChartIcon } from 'lucide-react';
+import { LogOutIcon, PillIcon, BarChartIcon, AlertTriangle, UserIcon } from 'lucide-react';
 import { PatientList } from './PatientList';
 import { PatientDetails } from './PatientDetails';
 import { Statistics } from './Statistics';
 import { PharmacyPatient, getPatientsWithPendingPrescriptions } from './pharmacyUtils';
+import { useAuth } from '../context/AuthContext';
 
 // User interface for authentication context
 interface User {
@@ -28,19 +29,67 @@ export const Dashboard = ({
   const [selectedPatient, setSelectedPatient] = useState<PharmacyPatient | null>(null);
   const [waitingPatients, setWaitingPatients] = useState<PharmacyPatient[]>([]);
   
-  // Tải dữ liệu bệnh nhân chờ phát thuốc từ mockPatients
+  // State cho loading và error
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Tải dữ liệu bệnh nhân chờ phát thuốc từ API
+  const fetchPatients = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Fetch prescriptions with status PENDING_DISPENSE
+      const patients = await getPatientsWithPendingPrescriptions();
+      setWaitingPatients(patients);
+      console.log(`Fetched ${patients.length} patients with pending prescriptions`);
+      
+      if (patients.length === 0) {
+        // Reset selected patient if no patients are waiting
+        setSelectedPatient(null);
+      }
+    } catch (error: any) {
+      console.error("Error fetching patients:", error);
+      setError(error.message || "Không thể tải danh sách bệnh nhân");
+      setWaitingPatients([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Fetch patients on mount and when user changes
+  // Initial fetch
   useEffect(() => {
-    const patients = getPatientsWithPendingPrescriptions();
-    setWaitingPatients(patients);
-  }, []);
+    fetchPatients();
+  }, [user]);
+  
+  // Setup polling for auto-refresh
+  useEffect(() => {
+    // Set up polling for real-time updates
+    const intervalId = setInterval(() => {
+      // Only auto-refresh if not viewing a patient's details
+      if (!selectedPatient && !isLoading) {
+        console.log("Auto-refreshing patient list...");
+        fetchPatients();
+      }
+    }, 60000); // Poll every minute
+    
+    return () => clearInterval(intervalId);
+  }, [selectedPatient, isLoading]);
 
   const handlePatientSelect = (patient: PharmacyPatient) => {
     setSelectedPatient(patient);
   };
 
   const handlePatientRemove = (patientId: string) => {
-    setWaitingPatients(waitingPatients.filter(p => p.id !== patientId));
+    console.log(`Removing patient ${patientId} from waiting list after dispensing`);
+    setWaitingPatients(prevPatients => prevPatients.filter(p => p._id !== patientId));
     setSelectedPatient(null);
+    
+    // Also refresh the list to ensure our counts are accurate
+    setTimeout(() => {
+      fetchPatients();
+    }, 1000); // Give the backend a moment to update
   };
 
   return <div className="min-h-screen bg-gray-50">
@@ -83,14 +132,53 @@ export const Dashboard = ({
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {activeTab === 'dispense' ? <div className="flex flex-col md:flex-row gap-6">
             <div className="w-full md:w-1/3">
-              <PatientList patients={waitingPatients} onPatientSelect={handlePatientSelect} />
+              <PatientList 
+                patients={waitingPatients} 
+                onPatientSelect={handlePatientSelect} 
+                onRefresh={fetchPatients}
+                isLoading={isLoading}
+                error={error}
+              />
             </div>
             <div className="w-full md:w-2/3">
-              {selectedPatient ? <PatientDetails patient={selectedPatient} onPatientComplete={handlePatientRemove} /> : <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
-                  <p className="text-gray-500 text-center">
-                    Vui lòng chọn bệnh nhân từ danh sách để xem chi tiết.
-                  </p>
-                </div>}
+              {isLoading && !selectedPatient ? (
+                <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p className="text-gray-600">Đang tải danh sách bệnh nhân...</p>
+                  </div>
+                </div>
+              ) : error && !selectedPatient ? (
+                <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="bg-red-100 p-3 rounded-full mx-auto mb-4 w-16 h-16 flex items-center justify-center">
+                      <AlertTriangle className="h-8 w-8 text-red-600" />
+                    </div>
+                    <p className="text-red-600 font-medium mb-2">Không thể tải dữ liệu</p>
+                    <p className="text-gray-600 mb-4">{error}</p>
+                    <button 
+                      onClick={fetchPatients}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    >
+                      Thử lại
+                    </button>
+                  </div>
+                </div>
+              ) : selectedPatient ? (
+                <PatientDetails patient={selectedPatient} onPatientComplete={handlePatientRemove} />
+              ) : (
+                <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="bg-blue-100 p-3 rounded-full mx-auto mb-4 w-16 h-16 flex items-center justify-center">
+                      <UserIcon className="h-8 w-8 text-blue-600" />
+                    </div>
+                    <p className="text-gray-700 font-medium mb-2">Chưa có bệnh nhân nào được chọn</p>
+                    <p className="text-gray-500">
+                      Vui lòng chọn bệnh nhân từ danh sách để xem chi tiết đơn thuốc.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div> : <Statistics />}
       </main>
