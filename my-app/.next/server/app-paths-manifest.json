@@ -1,6 +1,8 @@
 {
+  "/dashboard-doctor/page": "app/dashboard-doctor/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/login/page": "app/login/page.js",
   "/page": "app/page.js",
-  "/pharmacyPage/page": "app/pharmacyPage/page.js"
+  "/pharmacyPage/page": "app/pharmacyPage/page.js",
+  "/receptionistPage/page": "app/receptionistPage/page.js"
 }
