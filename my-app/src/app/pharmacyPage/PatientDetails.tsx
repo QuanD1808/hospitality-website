@@ -33,7 +33,12 @@ export const PatientDetails = ({
   const [medicines, setMedicines] = useState<PharmacyMedicine[]>(patient.prescription);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Fetch prescription details from MongoDB when component loads
+  // Reset medicines state when patient changes to avoid showing stale data
+  useEffect(() => {
+    setMedicines(patient.prescription);
+  }, [patient]);
+  
+  // Fetch prescription details from MongoDB when component loads or patient changes
   useEffect(() => {
     const fetchPrescriptionDetails = async () => {
       if (!token) return;
@@ -54,10 +59,15 @@ export const PatientDetails = ({
           }));
           
           setMedicines(updatedMedicines);
+        } else {
+          // If no prescription details found, reset to an empty array
+          // This ensures we don't show old medicines when switching to a patient without prescriptions
+          setMedicines([]);
         }
       } catch (err: any) {
         console.error("Error fetching prescription details:", err);
-        // Keep using the medicines from props if API fetch fails
+        // Reset medicines to what was passed in props if API fetch fails
+        setMedicines(patient.prescription);
         setError("Không thể tải chi tiết đơn thuốc từ máy chủ. Đang hiển thị dữ liệu cục bộ.");
       } finally {
         setIsLoading(false);
@@ -65,7 +75,7 @@ export const PatientDetails = ({
     };
     
     fetchPrescriptionDetails();
-  }, [patient.id, token]);
+  }, [patient.id, token, patient.prescription]);
   
   // Handler for showing invoice
   const handleShowInvoice = async () => {
@@ -148,12 +158,13 @@ export const PatientDetails = ({
         ) : (
           <button 
             onClick={handleShowInvoice} 
-            disabled={processing}
+            disabled={processing || isLoading || medicines.length === 0}
             className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white transition-colors shadow-sm ${
-              processing 
+              processing || isLoading || medicines.length === 0
                 ? 'bg-gray-400 cursor-not-allowed' 
                 : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
             }`}
+            title={medicines.length === 0 ? "Không có thuốc nào để phát" : "Xuất hóa đơn thuốc"}
           >
             {processing ? (
               <>
@@ -250,7 +261,25 @@ export const PatientDetails = ({
               </thead>
               
               <tbody className="bg-white divide-y divide-gray-300">
-                {medicines.map((medicine, index) => (
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-8 text-center">
+                      <div className="flex flex-col items-center justify-center">
+                        <RefreshCw size={24} className="animate-spin text-blue-600 mb-2" />
+                        <p className="text-gray-600">Đang tải chi tiết đơn thuốc...</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : medicines.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-8 text-center">
+                      <div className="flex flex-col items-center justify-center">
+                        <AlertTriangle size={24} className="text-amber-500 mb-2" />
+                        <p className="text-gray-600">Bệnh nhân này không có đơn thuốc nào.</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : medicines.map((medicine, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                       {index + 1}
@@ -273,14 +302,16 @@ export const PatientDetails = ({
                   </tr>
                 ))}
                 
-                <tr className="bg-gray-100">
-                  <td colSpan={5} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black text-right border-t border-gray-400">
-                    Tổng cộng:
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-black border-t border-gray-400">
-                    {calculateTotal().toLocaleString('vi-VN')} đ
-                  </td>
-                </tr>
+                {medicines.length > 0 && (
+                  <tr className="bg-gray-100">
+                    <td colSpan={5} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black text-right border-t border-gray-400">
+                      Tổng cộng:
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-black border-t border-gray-400">
+                      {calculateTotal().toLocaleString('vi-VN')} đ
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

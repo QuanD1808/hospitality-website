@@ -154,6 +154,7 @@
     --color-red-600: oklch(57.7% .245 27.325);
     --color-red-700: oklch(50.5% .213 27.518);
     --color-red-800: oklch(44.4% .177 26.899);
+    --color-amber-500: oklch(76.9% .188 70.08);
     --color-yellow-100: oklch(97.3% .071 103.193);
     --color-yellow-400: oklch(85.2% .199 91.936);
     --color-yellow-600: oklch(68.1% .162 75.834);
@@ -1721,6 +1722,10 @@
 
   .whitespace-pre-line {
     white-space: pre-line;
+  }
+
+  .text-amber-500 {
+    color: var(--color-amber-500);
   }
 
   .text-black {
