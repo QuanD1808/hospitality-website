@@ -1147,6 +1147,10 @@
     border-color: var(--color-green-300);
   }
 
+  .border-green-700 {
+    border-color: var(--color-green-700);
+  }
+
   .border-green-800 {
     border-color: var(--color-green-800);
   }

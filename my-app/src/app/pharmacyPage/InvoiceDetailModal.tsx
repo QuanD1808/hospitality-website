@@ -134,7 +134,7 @@ export const InvoiceDetailModal = ({
             </div>
             
             <div className="flex justify-end mt-6">
-              <button className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center transition-colors shadow-sm">
+              <button className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center transition-colors shadow-sm font-medium border border-green-700">
                 <PrinterIcon size={18} className="mr-2" />
                 In hóa đơn
               </button>
