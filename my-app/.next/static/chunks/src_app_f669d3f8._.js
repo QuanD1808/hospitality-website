@@ -14,6 +14,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/refresh-cw.js [app-client] (ecmascript) <export default as RefreshCw>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$alert$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__AlertCircle$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/circle-alert.js [app-client] (ecmascript) <export default as AlertCircle>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clipboard$2d$list$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ClipboardList$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/clipboard-list.js [app-client] (ecmascript) <export default as ClipboardList>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clock$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Clock$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/clock.js [app-client] (ecmascript) <export default as Clock>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
@@ -29,8 +30,6 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
         if (isRefreshing || isLoading) return;
         setIsRefreshing(true);
         try {
-            // Briefly delay before refreshing to ensure token is properly loaded
-            await new Promise((resolve)=>setTimeout(resolve, 500));
             if (onRefresh) {
                 await onRefresh();
             }
@@ -43,14 +42,6 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
             }, 800);
         }
     };
-    // Effect to log token status for debugging purposes
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "PatientList.useEffect": ()=>{
-            console.log("PatientList - Token available:", !!token);
-        }
-    }["PatientList.useEffect"], [
-        token
-    ]);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "bg-white shadow rounded-lg overflow-hidden",
         children: [
@@ -64,7 +55,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                 className: "h-5 w-5 text-white mr-2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                lineNumber: 54,
+                                lineNumber: 46,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -72,7 +63,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                 children: "Danh Sách Chờ Phát Thuốc"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                lineNumber: 55,
+                                lineNumber: 47,
                                 columnNumber: 11
                             }, this),
                             patients.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -80,13 +71,13 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                 children: patients.length
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                lineNumber: 59,
+                                lineNumber: 51,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                        lineNumber: 53,
+                        lineNumber: 45,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -98,18 +89,18 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                             size: 18
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 70,
+                            lineNumber: 62,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                        lineNumber: 64,
+                        lineNumber: 56,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                lineNumber: 52,
+                lineNumber: 44,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -124,7 +115,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                 className: "animate-spin mx-auto text-blue-600 mb-2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                lineNumber: 77,
+                                lineNumber: 69,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -132,18 +123,18 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                 children: isRefreshing ? 'Đang cập nhật danh sách...' : 'Đang tải danh sách...'
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                lineNumber: 78,
+                                lineNumber: 70,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                        lineNumber: 76,
+                        lineNumber: 68,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                    lineNumber: 75,
+                    lineNumber: 67,
                     columnNumber: 11
                 }, this) : error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "p-6 text-center",
@@ -154,12 +145,12 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                 className: "h-6 w-6 text-red-600"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                lineNumber: 84,
+                                lineNumber: 76,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 83,
+                            lineNumber: 75,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -167,7 +158,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                             children: "Không thể tải dữ liệu"
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 86,
+                            lineNumber: 78,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -175,7 +166,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                             children: error
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 87,
+                            lineNumber: 79,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -187,20 +178,20 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                     className: "mr-2"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                    lineNumber: 92,
+                                    lineNumber: 84,
                                     columnNumber: 15
                                 }, this),
                                 " Thử lại"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 88,
+                            lineNumber: 80,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                    lineNumber: 82,
+                    lineNumber: 74,
                     columnNumber: 11
                 }, this) : patients.length > 0 ? patients.map((patient)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "p-4 hover:bg-gray-50 transition-colors",
@@ -216,26 +207,39 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                                 className: "h-5 w-5 text-blue-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                lineNumber: 101,
+                                                lineNumber: 93,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                            lineNumber: 100,
+                                            lineNumber: 92,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                    className: "font-medium text-gray-900",
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "flex items-center",
                                                     children: [
-                                                        patient.serialNumber,
-                                                        " - ",
-                                                        patient.fullName
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                            className: "font-medium text-gray-900",
+                                                            children: patient.fullName
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
+                                                            lineNumber: 97,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            className: "ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full",
+                                                            children: patient.serialNumber
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
+                                                            lineNumber: 100,
+                                                            columnNumber: 23
+                                                        }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                    lineNumber: 104,
+                                                    lineNumber: 96,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -243,7 +247,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                                     children: patient.phone || 'Không có SĐT'
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                    lineNumber: 107,
+                                                    lineNumber: 104,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -254,7 +258,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                                             children: "Bác sĩ:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                            lineNumber: 111,
+                                                            lineNumber: 108,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -262,13 +266,13 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                                             children: patient.doctor
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                            lineNumber: 112,
+                                                            lineNumber: 109,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                    lineNumber: 110,
+                                                    lineNumber: 107,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -282,7 +286,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                                                     children: "Chẩn đoán:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                                    lineNumber: 117,
+                                                                    lineNumber: 114,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -290,49 +294,59 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                                                     children: patient.diagnosis
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                                    lineNumber: 118,
+                                                                    lineNumber: 115,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                            lineNumber: 116,
+                                                            lineNumber: 113,
                                                             columnNumber: 25
                                                         }, this),
                                                         patient.prescription && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                            className: "text-xs text-green-600 mt-0.5",
-                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                className: "font-medium",
-                                                                children: [
-                                                                    patient.prescription.length,
-                                                                    " loại thuốc"
-                                                                ]
-                                                            }, void 0, true, {
-                                                                fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                                lineNumber: 123,
-                                                                columnNumber: 27
-                                                            }, this)
-                                                        }, void 0, false, {
+                                                            className: "flex items-center text-xs text-green-600 mt-0.5",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clock$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Clock$3e$__["Clock"], {
+                                                                    size: 12,
+                                                                    className: "mr-1"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
+                                                                    lineNumber: 120,
+                                                                    columnNumber: 27
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                    className: "font-medium",
+                                                                    children: [
+                                                                        patient.prescription.length,
+                                                                        " loại thuốc cần phát"
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
+                                                                    lineNumber: 121,
+                                                                    columnNumber: 27
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                            lineNumber: 122,
+                                                            lineNumber: 119,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                                    lineNumber: 114,
+                                                    lineNumber: 111,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                            lineNumber: 103,
+                                            lineNumber: 95,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                    lineNumber: 99,
+                                    lineNumber: 91,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -341,18 +355,18 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                     children: "Phát thuốc"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                    lineNumber: 129,
+                                    lineNumber: 127,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 98,
+                            lineNumber: 90,
                             columnNumber: 15
                         }, this)
                     }, patient.id, false, {
                         fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                        lineNumber: 97,
+                        lineNumber: 89,
                         columnNumber: 13
                     }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "p-8 text-center",
@@ -363,12 +377,12 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                 className: "h-6 w-6 text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                lineNumber: 141,
+                                lineNumber: 139,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 140,
+                            lineNumber: 138,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -376,7 +390,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                             children: "Không có bệnh nhân nào trong danh sách chờ."
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 143,
+                            lineNumber: 141,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -384,7 +398,7 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                             children: "Tất cả đơn thuốc đã được phát."
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 144,
+                            lineNumber: 142,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -396,35 +410,35 @@ const PatientList = ({ patients, onPatientSelect, onRefresh, isLoading = false, 
                                     className: "mr-2"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                                    lineNumber: 149,
+                                    lineNumber: 147,
                                     columnNumber: 15
                                 }, this),
                                 " Kiểm tra lại"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                            lineNumber: 145,
+                            lineNumber: 143,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                    lineNumber: 139,
+                    lineNumber: 137,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-                lineNumber: 73,
+                lineNumber: 65,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/PatientList.tsx",
-        lineNumber: 51,
+        lineNumber: 43,
         columnNumber: 10
     }, this);
 };
-_s(PatientList, "4Y5/w9ErUvIp30m+Z5WgboTTIzU=", false, function() {
+_s(PatientList, "lgQq1N8Hon4xk1bBDe0UpRSySYU=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"]
     ];
@@ -1332,44 +1346,13 @@ const fetchInvoices = async ()=>{
     }
     return [];
 };
-// Variables to prevent multiple simultaneous initialization attempts
-let isInitializing = false;
-let lastInitAttempt = 0;
-const INIT_COOLDOWN = 5000; // 5 seconds cooldown between init attempts
-let lastSuccessfulFetch = 0; // Timestamp of the last successful data fetch
-const CACHE_TTL = 30000; // Cache time-to-live: 30 seconds
 const initializeData = async ()=>{
     console.log('Initializing data from API or mock sources...');
-    // Prevent multiple simultaneous initialization attempts
-    const now = Date.now();
-    if (isInitializing) {
-        console.log('Data initialization already in progress, skipping this request');
-        return true; // Return true so callers don't think it failed
-    }
-    // Add a cooldown to avoid too many initialization attempts
-    if (now - lastInitAttempt < INIT_COOLDOWN) {
-        console.log(`Initialization cooldown active (${Math.round((INIT_COOLDOWN - (now - lastInitAttempt)) / 1000)}s remaining), using existing data`);
-        return true;
-    }
-    isInitializing = true;
-    lastInitAttempt = now;
     try {
-        // Check if we already have data loaded AND it's still fresh enough
-        const hasData = mockUsers.length > 0 && mockPrescriptions.length > 0;
-        const isCacheStale = now - lastSuccessfulFetch > CACHE_TTL;
-        if (hasData && !isCacheStale) {
-            console.log('Data already initialized and cache is fresh, using cached data');
-            console.log(`Cached data: ${mockUsers.length} users, ${mockPrescriptions.length} prescriptions (age: ${Math.round((now - lastSuccessfulFetch) / 1000)}s)`);
-            isInitializing = false;
-            return true;
-        } else if (hasData && isCacheStale) {
-            console.log(`Cache is stale (${Math.round((now - lastSuccessfulFetch) / 1000)}s old), refreshing data from API...`);
-        }
         // Check if we have a valid token first
         const token = getAuthToken();
         if (!token) {
             console.warn('No authentication token found, will use existing mock data');
-            isInitializing = false;
             return false;
         }
         // Try to validate token
@@ -1378,21 +1361,11 @@ const initializeData = async ()=>{
             const currentUser = await authenticatedGet('/users/me');
             if (!currentUser) {
                 console.error('Token validation failed, cannot fetch data');
-                isInitializing = false;
-                // Load hardcoded data as fallback only if we don't already have data
-                if (!hasData) {
-                    loadHardcodedMockData();
-                }
                 return false;
             }
             console.log(`Token valid, logged in as ${currentUser.username} (${currentUser.role})`);
         } catch (error) {
             console.error('Error validating token:', error);
-            isInitializing = false;
-            // Load hardcoded data as fallback only if we don't already have data
-            if (!hasData) {
-                loadHardcodedMockData();
-            }
             return false;
         }
         // Initialize with separate try/catch for each resource type
@@ -1430,12 +1403,6 @@ const initializeData = async ()=>{
             await fetchPrescriptions();
             results.prescriptions = true;
             console.log(`Prescriptions loaded: ${mockPrescriptions.length} items`);
-            // Log PENDING_DISPENSE prescriptions count for debugging
-            const pendingDispense = mockPrescriptions.filter((p)=>p.status.toUpperCase() === 'PENDING_DISPENSE');
-            console.log(`Found ${pendingDispense.length} prescriptions with PENDING_DISPENSE status`);
-            if (pendingDispense.length > 0) {
-                console.log('Example prescription:', JSON.stringify(pendingDispense[0], null, 2));
-            }
         } catch (error) {
             console.error('Error loading prescriptions:', error);
         }
@@ -1455,17 +1422,10 @@ const initializeData = async ()=>{
         }
         const successCount = Object.values(results).filter(Boolean).length;
         console.log(`Data initialization complete: ${successCount}/6 resource types loaded successfully`);
-        // Update lastSuccessfulFetch timestamp if any data was loaded
-        if (successCount > 0) {
-            lastSuccessfulFetch = Date.now();
-            console.log(`Updated cache timestamp: ${new Date(lastSuccessfulFetch).toISOString()}`);
-        }
         return successCount > 0;
     } catch (error) {
         console.error('Error in data initialization:', error);
         return false;
-    } finally{
-        isInitializing = false;
     }
 };
 const getAllUsers = async ()=>{
@@ -1644,36 +1604,10 @@ const getPrescriptionsByDoctorId = async (doctorId)=>{
     return mockPrescriptions.filter((prescription)=>prescription.doctorId === doctorId);
 };
 const getPrescriptionsByStatus = async (status)=>{
-    // Always make sure we have data
     if (mockPrescriptions.length === 0) {
-        console.log(`No prescriptions in cache, fetching data for status: ${status}`);
         await fetchPrescriptions();
-        // If still no data after fetch, load hardcoded data as fallback
-        if (mockPrescriptions.length === 0) {
-            console.log('No prescriptions found in API, loading fallback data');
-            loadHardcodedMockData();
-        }
     }
-    // Use case-insensitive comparison and handle variant formats
-    const normalizedStatus = status.toUpperCase().replace(/-/g, '_');
-    const result = mockPrescriptions.filter((prescription)=>{
-        const prescStatus = prescription.status.toUpperCase().replace(/-/g, '_');
-        return prescStatus === normalizedStatus;
-    });
-    console.log(`Found ${result.length} prescriptions with status "${status}" (normalized: ${normalizedStatus})`);
-    // If no results and this is the critical PENDING_DISPENSE status, double-check with hardcoded data
-    if (result.length === 0 && normalizedStatus === 'PENDING_DISPENSE') {
-        console.log('No PENDING_DISPENSE prescriptions found, ensuring fallback data is loaded');
-        loadHardcodedMockData();
-        // Try the filter again after loading hardcoded data
-        const retryResult = mockPrescriptions.filter((prescription)=>{
-            const prescStatus = prescription.status.toUpperCase().replace(/-/g, '_');
-            return prescStatus === normalizedStatus;
-        });
-        console.log(`After loading hardcoded data: found ${retryResult.length} PENDING_DISPENSE prescriptions`);
-        return retryResult;
-    }
-    return result;
+    return mockPrescriptions.filter((prescription)=>prescription.status === status);
 };
 const getAllPrescriptionDetails = async ()=>{
     if (mockPrescriptionDetails.length === 0) {
@@ -1880,178 +1814,6 @@ const sendQueueToDoctor = async (queueId)=>{
         throw error;
     }
 };
-// Hardcoded mock data as final fallback
-const loadHardcodedMockData = ()=>{
-    console.log('Loading hardcoded mock data as a fallback...');
-    // Only load if current data is empty
-    if (mockUsers.length === 0) {
-        mockUsers = [
-            {
-                _id: '646fa3c153b5d505a1d05f01',
-                userId: 'PT001',
-                username: 'benh_nhan_1',
-                email: 'patient1@example.com',
-                password: 'encrypted_password',
-                fullName: 'Nguyễn Văn A',
-                phone: '0901234567',
-                role: 'PATIENT',
-                createdAt: '2025-05-25T07:30:00.000Z',
-                updatedAt: '2025-05-25T07:30:00.000Z',
-                __v: 0
-            },
-            {
-                _id: '646fa3c153b5d505a1d05f02',
-                userId: 'PT002',
-                username: 'benh_nhan_2',
-                email: 'patient2@example.com',
-                password: 'encrypted_password',
-                fullName: 'Trần Thị B',
-                phone: '0912345678',
-                role: 'PATIENT',
-                createdAt: '2025-05-25T08:15:00.000Z',
-                updatedAt: '2025-05-25T08:15:00.000Z',
-                __v: 0
-            },
-            {
-                _id: '646fa3c153b5d505a1d05f03',
-                userId: 'DR001',
-                username: 'bac_si_1',
-                email: 'doctor1@example.com',
-                password: 'encrypted_password',
-                fullName: 'Dr. Lê Văn C',
-                phone: '0987654321',
-                role: 'DOCTOR',
-                createdAt: '2025-05-25T07:00:00.000Z',
-                updatedAt: '2025-05-25T07:00:00.000Z',
-                __v: 0
-            },
-            {
-                _id: '646fa3c153b5d505a1d05f04',
-                userId: 'PH001',
-                username: 'duoc_si_1',
-                email: 'pharmacist1@example.com',
-                password: 'encrypted_password',
-                fullName: 'Dược sĩ Phạm Thị D',
-                phone: '0976543210',
-                role: 'PHARMACIST',
-                createdAt: '2025-05-25T07:15:00.000Z',
-                updatedAt: '2025-05-25T07:15:00.000Z',
-                __v: 0
-            }
-        ];
-    }
-    if (mockPrescriptions.length === 0) {
-        mockPrescriptions = [
-            {
-                _id: '646fb4d253b5d505a1d05f10',
-                customPrescriptionId: 'PRE001',
-                patientId: '646fa3c153b5d505a1d05f01',
-                doctorId: '646fa3c153b5d505a1d05f03',
-                diagnosis: 'Viêm họng cấp',
-                date: '2025-05-25T09:30:00.000Z',
-                status: 'PENDING_DISPENSE',
-                __v: 0,
-                createdAt: '2025-05-25T09:30:00.000Z',
-                updatedAt: '2025-05-25T09:30:00.000Z'
-            },
-            {
-                _id: '646fb4d253b5d505a1d05f11',
-                customPrescriptionId: 'PRE002',
-                patientId: '646fa3c153b5d505a1d05f02',
-                doctorId: '646fa3c153b5d505a1d05f03',
-                diagnosis: 'Cảm lạnh thông thường',
-                date: '2025-05-25T10:45:00.000Z',
-                status: 'PENDING_DISPENSE',
-                __v: 0,
-                createdAt: '2025-05-25T10:45:00.000Z',
-                updatedAt: '2025-05-25T10:45:00.000Z'
-            }
-        ];
-    }
-    if (mockMedicines.length === 0) {
-        mockMedicines = [
-            {
-                _id: '646fb59f53b5d505a1d05f20',
-                customMedicineId: 'MED001',
-                name: 'Paracetamol 500mg',
-                totalPills: 100,
-                price: 5000,
-                __v: 0,
-                createdAt: '2025-05-25T07:00:00.000Z',
-                updatedAt: '2025-05-25T07:00:00.000Z'
-            },
-            {
-                _id: '646fb59f53b5d505a1d05f21',
-                customMedicineId: 'MED002',
-                name: 'Amoxicillin 500mg',
-                totalPills: 80,
-                price: 8000,
-                __v: 0,
-                createdAt: '2025-05-25T07:05:00.000Z',
-                updatedAt: '2025-05-25T07:05:00.000Z'
-            },
-            {
-                _id: '646fb59f53b5d505a1d05f22',
-                customMedicineId: 'MED003',
-                name: 'Vitamin C 1000mg',
-                totalPills: 120,
-                price: 3000,
-                __v: 0,
-                createdAt: '2025-05-25T07:10:00.000Z',
-                updatedAt: '2025-05-25T07:10:00.000Z'
-            }
-        ];
-    }
-    if (mockPrescriptionDetails.length === 0) {
-        mockPrescriptionDetails = [
-            {
-                _id: '646fb62a53b5d505a1d05f30',
-                customPrescriptionDetailId: 'PD001',
-                prescriptionId: '646fb4d253b5d505a1d05f10',
-                medicineId: '646fb59f53b5d505a1d05f20',
-                quantity: 10,
-                dosage: '1 viên x 3 lần/ngày sau ăn',
-                __v: 0,
-                createdAt: '2025-05-25T09:35:00.000Z',
-                updatedAt: '2025-05-25T09:35:00.000Z'
-            },
-            {
-                _id: '646fb62a53b5d505a1d05f31',
-                customPrescriptionDetailId: 'PD002',
-                prescriptionId: '646fb4d253b5d505a1d05f10',
-                medicineId: '646fb59f53b5d505a1d05f21',
-                quantity: 14,
-                dosage: '1 viên x 2 lần/ngày sau ăn',
-                __v: 0,
-                createdAt: '2025-05-25T09:35:00.000Z',
-                updatedAt: '2025-05-25T09:35:00.000Z'
-            },
-            {
-                _id: '646fb62a53b5d505a1d05f32',
-                customPrescriptionDetailId: 'PD003',
-                prescriptionId: '646fb4d253b5d505a1d05f11',
-                medicineId: '646fb59f53b5d505a1d05f20',
-                quantity: 6,
-                dosage: '1 viên khi sốt trên 38.5°C',
-                __v: 0,
-                createdAt: '2025-05-25T10:50:00.000Z',
-                updatedAt: '2025-05-25T10:50:00.000Z'
-            },
-            {
-                _id: '646fb62a53b5d505a1d05f33',
-                customPrescriptionDetailId: 'PD004',
-                prescriptionId: '646fb4d253b5d505a1d05f11',
-                medicineId: '646fb59f53b5d505a1d05f22',
-                quantity: 20,
-                dosage: '2 viên x 1 lần/ngày sau ăn sáng',
-                __v: 0,
-                createdAt: '2025-05-25T10:50:00.000Z',
-                updatedAt: '2025-05-25T10:50:00.000Z'
-            }
-        ];
-    }
-    console.log(`Hardcoded mock data loaded: ${mockUsers.length} users, ${mockPrescriptions.length} prescriptions, ${mockPrescriptionDetails.length} prescription details`);
-};
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
 }
@@ -2062,9 +1824,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
 __turbopack_context__.s({
-    "calculateAge": (()=>calculateAge),
     "createPharmacyInvoice": (()=>createPharmacyInvoice),
-    "fetchPatientsWithPrescriptions": (()=>fetchPatientsWithPrescriptions),
     "getDailyRevenue": (()=>getDailyRevenue),
     "getPatientsWithPendingPrescriptions": (()=>getPatientsWithPendingPrescriptions),
     "getPharmacyInvoices": (()=>getPharmacyInvoices),
@@ -2074,144 +1834,105 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mock
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-client] (ecmascript)");
 ;
 ;
-const calculateAge = (dateOfBirth)=>{
-    if (!dateOfBirth) return 0;
-    const dob = new Date(dateOfBirth);
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const monthDiff = today.getMonth() - dob.getMonth();
-    if (monthDiff < 0 || monthDiff === 0 && today.getDate() < dob.getDate()) {
-        age--;
-    }
-    return age;
-};
-// Function to get patients with pending prescriptions for the pharmacy
-// Helper function to map API prescriptions to PharmacyPatient objects
-const mapPrescriptionsToPharmacyPatients = async (prescriptions, token)=>{
-    const result = [];
-    for (const prescription of prescriptions){
-        // The API already populates patientId and doctorId
-        const patient = prescription.patientId;
-        const doctor = prescription.doctorId;
-        if (!patient || !doctor) {
-            console.warn(`Prescription ${prescription._id} is missing patient or doctor data, skipping`);
-            continue;
-        }
-        try {
-            // Get prescription details
-            console.log(`Fetching prescription details for prescription ID: ${prescription._id}`);
-            const prescriptionDetails = await apiService.getPrescriptionDetails(prescription._id, token);
-            console.log(`Fetched ${prescriptionDetails.length} prescription details`);
-            // Map prescription details to medicines
-            const medicines = [];
-            for (const detail of prescriptionDetails){
-                // We need to get medicine details for each prescription detail
-                try {
-                    const medicine = await apiService.getMedicineById(detail.medicineId, token);
-                    medicines.push({
-                        name: medicine?.name || 'Unknown',
-                        quantity: detail.quantity,
-                        dosage: detail.dosage,
-                        price: medicine?.price || 0
-                    });
-                } catch (medError) {
-                    console.warn(`Error fetching medicine ${detail.medicineId}, falling back to mock data:`, medError);
-                    // If we can't get the medicine from API, use mock data
-                    const mockMedicine = await getMedicineById(detail.medicineId);
-                    medicines.push({
-                        name: mockMedicine?.name || 'Unknown',
-                        quantity: detail.quantity,
-                        dosage: detail.dosage,
-                        price: mockMedicine?.price || 0
-                    });
-                }
-            }
-            result.push({
-                id: prescription._id,
-                serialNumber: prescription.customPrescriptionId,
-                fullName: patient?.fullName || 'Unknown',
-                phone: patient?.phone || 'N/A',
-                diagnosis: prescription.diagnosis,
-                doctor: doctor?.fullName || 'Không xác định',
-                prescription: medicines
-            });
-        } catch (detailsError) {
-            console.error(`Error fetching prescription details for prescription ${prescription._id}:`, detailsError);
-        }
-    }
-    return result;
-};
-// Track the last time we initiated an API call to avoid too many calls
-let lastPendingPrescriptionFetchTime = 0;
-const FETCH_COOLDOWN = 5000; // 5 seconds between attempts
 const getPatientsWithPendingPrescriptions = async ()=>{
-    console.log('getPatientsWithPendingPrescriptions called');
     try {
-        // Implement cooldown for API calls
-        const now = Date.now();
-        if (now - lastPendingPrescriptionFetchTime < FETCH_COOLDOWN) {
-            console.log(`API call cooldown active (${Math.round((FETCH_COOLDOWN - (now - lastPendingPrescriptionFetchTime)) / 1000)}s remaining), trying mock data`);
-            return fetchMockPendingPrescriptions();
-        }
-        // Update the last fetch time
-        lastPendingPrescriptionFetchTime = now;
-        // Try to get authentication token from localStorage
+        console.log('pharmacyUtils: Starting getPatientsWithPendingPrescriptions function');
+        // Try to get authentication token from localStorage first
         const tokenFromStorage = localStorage.getItem('token');
-        if (!tokenFromStorage) {
-            console.warn("No authentication token found in localStorage");
-            return fetchMockPendingPrescriptions();
+        let finalToken = tokenFromStorage;
+        // If not in localStorage, try cookies (via document.cookie)
+        if (!finalToken) {
+            console.log('pharmacyUtils: No token in localStorage, checking cookies');
+            const tokenCookie = document.cookie.split('; ').find((row)=>row.startsWith('token='));
+            if (tokenCookie) {
+                finalToken = tokenCookie.split('=')[1];
+                console.log('pharmacyUtils: Found token in cookies');
+            }
         }
-        // Add a small delay to ensure token is properly loaded and all API dependencies are ready
-        await new Promise((resolve)=>setTimeout(resolve, 300));
-        console.log('Fetching pending prescriptions with status PENDING_DISPENSE from API');
-        console.log('Using token:', tokenFromStorage.substring(0, 10) + '...');
-        // First, verify if the token is valid - using a simple try/catch instead of a separate validation call
-        try {
-            // Skip separate token validation and go straight to the prescriptions request
-            // If the token is valid, try to use the real API
+        console.log('pharmacyUtils: Token available:', !!finalToken);
+        if (finalToken) {
             try {
-                // First, try with the exact status
-                console.log("Making API call with status='PENDING_DISPENSE'");
-                const prescriptions = await apiService.getPrescriptions({
-                    status: 'PENDING_DISPENSE'
-                }, tokenFromStorage);
-                console.log('API Response for PENDING_DISPENSE prescriptions:', prescriptions ? JSON.stringify(prescriptions.slice(0, 2)) : 'null');
-                console.log(`Fetched ${prescriptions?.length || 0} prescriptions with status PENDING_DISPENSE`);
-                // If we got no prescriptions, try a different approach
-                if (!prescriptions || prescriptions.length === 0) {
-                    console.log('No prescriptions found with status PENDING_DISPENSE, trying without filters');
-                    // Try to get all prescriptions
-                    const allPrescriptions = await apiService.getPrescriptions({}, tokenFromStorage);
-                    console.log(`Found ${allPrescriptions?.length || 0} total prescriptions`);
-                    // If we have prescriptions, filter them manually
-                    if (allPrescriptions && allPrescriptions.length > 0) {
-                        console.log("Manually filtering prescriptions by status");
-                        const pendingDispense = allPrescriptions.filter((p)=>p.status === 'PENDING_DISPENSE' || p.status === 'pending_dispense' || p.status === 'PENDING-DISPENSE');
-                        console.log(`Filtered to ${pendingDispense.length} prescriptions with status PENDING_DISPENSE`);
-                        // If we found any, use those instead
-                        if (pendingDispense.length > 0) {
-                            return mapPrescriptionsToPharmacyPatients(pendingDispense, tokenFromStorage);
+                console.log('pharmacyUtils: Fetching pending prescriptions with status PENDING_DISPENSE from API');
+                // Sử dụng API chuyên biệt để lấy đơn thuốc có trạng thái PENDING_DISPENSE
+                const prescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPendingDispensePrescriptions"])(finalToken);
+                console.log(`pharmacyUtils: Fetched ${prescriptions.length} prescriptions with status PENDING_DISPENSE`);
+                console.log('pharmacyUtils: Raw prescription data:', prescriptions);
+                const result = [];
+                for (const prescription of prescriptions){
+                    // Lấy thông tin bệnh nhân và bác sĩ từ response
+                    const patient = prescription.patientId || prescription.patientInfo;
+                    const doctor = prescription.doctorId || prescription.doctorInfo;
+                    console.log(`pharmacyUtils: Processing prescription ${prescription._id}`);
+                    console.log('pharmacyUtils: Patient data:', patient);
+                    console.log('pharmacyUtils: Doctor data:', doctor);
+                    if (!patient || !doctor) {
+                        console.warn(`pharmacyUtils: Prescription ${prescription._id} is missing patient or doctor data, skipping`);
+                        continue;
+                    }
+                    try {
+                        // Get prescription details
+                        console.log(`pharmacyUtils: Fetching prescription details for prescription ID: ${prescription._id}`);
+                        const prescriptionDetails = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionDetails"])(prescription._id, finalToken);
+                        console.log(`pharmacyUtils: Fetched ${prescriptionDetails.length} prescription details:`, prescriptionDetails);
+                        // Map prescription details to medicines
+                        const medicines = [];
+                        for (const detail of prescriptionDetails){
+                            // We need to get medicine details for each prescription detail
+                            try {
+                                console.log(`pharmacyUtils: Fetching medicine data for ID: ${detail.medicineId}`);
+                                const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId, finalToken);
+                                console.log(`pharmacyUtils: Medicine data:`, medicine);
+                                medicines.push({
+                                    name: medicine?.name || 'Unknown',
+                                    quantity: detail.quantity,
+                                    dosage: detail.dosage,
+                                    price: medicine?.price || 0
+                                });
+                            } catch (medError) {
+                                console.warn(`pharmacyUtils: Error fetching medicine ${detail.medicineId}, falling back to mock data:`, medError);
+                                // If we can't get the medicine from API, use mock data
+                                const mockMedicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
+                                medicines.push({
+                                    name: mockMedicine?.name || 'Unknown',
+                                    quantity: detail.quantity,
+                                    dosage: detail.dosage,
+                                    price: mockMedicine?.price || 0
+                                });
+                            }
                         }
+                        // Xử lý thông tin bệnh nhân và bác sĩ từ các nguồn dữ liệu khác nhau
+                        const patientInfo = typeof patient === 'object' ? patient : null;
+                        const doctorInfo = typeof doctor === 'object' ? doctor : null;
+                        const patientEntry = {
+                            id: prescription._id,
+                            serialNumber: prescription.customPrescriptionId,
+                            fullName: patientInfo?.fullName || 'Unknown',
+                            phone: patientInfo?.phone || 'N/A',
+                            diagnosis: prescription.diagnosis,
+                            doctor: doctorInfo?.fullName || 'Không xác định',
+                            prescription: medicines
+                        };
+                        console.log(`pharmacyUtils: Added patient entry:`, patientEntry);
+                        result.push(patientEntry);
+                    } catch (detailsError) {
+                        console.error(`pharmacyUtils: Error fetching prescription details for prescription ${prescription._id}:`, detailsError);
                     }
                 }
-                return mapPrescriptionsToPharmacyPatients(prescriptions || [], tokenFromStorage);
-            } catch (error) {
-                console.error('Error fetching prescriptions from API:', error);
-                console.error('Error details:', error.message);
-                if (error.response) {
-                    console.error('Status:', error.response.status);
-                    console.error('Data:', error.response.data);
-                }
-                throw error;
+                console.log(`pharmacyUtils: Prepared ${result.length} pharmacy patients with their prescription details`);
+                return result;
+            } catch (apiError) {
+                console.error("pharmacyUtils: API error, falling back to mock data:", apiError);
+                // Fall back to mock data if API fails
+                return fetchMockPendingPrescriptions();
             }
-        } catch (tokenError) {
-            console.error("Error validating token:", tokenError);
+        } else {
+            console.log("pharmacyUtils: No authentication token found, using mock data");
+            // If no token, use mock data
             return fetchMockPendingPrescriptions();
         }
     } catch (error) {
-        console.error("API error, falling back to mock data:", error);
-        // Fall back to mock data if API fails
-        return fetchMockPendingPrescriptions();
+        console.error("pharmacyUtils: Error fetching pending prescriptions:", error);
+        return [];
     }
 };
 // Separate function for fetching mock data
@@ -2219,81 +1940,31 @@ const fetchMockPendingPrescriptions = async ()=>{
     console.log('Fetching pending prescriptions from mock data');
     // Initialize mock data if needed
     await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["initializeData"])();
-    const pendingPrescriptions = await getPrescriptionsByStatus('PENDING_DISPENSE');
+    const pendingPrescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionsByStatus"])('PENDING_DISPENSE');
     console.log(`Fetched ${pendingPrescriptions.length} mock prescriptions with status PENDING_DISPENSE`);
-    // If no prescriptions found, create hardcoded data
-    if (pendingPrescriptions.length === 0) {
-        console.log('No mock prescriptions found, creating hardcoded pharmacy patients');
-        return [
-            {
-                id: 'hardcoded1',
-                serialNumber: 'PRE-001',
-                fullName: 'Nguyễn Văn A',
-                phone: '0901234567',
-                diagnosis: 'Viêm họng cấp',
-                doctor: 'Dr. Lê Văn C',
-                prescription: [
-                    {
-                        name: 'Paracetamol 500mg',
-                        quantity: 10,
-                        dosage: '1 viên x 3 lần/ngày sau ăn',
-                        price: 5000
-                    },
-                    {
-                        name: 'Amoxicillin 500mg',
-                        quantity: 14,
-                        dosage: '1 viên x 2 lần/ngày sau ăn',
-                        price: 8000
-                    }
-                ]
-            },
-            {
-                id: 'hardcoded2',
-                serialNumber: 'PRE-002',
-                fullName: 'Trần Thị B',
-                phone: '0912345678',
-                diagnosis: 'Cảm lạnh thông thường',
-                doctor: 'Dr. Lê Văn C',
-                prescription: [
-                    {
-                        name: 'Paracetamol 500mg',
-                        quantity: 6,
-                        dosage: '1 viên khi sốt trên 38.5°C',
-                        price: 5000
-                    },
-                    {
-                        name: 'Vitamin C 1000mg',
-                        quantity: 20,
-                        dosage: '2 viên x 1 lần/ngày sau ăn sáng',
-                        price: 3000
-                    }
-                ]
-            }
-        ];
-    }
     const result = [];
     for (const prescription of pendingPrescriptions){
         try {
             // Get patient details
-            const patient = await getUserById(prescription.patientId);
+            const patient = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])(prescription.patientId);
             if (!patient) {
                 console.warn(`Mock patient with ID ${prescription.patientId} not found for prescription ${prescription._id}`);
                 continue;
             }
             // Get doctor details
-            const doctor = await getUserById(prescription.doctorId);
+            const doctor = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])(prescription.doctorId);
             if (!doctor) {
                 console.warn(`Mock doctor with ID ${prescription.doctorId} not found for prescription ${prescription._id}`);
                 continue;
             }
             // Get prescription details
-            const prescriptionDetails = await getPrescriptionDetailsByPrescriptionId(prescription._id);
+            const prescriptionDetails = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionDetailsByPrescriptionId"])(prescription._id);
             console.log(`Found ${prescriptionDetails.length} mock prescription details for prescription ${prescription._id}`);
             // Map prescription details to medicines
             const medicines = [];
             for (const detail of prescriptionDetails){
                 try {
-                    const medicine = await getMedicineById(detail.medicineId);
+                    const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
                     if (!medicine) {
                         console.warn(`Mock medicine with ID ${detail.medicineId} not found`);
                         medicines.push({
@@ -2338,11 +2009,11 @@ const fetchMockPendingPrescriptions = async ()=>{
 };
 const getPharmacyInvoices = async ()=>{
     try {
-        const invoices = await getAllInvoices();
+        const invoices = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAllInvoices"])();
         const result = [];
         for (const invoice of invoices){
             // Get pharmacist information (default to a specific ID if needed)
-            const pharmacist = await getUserById('685face13fc4c04e1bd96c0a'); // Default pharmacist ID
+            const pharmacist = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])('685face13fc4c04e1bd96c0a'); // Default pharmacist ID
             // Return formatted invoice data
             result.push({
                 id: invoice._id,
@@ -2363,7 +2034,7 @@ const getDailyRevenue = async ()=>{
         const today = new Date();
         const result = [];
         // Get all invoices
-        const allInvoices = await getAllInvoices();
+        const allInvoices = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAllInvoices"])();
         // Create revenue data for the last 7 days
         for(let i = 0; i < 7; i++){
             const date = new Date(today);
@@ -2396,7 +2067,7 @@ const createPharmacyInvoice = async (prescriptionId, totalAmount, token)=>{
         console.log(`Creating pharmacy invoice for prescription ${prescriptionId} with total amount ${totalAmount}`);
         // 1. Update prescription status to DISPENSED
         try {
-            await apiService.updatePrescriptionStatus(prescriptionId, 'DISPENSED', token);
+            await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["updatePrescriptionStatus"])(prescriptionId, 'DISPENSED', token);
             console.log(`Updated prescription ${prescriptionId} status to DISPENSED`);
         } catch (statusError) {
             console.error("Error updating prescription status:", statusError);
@@ -2466,7 +2137,7 @@ async function getPrescriptionsCountByStatus(status, token, startDate) {
             // If startDate is provided, we're looking for prescriptions created after this date
             params.startDate = startDate;
         }
-        const prescriptions = await apiService.getPrescriptions(params, token);
+        const prescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptions"])(params, token);
         return prescriptions.length;
     } catch (error) {
         console.error(`Error getting count for ${status} prescriptions:`, error);
@@ -2479,123 +2150,6 @@ function calculateTotalRevenue(dispensedCount) {
     const averagePerPrescription = 250000;
     return dispensedCount * averagePerPrescription;
 }
-// Constants
-const DATA_REFRESH_INTERVAL = 30000; // 30 seconds
-const API_TIMEOUT = 10000; // 10 seconds
-let lastDataRefresh = 0;
-const fetchPatientsWithPrescriptions = async ()=>{
-    console.log('Fetching patients with pending prescriptions...');
-    // Check if we need to refresh data
-    const now = Date.now();
-    if (now - lastDataRefresh > DATA_REFRESH_INTERVAL) {
-        console.log(`Data is stale (${Math.round((now - lastDataRefresh) / 1000)}s old), forcing refresh from MongoDB...`);
-        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["initializeData"])();
-        lastDataRefresh = now;
-    } else {
-        console.log(`Using cached data (${Math.round((now - lastDataRefresh) / 1000)}s old)`);
-    }
-    try {
-        // Always try the API first with a timeout
-        console.log('Attempting to fetch prescriptions directly from API...');
-        const apiPromise = new Promise(async (resolve, reject)=>{
-            try {
-                const response = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["authenticatedGet"])('/prescriptions/status/PENDING_DISPENSE');
-                if (response && Array.isArray(response)) {
-                    console.log(`API returned ${response.length} prescriptions with PENDING_DISPENSE status`);
-                    resolve(response);
-                    return;
-                }
-                reject(new Error('Invalid API response format'));
-            } catch (error) {
-                reject(error);
-            }
-        });
-        // Set a timeout for the API call
-        const timeoutPromise = new Promise((_, reject)=>{
-            setTimeout(()=>reject(new Error('API request timed out')), API_TIMEOUT);
-        });
-        // Race between the API call and timeout
-        const prescriptions = await Promise.race([
-            apiPromise,
-            timeoutPromise
-        ]).catch((error)=>{
-            console.warn(`API fetch failed: ${error.message}. Falling back to cached data.`);
-            // Return filtered prescriptions from mockData as fallback
-            return __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mockPrescriptions"].filter((p)=>p.status.toUpperCase() === 'PENDING_DISPENSE');
-        });
-        // Log the result
-        console.log(`Found ${prescriptions.length} prescriptions with PENDING_DISPENSE status`);
-        if (prescriptions.length === 0) {
-            console.warn('No pending prescriptions found in API or cache, patients list will be empty');
-            return [];
-        }
-        // Map prescriptions to patients with associated prescription data
-        const patients = await Promise.all(prescriptions.map(async (prescription)=>{
-            try {
-                // Find the user (patient) associated with this prescription
-                const user = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mockUsers"].find((u)=>u._id === prescription.patientId) || await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["authenticatedGet"])(`/users/${prescription.patientId}`);
-                if (!user) {
-                    console.warn(`No user found for prescription ${prescription._id} with patient ID ${prescription.patientId}`);
-                    return null;
-                }
-                // Find prescription details for this prescription
-                let details = [];
-                // First try direct API call for this specific prescription's details
-                try {
-                    console.log(`Fetching details for prescription ${prescription._id}...`);
-                    const apiDetails = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["authenticatedGet"])(`/prescriptionDetails/prescription/${prescription._id}`);
-                    if (apiDetails && Array.isArray(apiDetails) && apiDetails.length > 0) {
-                        console.log(`API returned ${apiDetails.length} details for prescription ${prescription._id}`);
-                        details = apiDetails;
-                    } else {
-                        console.warn(`API returned no details for prescription ${prescription._id}, checking cache...`);
-                        details = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mockPrescriptionDetails"].filter((d)=>d.prescriptionId === prescription._id);
-                    }
-                } catch (error) {
-                    console.warn(`Error fetching details for prescription ${prescription._id}: ${error.message}`);
-                    details = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mockPrescriptionDetails"].filter((d)=>d.prescriptionId === prescription._id);
-                }
-                if (details.length === 0) {
-                    console.warn(`No prescription details found for prescription ${prescription._id}`);
-                }
-                // Augment prescription details with medicine information
-                const augmentedDetails = details.map((detail)=>{
-                    const medicine = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["mockMedicines"].find((m)=>m._id === detail.medicineId);
-                    return {
-                        ...detail,
-                        medicineName: medicine?.name || 'Unknown Medicine',
-                        medicineUnit: medicine?.unit || 'N/A',
-                        medicinePrice: medicine?.price || 0
-                    };
-                });
-                // Calculate total cost
-                const totalCost = augmentedDetails.reduce((sum, detail)=>sum + detail.quantity * detail.medicinePrice, 0);
-                // Create the pharmacy patient object
-                return {
-                    _id: user._id,
-                    name: user.name || 'Unknown Patient',
-                    age: calculateAge(user.dateOfBirth),
-                    gender: user.gender || 'Unknown',
-                    prescriptionId: prescription._id,
-                    status: prescription.status,
-                    medications: augmentedDetails,
-                    totalCost,
-                    dateCreated: prescription.createdAt || new Date().toISOString()
-                };
-            } catch (error) {
-                console.error(`Error processing prescription ${prescription._id}:`, error);
-                return null;
-            }
-        }));
-        // Filter out failed entries and sort by date
-        const validPatients = patients.filter((p)=>p !== null).sort((a, b)=>new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
-        console.log(`Successfully processed ${validPatients.length} patients with prescriptions`);
-        return validPatients;
-    } catch (error) {
-        console.error('Error in fetchPatientsWithPrescriptions:', error);
-        return [];
-    }
-};
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
 }
@@ -4233,6 +3787,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$PatientDetails$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/PatientDetails.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$Statistics$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/Statistics.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/pharmacyPage/pharmacyUtils.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 ;
@@ -4241,79 +3796,84 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
+;
 const Dashboard = ({ user, onLogout })=>{
     _s();
+    const { token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])(); // Get token from auth context
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('dispense'); // 'dispense' or 'statistics'
     const [selectedPatient, setSelectedPatient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [waitingPatients, setWaitingPatients] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
-    const [stats, setStats] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     // State cho loading và error
-    const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     // Tải dữ liệu bệnh nhân chờ phát thuốc từ API
     const fetchPatients = async ()=>{
         setIsLoading(true);
         setError(null);
+        console.log("Dashboard: Starting fetchPatients function");
+        console.log("Dashboard: Token available:", !!token);
         try {
-            console.log('Dashboard: Fetching patients with prescriptions...');
-            // Use the new fetchPatientsWithPrescriptions function which prioritizes MongoDB data
-            const patients = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchPatientsWithPrescriptions"])();
-            if (!patients || patients.length === 0) {
-                console.warn("No patients with pending prescriptions found");
-                // Keep showing the previous data if we had some, otherwise show a message
-                if (waitingPatients.length === 0) {
-                    setError("Không tìm thấy đơn thuốc nào chờ phát thuốc");
-                }
-            } else {
-                console.log(`Dashboard: Found ${patients.length} patients with pending prescriptions`);
-                setWaitingPatients(patients);
-                // Reset selected patient if not in the new list
-                if (selectedPatient && !patients.find((p)=>p._id === selectedPatient._id)) {
-                    setSelectedPatient(null);
-                }
-                setError(null);
+            // Fetch prescriptions with status PENDING_DISPENSE
+            console.log("Dashboard: Calling getPatientsWithPendingPrescriptions...");
+            const patients = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPatientsWithPendingPrescriptions"])();
+            console.log(`Dashboard: Fetched ${patients.length} patients with pending prescriptions`);
+            console.log("Dashboard: Patient data:", patients);
+            setWaitingPatients(patients);
+            if (patients.length === 0) {
+                // Reset selected patient if no patients are waiting
+                console.log("Dashboard: No patients in queue, resetting selected patient");
+                setSelectedPatient(null);
             }
-            // Also fetch statistics data
-            const statsData = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$pharmacyUtils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPharmacyStats"])();
-            setStats(statsData);
-        } catch (err) {
-            console.error("Error fetching patients:", err);
-            setError("Lỗi khi tải dữ liệu bệnh nhân");
+        } catch (error) {
+            console.error("Dashboard: Error fetching patients:", error);
+            setError(error.message || "Không thể tải danh sách bệnh nhân");
+            setWaitingPatients([]);
         } finally{
             setIsLoading(false);
         }
     };
-    // Combined effect for initial fetch and polling
+    // Fetch patients on mount and when user changes
+    // Initial fetch
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "Dashboard.useEffect": ()=>{
-            console.log("Dashboard mounted or user changed, fetching patients...");
-            // Initial fetch
+            console.log("Dashboard: Initial useEffect - fetching patients");
             fetchPatients();
+        }
+    }["Dashboard.useEffect"], [
+        user,
+        token
+    ]); // Add token as dependency
+    // Setup polling for auto-refresh
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "Dashboard.useEffect": ()=>{
+            console.log("Dashboard: Setting up polling interval");
             // Set up polling for real-time updates
             const intervalId = setInterval({
                 "Dashboard.useEffect.intervalId": ()=>{
                     // Only auto-refresh if not viewing a patient's details
                     if (!selectedPatient && !isLoading) {
-                        console.log("Auto-refreshing patient list...");
+                        console.log("Dashboard: Auto-refreshing patient list...");
                         fetchPatients();
                     }
                 }
-            }["Dashboard.useEffect.intervalId"], 30000); // Poll every 30 seconds
-            // Cleanup function
+            }["Dashboard.useEffect.intervalId"], 60000); // Poll every minute
             return ({
-                "Dashboard.useEffect": ()=>clearInterval(intervalId)
+                "Dashboard.useEffect": ()=>{
+                    console.log("Dashboard: Clearing polling interval");
+                    clearInterval(intervalId);
+                }
             })["Dashboard.useEffect"];
         }
     }["Dashboard.useEffect"], [
-        user,
         selectedPatient,
         isLoading
     ]);
     const handlePatientSelect = (patient)=>{
+        console.log("Dashboard: Patient selected:", patient.id, patient.fullName);
         setSelectedPatient(patient);
     };
     const handlePatientRemove = (patientId)=>{
-        console.log(`Removing patient ${patientId} from waiting list after dispensing`);
+        console.log(`Dashboard: Removing patient ${patientId} from waiting list after dispensing`);
         setWaitingPatients((prevPatients)=>prevPatients.filter((p)=>p.id !== patientId));
         setSelectedPatient(null);
         // Also refresh the list to ensure our counts are accurate
@@ -4321,6 +3881,14 @@ const Dashboard = ({ user, onLogout })=>{
             fetchPatients();
         }, 1000); // Give the backend a moment to update
     };
+    // Add debug output for the render cycle
+    console.log("Dashboard: Rendering with state:", {
+        activeTab,
+        selectedPatient: selectedPatient ? `${selectedPatient.id} - ${selectedPatient.fullName}` : "none",
+        waitingPatients: waitingPatients.length,
+        isLoading,
+        error
+    });
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "min-h-screen bg-gray-50",
         children: [
@@ -4334,7 +3902,7 @@ const Dashboard = ({ user, onLogout })=>{
                             children: "Hệ Thống Quản Lý Nhà Thuốc"
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 117,
+                            lineNumber: 122,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4348,7 +3916,7 @@ const Dashboard = ({ user, onLogout })=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 119,
+                                    lineNumber: 124,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4359,31 +3927,31 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-4 w-4 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 123,
+                                            lineNumber: 128,
                                             columnNumber: 15
                                         }, this),
                                         " Đăng Xuất"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 122,
+                                    lineNumber: 127,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 118,
+                            lineNumber: 123,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 116,
+                    lineNumber: 121,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 115,
+                lineNumber: 120,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -4406,14 +3974,14 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-5 w-5 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 137,
+                                            lineNumber: 142,
                                             columnNumber: 17
                                         }, this),
                                         " Phát Thuốc"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 133,
+                                    lineNumber: 138,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4427,35 +3995,35 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "h-5 w-5 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 143,
+                                            lineNumber: 148,
                                             columnNumber: 17
                                         }, this),
                                         " Xem Thống Kê Doanh Thu"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 139,
+                                    lineNumber: 144,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 132,
+                            lineNumber: 137,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                        lineNumber: 131,
+                        lineNumber: 136,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 130,
+                    lineNumber: 135,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 129,
+                lineNumber: 134,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -4473,12 +4041,12 @@ const Dashboard = ({ user, onLogout })=>{
                                 error: error
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 153,
+                                lineNumber: 158,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 152,
+                            lineNumber: 157,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4492,7 +4060,7 @@ const Dashboard = ({ user, onLogout })=>{
                                             className: "animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 165,
+                                            lineNumber: 170,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4500,18 +4068,18 @@ const Dashboard = ({ user, onLogout })=>{
                                             children: "Đang tải danh sách bệnh nhân..."
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 166,
+                                            lineNumber: 171,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 164,
+                                    lineNumber: 169,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 163,
+                                lineNumber: 168,
                                 columnNumber: 17
                             }, this) : error && !selectedPatient ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center",
@@ -4524,12 +4092,12 @@ const Dashboard = ({ user, onLogout })=>{
                                                 className: "h-8 w-8 text-red-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                                lineNumber: 173,
+                                                lineNumber: 178,
                                                 columnNumber: 23
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 172,
+                                            lineNumber: 177,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4537,7 +4105,7 @@ const Dashboard = ({ user, onLogout })=>{
                                             children: "Không thể tải dữ liệu"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 175,
+                                            lineNumber: 180,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4545,7 +4113,7 @@ const Dashboard = ({ user, onLogout })=>{
                                             children: error
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 176,
+                                            lineNumber: 181,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4554,25 +4122,25 @@ const Dashboard = ({ user, onLogout })=>{
                                             children: "Thử lại"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 177,
+                                            lineNumber: 182,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 171,
+                                    lineNumber: 176,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 170,
+                                lineNumber: 175,
                                 columnNumber: 17
                             }, this) : selectedPatient ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$PatientDetails$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PatientDetails"], {
                                 patient: selectedPatient,
                                 onPatientComplete: handlePatientRemove
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 186,
+                                lineNumber: 191,
                                 columnNumber: 17
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center",
@@ -4585,12 +4153,12 @@ const Dashboard = ({ user, onLogout })=>{
                                                 className: "h-8 w-8 text-blue-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                                lineNumber: 191,
+                                                lineNumber: 196,
                                                 columnNumber: 23
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 190,
+                                            lineNumber: 195,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4598,7 +4166,7 @@ const Dashboard = ({ user, onLogout })=>{
                                             children: "Chưa có bệnh nhân nào được chọn"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 193,
+                                            lineNumber: 198,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4606,40 +4174,38 @@ const Dashboard = ({ user, onLogout })=>{
                                             children: "Vui lòng chọn bệnh nhân từ danh sách để xem chi tiết đơn thuốc."
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                            lineNumber: 194,
+                                            lineNumber: 199,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                    lineNumber: 189,
+                                    lineNumber: 194,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                                lineNumber: 188,
+                                lineNumber: 193,
                                 columnNumber: 17
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                            lineNumber: 161,
+                            lineNumber: 166,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 151,
+                    lineNumber: 156,
                     columnNumber: 37
-                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$Statistics$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Statistics"], {
-                    stats: stats
-                }, void 0, false, {
+                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$pharmacyPage$2f$Statistics$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Statistics"], {}, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 201,
+                    lineNumber: 206,
                     columnNumber: 20
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 150,
+                lineNumber: 155,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -4651,27 +4217,31 @@ const Dashboard = ({ user, onLogout })=>{
                         children: "© 2023 Hệ Thống Quản Lý Nhà Thuốc. Bản quyền thuộc về Phòng Khám."
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                        lineNumber: 206,
+                        lineNumber: 211,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                    lineNumber: 205,
+                    lineNumber: 210,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-                lineNumber: 204,
+                lineNumber: 209,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/Dashboard.tsx",
-        lineNumber: 113,
+        lineNumber: 118,
         columnNumber: 10
     }, this);
 };
-_s(Dashboard, "HAX3oXfRxAMjkUAgCSDYo84hjIo=");
+_s(Dashboard, "zNmhMi890cHNIWbwd8qENugdkQY=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"]
+    ];
+});
 _c = Dashboard;
 var _c;
 __turbopack_context__.k.register(_c, "Dashboard");
@@ -4701,16 +4271,29 @@ var _s = __turbopack_context__.k.signature();
 ;
 function PharmacyPage() {
     _s();
-    const { user, isAuthenticated, logout } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
+    const { user, isAuthenticated, token, logout } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    // Add debug logging
+    console.log('PharmacyPage: Rendering page component');
+    console.log('PharmacyPage: Authentication state:', {
+        isAuthenticated,
+        hasUser: !!user,
+        userRole: user?.role || 'none',
+        hasToken: !!token
+    });
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "PharmacyPage.useEffect": ()=>{
+            console.log('PharmacyPage: Authentication check effect running');
             if (!isAuthenticated) {
+                console.log('PharmacyPage: Not authenticated, redirecting to login');
                 router.push('/login');
             } else if (user?.role !== 'PHARMACIST') {
                 // Nếu người dùng không phải là dược sĩ, chuyển hướng về trang đăng nhập
+                console.log(`PharmacyPage: User role ${user?.role} is not PHARMACIST, logging out`);
                 logout();
                 router.push('/login');
+            } else {
+                console.log('PharmacyPage: Authentication check passed');
             }
         }
     }["PharmacyPage.useEffect"], [
@@ -4720,20 +4303,28 @@ function PharmacyPage() {
         logout
     ]);
     if (!isAuthenticated || !user) {
+        console.log('PharmacyPage: Rendering loading state');
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "min-h-screen flex items-center justify-center",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/page.tsx",
-                lineNumber: 25,
+                lineNumber: 41,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/pharmacyPage/page.tsx",
-            lineNumber: 24,
+            lineNumber: 40,
             columnNumber: 7
         }, this);
+    }
+    console.log('PharmacyPage: Rendering Dashboard with user:', user.fullName);
+    console.log('PharmacyPage: Token available:', !!token);
+    // If token is available, store it in localStorage for API calls
+    if (token) {
+        console.log('PharmacyPage: Saving token to localStorage for API calls');
+        localStorage.setItem('token', token);
     }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "flex flex-col w-full min-h-screen bg-gray-50",
@@ -4742,16 +4333,16 @@ function PharmacyPage() {
             onLogout: logout
         }, void 0, false, {
             fileName: "[project]/src/app/pharmacyPage/page.tsx",
-            lineNumber: 32,
+            lineNumber: 57,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/pharmacyPage/page.tsx",
-        lineNumber: 31,
+        lineNumber: 56,
         columnNumber: 5
     }, this);
 }
-_s(PharmacyPage, "D78HQY+z+3Zgy+N5CoSEy/RjKeY=", false, function() {
+_s(PharmacyPage, "rPKYSRSGo7Q3GHopIPIPoxvj1Fo=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]

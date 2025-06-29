@@ -2646,44 +2646,13 @@ const fetchInvoices = async ()=>{
     }
     return [];
 };
-// Variables to prevent multiple simultaneous initialization attempts
-let isInitializing = false;
-let lastInitAttempt = 0;
-const INIT_COOLDOWN = 5000; // 5 seconds cooldown between init attempts
-let lastSuccessfulFetch = 0; // Timestamp of the last successful data fetch
-const CACHE_TTL = 30000; // Cache time-to-live: 30 seconds
 const initializeData = async ()=>{
     console.log('Initializing data from API or mock sources...');
-    // Prevent multiple simultaneous initialization attempts
-    const now = Date.now();
-    if (isInitializing) {
-        console.log('Data initialization already in progress, skipping this request');
-        return true; // Return true so callers don't think it failed
-    }
-    // Add a cooldown to avoid too many initialization attempts
-    if (now - lastInitAttempt < INIT_COOLDOWN) {
-        console.log(`Initialization cooldown active (${Math.round((INIT_COOLDOWN - (now - lastInitAttempt)) / 1000)}s remaining), using existing data`);
-        return true;
-    }
-    isInitializing = true;
-    lastInitAttempt = now;
     try {
-        // Check if we already have data loaded AND it's still fresh enough
-        const hasData = mockUsers.length > 0 && mockPrescriptions.length > 0;
-        const isCacheStale = now - lastSuccessfulFetch > CACHE_TTL;
-        if (hasData && !isCacheStale) {
-            console.log('Data already initialized and cache is fresh, using cached data');
-            console.log(`Cached data: ${mockUsers.length} users, ${mockPrescriptions.length} prescriptions (age: ${Math.round((now - lastSuccessfulFetch) / 1000)}s)`);
-            isInitializing = false;
-            return true;
-        } else if (hasData && isCacheStale) {
-            console.log(`Cache is stale (${Math.round((now - lastSuccessfulFetch) / 1000)}s old), refreshing data from API...`);
-        }
         // Check if we have a valid token first
         const token = getAuthToken();
         if (!token) {
             console.warn('No authentication token found, will use existing mock data');
-            isInitializing = false;
             return false;
         }
         // Try to validate token
@@ -2692,21 +2661,11 @@ const initializeData = async ()=>{
             const currentUser = await authenticatedGet('/users/me');
             if (!currentUser) {
                 console.error('Token validation failed, cannot fetch data');
-                isInitializing = false;
-                // Load hardcoded data as fallback only if we don't already have data
-                if (!hasData) {
-                    loadHardcodedMockData();
-                }
                 return false;
             }
             console.log(`Token valid, logged in as ${currentUser.username} (${currentUser.role})`);
         } catch (error) {
             console.error('Error validating token:', error);
-            isInitializing = false;
-            // Load hardcoded data as fallback only if we don't already have data
-            if (!hasData) {
-                loadHardcodedMockData();
-            }
             return false;
         }
         // Initialize with separate try/catch for each resource type
@@ -2744,12 +2703,6 @@ const initializeData = async ()=>{
             await fetchPrescriptions();
             results.prescriptions = true;
             console.log(`Prescriptions loaded: ${mockPrescriptions.length} items`);
-            // Log PENDING_DISPENSE prescriptions count for debugging
-            const pendingDispense = mockPrescriptions.filter((p)=>p.status.toUpperCase() === 'PENDING_DISPENSE');
-            console.log(`Found ${pendingDispense.length} prescriptions with PENDING_DISPENSE status`);
-            if (pendingDispense.length > 0) {
-                console.log('Example prescription:', JSON.stringify(pendingDispense[0], null, 2));
-            }
         } catch (error) {
             console.error('Error loading prescriptions:', error);
         }
@@ -2769,17 +2722,10 @@ const initializeData = async ()=>{
         }
         const successCount = Object.values(results).filter(Boolean).length;
         console.log(`Data initialization complete: ${successCount}/6 resource types loaded successfully`);
-        // Update lastSuccessfulFetch timestamp if any data was loaded
-        if (successCount > 0) {
-            lastSuccessfulFetch = Date.now();
-            console.log(`Updated cache timestamp: ${new Date(lastSuccessfulFetch).toISOString()}`);
-        }
         return successCount > 0;
     } catch (error) {
         console.error('Error in data initialization:', error);
         return false;
-    } finally{
-        isInitializing = false;
     }
 };
 const getAllUsers = async ()=>{
@@ -2958,36 +2904,10 @@ const getPrescriptionsByDoctorId = async (doctorId)=>{
     return mockPrescriptions.filter((prescription)=>prescription.doctorId === doctorId);
 };
 const getPrescriptionsByStatus = async (status)=>{
-    // Always make sure we have data
     if (mockPrescriptions.length === 0) {
-        console.log(`No prescriptions in cache, fetching data for status: ${status}`);
         await fetchPrescriptions();
-        // If still no data after fetch, load hardcoded data as fallback
-        if (mockPrescriptions.length === 0) {
-            console.log('No prescriptions found in API, loading fallback data');
-            loadHardcodedMockData();
-        }
     }
-    // Use case-insensitive comparison and handle variant formats
-    const normalizedStatus = status.toUpperCase().replace(/-/g, '_');
-    const result = mockPrescriptions.filter((prescription)=>{
-        const prescStatus = prescription.status.toUpperCase().replace(/-/g, '_');
-        return prescStatus === normalizedStatus;
-    });
-    console.log(`Found ${result.length} prescriptions with status "${status}" (normalized: ${normalizedStatus})`);
-    // If no results and this is the critical PENDING_DISPENSE status, double-check with hardcoded data
-    if (result.length === 0 && normalizedStatus === 'PENDING_DISPENSE') {
-        console.log('No PENDING_DISPENSE prescriptions found, ensuring fallback data is loaded');
-        loadHardcodedMockData();
-        // Try the filter again after loading hardcoded data
-        const retryResult = mockPrescriptions.filter((prescription)=>{
-            const prescStatus = prescription.status.toUpperCase().replace(/-/g, '_');
-            return prescStatus === normalizedStatus;
-        });
-        console.log(`After loading hardcoded data: found ${retryResult.length} PENDING_DISPENSE prescriptions`);
-        return retryResult;
-    }
-    return result;
+    return mockPrescriptions.filter((prescription)=>prescription.status === status);
 };
 const getAllPrescriptionDetails = async ()=>{
     if (mockPrescriptionDetails.length === 0) {
@@ -3193,178 +3113,6 @@ const sendQueueToDoctor = async (queueId)=>{
         console.error('Error sending queue information to doctor:', error);
         throw error;
     }
-};
-// Hardcoded mock data as final fallback
-const loadHardcodedMockData = ()=>{
-    console.log('Loading hardcoded mock data as a fallback...');
-    // Only load if current data is empty
-    if (mockUsers.length === 0) {
-        mockUsers = [
-            {
-                _id: '646fa3c153b5d505a1d05f01',
-                userId: 'PT001',
-                username: 'benh_nhan_1',
-                email: 'patient1@example.com',
-                password: 'encrypted_password',
-                fullName: 'Nguyễn Văn A',
-                phone: '0901234567',
-                role: 'PATIENT',
-                createdAt: '2025-05-25T07:30:00.000Z',
-                updatedAt: '2025-05-25T07:30:00.000Z',
-                __v: 0
-            },
-            {
-                _id: '646fa3c153b5d505a1d05f02',
-                userId: 'PT002',
-                username: 'benh_nhan_2',
-                email: 'patient2@example.com',
-                password: 'encrypted_password',
-                fullName: 'Trần Thị B',
-                phone: '0912345678',
-                role: 'PATIENT',
-                createdAt: '2025-05-25T08:15:00.000Z',
-                updatedAt: '2025-05-25T08:15:00.000Z',
-                __v: 0
-            },
-            {
-                _id: '646fa3c153b5d505a1d05f03',
-                userId: 'DR001',
-                username: 'bac_si_1',
-                email: 'doctor1@example.com',
-                password: 'encrypted_password',
-                fullName: 'Dr. Lê Văn C',
-                phone: '0987654321',
-                role: 'DOCTOR',
-                createdAt: '2025-05-25T07:00:00.000Z',
-                updatedAt: '2025-05-25T07:00:00.000Z',
-                __v: 0
-            },
-            {
-                _id: '646fa3c153b5d505a1d05f04',
-                userId: 'PH001',
-                username: 'duoc_si_1',
-                email: 'pharmacist1@example.com',
-                password: 'encrypted_password',
-                fullName: 'Dược sĩ Phạm Thị D',
-                phone: '0976543210',
-                role: 'PHARMACIST',
-                createdAt: '2025-05-25T07:15:00.000Z',
-                updatedAt: '2025-05-25T07:15:00.000Z',
-                __v: 0
-            }
-        ];
-    }
-    if (mockPrescriptions.length === 0) {
-        mockPrescriptions = [
-            {
-                _id: '646fb4d253b5d505a1d05f10',
-                customPrescriptionId: 'PRE001',
-                patientId: '646fa3c153b5d505a1d05f01',
-                doctorId: '646fa3c153b5d505a1d05f03',
-                diagnosis: 'Viêm họng cấp',
-                date: '2025-05-25T09:30:00.000Z',
-                status: 'PENDING_DISPENSE',
-                __v: 0,
-                createdAt: '2025-05-25T09:30:00.000Z',
-                updatedAt: '2025-05-25T09:30:00.000Z'
-            },
-            {
-                _id: '646fb4d253b5d505a1d05f11',
-                customPrescriptionId: 'PRE002',
-                patientId: '646fa3c153b5d505a1d05f02',
-                doctorId: '646fa3c153b5d505a1d05f03',
-                diagnosis: 'Cảm lạnh thông thường',
-                date: '2025-05-25T10:45:00.000Z',
-                status: 'PENDING_DISPENSE',
-                __v: 0,
-                createdAt: '2025-05-25T10:45:00.000Z',
-                updatedAt: '2025-05-25T10:45:00.000Z'
-            }
-        ];
-    }
-    if (mockMedicines.length === 0) {
-        mockMedicines = [
-            {
-                _id: '646fb59f53b5d505a1d05f20',
-                customMedicineId: 'MED001',
-                name: 'Paracetamol 500mg',
-                totalPills: 100,
-                price: 5000,
-                __v: 0,
-                createdAt: '2025-05-25T07:00:00.000Z',
-                updatedAt: '2025-05-25T07:00:00.000Z'
-            },
-            {
-                _id: '646fb59f53b5d505a1d05f21',
-                customMedicineId: 'MED002',
-                name: 'Amoxicillin 500mg',
-                totalPills: 80,
-                price: 8000,
-                __v: 0,
-                createdAt: '2025-05-25T07:05:00.000Z',
-                updatedAt: '2025-05-25T07:05:00.000Z'
-            },
-            {
-                _id: '646fb59f53b5d505a1d05f22',
-                customMedicineId: 'MED003',
-                name: 'Vitamin C 1000mg',
-                totalPills: 120,
-                price: 3000,
-                __v: 0,
-                createdAt: '2025-05-25T07:10:00.000Z',
-                updatedAt: '2025-05-25T07:10:00.000Z'
-            }
-        ];
-    }
-    if (mockPrescriptionDetails.length === 0) {
-        mockPrescriptionDetails = [
-            {
-                _id: '646fb62a53b5d505a1d05f30',
-                customPrescriptionDetailId: 'PD001',
-                prescriptionId: '646fb4d253b5d505a1d05f10',
-                medicineId: '646fb59f53b5d505a1d05f20',
-                quantity: 10,
-                dosage: '1 viên x 3 lần/ngày sau ăn',
-                __v: 0,
-                createdAt: '2025-05-25T09:35:00.000Z',
-                updatedAt: '2025-05-25T09:35:00.000Z'
-            },
-            {
-                _id: '646fb62a53b5d505a1d05f31',
-                customPrescriptionDetailId: 'PD002',
-                prescriptionId: '646fb4d253b5d505a1d05f10',
-                medicineId: '646fb59f53b5d505a1d05f21',
-                quantity: 14,
-                dosage: '1 viên x 2 lần/ngày sau ăn',
-                __v: 0,
-                createdAt: '2025-05-25T09:35:00.000Z',
-                updatedAt: '2025-05-25T09:35:00.000Z'
-            },
-            {
-                _id: '646fb62a53b5d505a1d05f32',
-                customPrescriptionDetailId: 'PD003',
-                prescriptionId: '646fb4d253b5d505a1d05f11',
-                medicineId: '646fb59f53b5d505a1d05f20',
-                quantity: 6,
-                dosage: '1 viên khi sốt trên 38.5°C',
-                __v: 0,
-                createdAt: '2025-05-25T10:50:00.000Z',
-                updatedAt: '2025-05-25T10:50:00.000Z'
-            },
-            {
-                _id: '646fb62a53b5d505a1d05f33',
-                customPrescriptionDetailId: 'PD004',
-                prescriptionId: '646fb4d253b5d505a1d05f11',
-                medicineId: '646fb59f53b5d505a1d05f22',
-                quantity: 20,
-                dosage: '2 viên x 1 lần/ngày sau ăn sáng',
-                __v: 0,
-                createdAt: '2025-05-25T10:50:00.000Z',
-                updatedAt: '2025-05-25T10:50:00.000Z'
-            }
-        ];
-    }
-    console.log(`Hardcoded mock data loaded: ${mockUsers.length} users, ${mockPrescriptions.length} prescriptions, ${mockPrescriptionDetails.length} prescription details`);
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);

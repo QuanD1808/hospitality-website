@@ -5,6 +5,7 @@ import { PatientDetails } from './PatientDetails';
 import { Statistics } from './Statistics';
 import { PharmacyPatient, getPatientsWithPendingPrescriptions } from './pharmacyUtils';
 import { useAuth } from '../context/AuthContext';
+import { runApiTests, checkTokenAvailability } from './apiTest';
 
 // User interface for authentication context
 interface User {
@@ -25,6 +26,7 @@ export const Dashboard = ({
   user,
   onLogout
 }: DashboardProps) => {
+  const { token } = useAuth(); // Get token from auth context
   const [activeTab, setActiveTab] = useState('dispense'); // 'dispense' or 'statistics'
   const [selectedPatient, setSelectedPatient] = useState<PharmacyPatient | null>(null);
   const [waitingPatients, setWaitingPatients] = useState<PharmacyPatient[]>([]);
@@ -32,24 +34,46 @@ export const Dashboard = ({
   // State cho loading và error
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [testResults, setTestResults] = useState<any>(null);
+  
+  // Function to run API tests for debugging
+  const runTests = async () => {
+    checkTokenAvailability();
+    const result = await runApiTests(token);
+    setTestResults(result);
+    console.log("Test results:", result);
+    
+    // If tests were successful and found data, try to refresh the patient list
+    if (result.success && ((result.prescriptionCount && result.prescriptionCount > 0) || 
+        (result.patientCount && result.patientCount > 0))) {
+      fetchPatients();
+    }
+  };
   
   // Tải dữ liệu bệnh nhân chờ phát thuốc từ API
   const fetchPatients = async () => {
     setIsLoading(true);
     setError(null);
     
+    console.log("Dashboard: Starting fetchPatients function");
+    console.log("Dashboard: Token available:", !!token);
+    
     try {
       // Fetch prescriptions with status PENDING_DISPENSE
+      console.log("Dashboard: Calling getPatientsWithPendingPrescriptions...");
       const patients = await getPatientsWithPendingPrescriptions();
+      console.log(`Dashboard: Fetched ${patients.length} patients with pending prescriptions`);
+      console.log("Dashboard: Patient data:", patients);
+      
       setWaitingPatients(patients);
-      console.log(`Fetched ${patients.length} patients with pending prescriptions`);
       
       if (patients.length === 0) {
         // Reset selected patient if no patients are waiting
+        console.log("Dashboard: No patients in queue, resetting selected patient");
         setSelectedPatient(null);
       }
     } catch (error: any) {
-      console.error("Error fetching patients:", error);
+      console.error("Dashboard: Error fetching patients:", error);
       setError(error.message || "Không thể tải danh sách bệnh nhân");
       setWaitingPatients([]);
     } finally {
@@ -60,30 +84,36 @@ export const Dashboard = ({
   // Fetch patients on mount and when user changes
   // Initial fetch
   useEffect(() => {
+    console.log("Dashboard: Initial useEffect - fetching patients");
     fetchPatients();
-  }, [user]);
+  }, [user, token]); // Add token as dependency
   
   // Setup polling for auto-refresh
   useEffect(() => {
+    console.log("Dashboard: Setting up polling interval");
     // Set up polling for real-time updates
     const intervalId = setInterval(() => {
       // Only auto-refresh if not viewing a patient's details
       if (!selectedPatient && !isLoading) {
-        console.log("Auto-refreshing patient list...");
+        console.log("Dashboard: Auto-refreshing patient list...");
         fetchPatients();
       }
     }, 60000); // Poll every minute
     
-    return () => clearInterval(intervalId);
+    return () => {
+      console.log("Dashboard: Clearing polling interval");
+      clearInterval(intervalId);
+    };
   }, [selectedPatient, isLoading]);
 
   const handlePatientSelect = (patient: PharmacyPatient) => {
+    console.log("Dashboard: Patient selected:", patient.id, patient.fullName);
     setSelectedPatient(patient);
   };
 
   const handlePatientRemove = (patientId: string) => {
-    console.log(`Removing patient ${patientId} from waiting list after dispensing`);
-    setWaitingPatients(prevPatients => prevPatients.filter(p => p._id !== patientId));
+    console.log(`Dashboard: Removing patient ${patientId} from waiting list after dispensing`);
+    setWaitingPatients(prevPatients => prevPatients.filter(p => p.id !== patientId));
     setSelectedPatient(null);
     
     // Also refresh the list to ensure our counts are accurate
@@ -92,12 +122,30 @@ export const Dashboard = ({
     }, 1000); // Give the backend a moment to update
   };
 
+  // Add debug output for the render cycle
+  console.log("Dashboard: Rendering with state:", {
+    activeTab,
+    selectedPatient: selectedPatient ? `${selectedPatient.id} - ${selectedPatient.fullName}` : "none",
+    waitingPatients: waitingPatients.length,
+    isLoading,
+    error
+  });
+
   return <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-blue-700 text-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Hệ Thống Quản Lý Nhà Thuốc</h1>
           <div className="flex items-center space-x-4">
+            {/* Debug button for admins/developers */}
+            <button 
+              onClick={runTests} 
+              className="inline-flex items-center px-2 py-1 border border-transparent text-xs rounded-md text-white bg-purple-800 hover:bg-purple-900"
+              title="Debug API Connections"
+            >
+              Debug
+            </button>
+            
             <span className="text-sm">
               Xin chào, {user?.fullName || 'Nhân viên'}
             </span>
@@ -107,6 +155,30 @@ export const Dashboard = ({
           </div>
         </div>
       </header>
+      {/* Display test results if any */}
+      {testResults && (
+        <div className={`bg-${testResults.success ? 'green' : 'red'}-100 border-l-4 border-${testResults.success ? 'green' : 'red'}-500 text-${testResults.success ? 'green' : 'red'}-700 p-4 mb-4 mx-4 mt-2`}>
+          <div className="flex">
+            <div className="flex-shrink-0">
+              {testResults.success ? '✅' : '❌'}
+            </div>
+            <div className="ml-3">
+              <p className="text-sm">
+                {testResults.success 
+                  ? `API Test Success: Found ${testResults.prescriptionCount} prescriptions and ${testResults.patientCount} patients` 
+                  : `API Test Failed: ${testResults.error}`}
+              </p>
+            </div>
+            <button 
+              onClick={() => setTestResults(null)}
+              className="ml-auto text-sm text-gray-500"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+      
       {/* Navigation */}
       <nav className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -181,6 +253,22 @@ export const Dashboard = ({
               )}
             </div>
           </div> : <Statistics />}
+          {/* API Testing Section - Hidden by default, for debugging only */}
+          <div className="mt-8 p-4 bg-white rounded-lg shadow">
+            <h2 className="text-lg font-semibold mb-4">API Testing</h2>
+            <button 
+              onClick={runTests}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+            >
+              Chạy Kiểm Tra API
+            </button>
+            {testResults && (
+              <div className="mt-4">
+                <h3 className="text-md font-medium">Kết quả kiểm tra:</h3>
+                <pre className="bg-gray-100 p-2 rounded-md text-sm">{JSON.stringify(testResults, null, 2)}</pre>
+              </div>
+            )}
+          </div>
       </main>
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 py-4">

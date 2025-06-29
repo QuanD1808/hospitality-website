@@ -169,11 +169,11 @@ __turbopack_context__.s({
     "deleteAppointment": (()=>deleteAppointment),
     "deleteQueue": (()=>deleteQueue),
     "getAppointments": (()=>getAppointments),
-    "getDoctorQueues": (()=>getDoctorQueues),
     "getDoctors": (()=>getDoctors),
     "getMedicineById": (()=>getMedicineById),
     "getMedicines": (()=>getMedicines),
     "getPatients": (()=>getPatients),
+    "getPendingDispensePrescriptions": (()=>getPendingDispensePrescriptions),
     "getPrescriptionById": (()=>getPrescriptionById),
     "getPrescriptionDetails": (()=>getPrescriptionDetails),
     "getPrescriptions": (()=>getPrescriptions),
@@ -534,6 +534,11 @@ const getPrescriptions = async (queryParams = {}, token)=>{
     });
     return response.data;
 };
+const getPendingDispensePrescriptions = async (token)=>{
+    return getPrescriptions({
+        status: 'PENDING_DISPENSE'
+    }, token);
+};
 const getPrescriptionById = async (prescriptionId, token)=>{
     const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/prescriptions/${prescriptionId}`, {
         headers: {
@@ -586,21 +591,6 @@ const getPrescriptionDetails = async (prescriptionId, token)=>{
         params: {
             prescriptionId
         },
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-    return response.data;
-};
-const getDoctorQueues = async (token, status)=>{
-    // URL và params
-    const url = '/queues/doctor';
-    const params = status ? {
-        status
-    } : {};
-    // Gọi API
-    const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(url, {
-        params,
         headers: {
             Authorization: `Bearer ${token}`
         }

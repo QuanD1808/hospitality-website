@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserIcon, RefreshCw, AlertCircle, ClipboardList } from 'lucide-react';
+import { UserIcon, RefreshCw, AlertCircle, ClipboardList, Clock } from 'lucide-react';
 import { PharmacyPatient, getPatientsWithPendingPrescriptions } from './pharmacyUtils';
 import { useAuth } from '../context/AuthContext';
 
@@ -93,9 +93,14 @@ export const PatientList = ({
                     <UserIcon className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">
-                      {patient.serialNumber} - {patient.fullName}
-                    </p>
+                    <div className="flex items-center">
+                      <p className="font-medium text-gray-900">
+                        {patient.fullName}
+                      </p>
+                      <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">
+                        {patient.serialNumber}
+                      </span>
+                    </div>
                     <p className="text-sm text-gray-500">
                       {patient.phone || 'Không có SĐT'}
                     </p>
@@ -111,8 +116,9 @@ export const PatientList = ({
                         </div>
                       )}
                       {patient.prescription && (
-                        <div className="text-xs text-green-600 mt-0.5">
-                          <span className="font-medium">{patient.prescription.length} loại thuốc</span>
+                        <div className="flex items-center text-xs text-green-600 mt-0.5">
+                          <Clock size={12} className="mr-1" />
+                          <span className="font-medium">{patient.prescription.length} loại thuốc cần phát</span>
                         </div>
                       )}
                     </div>

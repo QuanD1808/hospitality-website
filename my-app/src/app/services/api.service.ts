@@ -386,6 +386,11 @@ export const getPrescriptions = async (queryParams: { patientId?: string, doctor
   return response.data;
 };
 
+// Helper function specifically for pharmacy to get pending prescriptions
+export const getPendingDispensePrescriptions = async (token: string) => {
+  return getPrescriptions({ status: 'PENDING_DISPENSE' }, token);
+};
+
 export const getPrescriptionById = async (prescriptionId: string, token: string) => {
   const response = await axiosInstance.get(`/prescriptions/${prescriptionId}`, {
     headers: {
@@ -444,21 +449,5 @@ export const getPrescriptionDetails = async (prescriptionId: string, token: stri
       Authorization: `Bearer ${token}`,
     },
   });
-  return response.data;
-};
-
-export const getDoctorQueues = async (token: string, status?: string) => {
-  // URL và params
-  const url = '/queues/doctor';
-  const params = status ? { status } : {};
-  
-  // Gọi API
-  const response = await axiosInstance.get(url, {
-    params,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  
   return response.data;
 };
