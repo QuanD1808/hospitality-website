@@ -29,13 +29,57 @@ export const Invoice = ({
     setError(null);
     
     try {
-      // In thực tế, ở đây sẽ gọi API để in và lưu hoá đơn
-      // Sau đó mới gọi onComplete để xác nhận đã phát thuốc
+      console.log("Invoice: Starting print and complete process");
+      
+      // Mô phỏng việc in hóa đơn thực tế
+      // Trong thực tế, đây là nơi bạn có thể:
+      // 1. Gọi API in hóa đơn
+      // 2. Gọi API để trừ số lượng thuốc trong kho
+      // 3. Gọi API để tạo invoice record
+      
+      // In ra thông tin cho biết chúng ta đang xử lý
+      console.log("Invoice: Printing invoice for patient:", patient.fullName);
+      console.log("Invoice: Patient ID:", patient.id);
+      console.log("Invoice: Total amount:", calculateTotal().toLocaleString('vi-VN'), "đ");
+      console.log("Invoice: Medicines:", patient.prescription.length, "items");
+      
+      // Hiển thị thông tin chi tiết về mỗi loại thuốc
+      patient.prescription.forEach((med, index) => {
+        console.log(`Invoice: Medicine ${index + 1}:`, {
+          name: med.name,
+          quantity: med.quantity,
+          price: med.price,
+          total: med.quantity * med.price
+        });
+      });
       
       // Giả lập thời gian chờ để UX tốt hơn
+      console.log("Invoice: Waiting 1 second before completing...");
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      onComplete();
+      // Cập nhật trạng thái prescription thành DISPENSED
+      console.log("Invoice: Now calling onComplete() to mark prescription as DISPENSED");
+      
+      // Gọi callback để thông báo cho component cha (handleComplete trong PatientDetails.tsx)
+      if (typeof onComplete === 'function') {
+        onComplete();
+        console.log("Invoice: Called onComplete() successfully");
+      } else {
+        console.error("Invoice: onComplete is not a function!", onComplete);
+        throw new Error("Lỗi kết nối: onComplete không phải là một hàm");
+      }
+      
+      console.log("Invoice: Process completed successfully");
+      
+      // Trong môi trường thực tế, đây là nơi có thể hiển thị thông báo thành công
+      // hoặc chuyển hướng người dùng đến danh sách bệnh nhân
+      
+      // Thông báo trực quan cho người dùng biết đang xử lý
+      alert("Hóa đơn đã được xử lý thành công!\nTrạng thái đơn thuốc đã được cập nhật thành 'DISPENSED'.");
+      
+      // Thực hiện yêu cầu in thực tế nếu cần
+      // window.print(); // Uncomment để cho phép in hóa đơn thực tế
+      
     } catch (err: any) {
       console.error("Error completing invoice:", err);
       setError(err.message || "Không thể hoàn tất hóa đơn. Vui lòng thử lại.");

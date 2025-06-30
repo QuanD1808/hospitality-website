@@ -481,3 +481,41 @@ export const getPrescriptionDetails = async (prescriptionId: string, token: stri
   });
   return response.data;
 };
+
+// Deduct medicine quantity from inventory
+export const deductMedicineStock = async (medicineId: string, quantity: number, token: string) => {
+  console.log(`API Call: Deducting ${quantity} units from medicine ID: ${medicineId}`);
+  try {
+    // Đầu tiên lấy thông tin hiện tại của thuốc
+    const medicine = await getMedicineById(medicineId, token);
+    
+    if (!medicine) {
+      throw new Error(`Medicine with ID ${medicineId} not found`);
+    }
+    
+    // Kiểm tra số lượng hợp lệ
+    if (medicine.totalPills < quantity) {
+      console.warn(`Warning: Attempting to deduct ${quantity} pills but only ${medicine.totalPills} available`);
+      // Trong trường hợp thực tế, bạn có thể muốn ném lỗi ở đây
+    }
+    
+    // Tính toán số lượng mới
+    const newQuantity = Math.max(0, medicine.totalPills - quantity);
+    
+    // Cập nhật số lượng thuốc
+    const response = await axiosInstance.put(`/medicines/${medicineId}`, 
+      { totalPills: newQuantity }, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log(`API Success: Updated medicine ${medicine.name}, new quantity: ${newQuantity}`);
+    return response.data;
+  } catch (error: any) {
+    console.error('API Error: deductMedicineStock failed:', error.response?.data || error.message);
+    throw error;
+  }
+};

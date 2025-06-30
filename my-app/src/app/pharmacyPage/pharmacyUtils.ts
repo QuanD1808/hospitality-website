@@ -278,37 +278,81 @@ export const getDailyRevenue = async () => {
 export const createPharmacyInvoice = async (
   prescriptionId: string, 
   totalAmount: number, 
-  token: string
+  token: string,
+  medicineDetails?: PharmacyMedicine[] // Add medicine details parameter
 ): Promise<boolean> => {
   try {
     if (!token) {
-      console.error("No authentication token provided");
+      console.error("pharmacyUtils: No authentication token provided");
       return false;
     }
     
-    console.log(`Creating pharmacy invoice for prescription ${prescriptionId} with total amount ${totalAmount}`);
+    console.log(`pharmacyUtils: Creating pharmacy invoice for prescription ${prescriptionId} with total amount ${totalAmount}`);
+    console.log(`pharmacyUtils: Token available: ${!!token}`);
+    console.log(`pharmacyUtils: Medicines to deduct from inventory:`, medicineDetails);
     
-    // 1. Update prescription status to DISPENSED
+    // 1. Update prescription status to DISPENSED (not COMPLETED, as backend only allows PHARMACIST to set status to DISPENSED or CANCELLED)
     try {
-      await apiService.updatePrescriptionStatus(prescriptionId, 'DISPENSED', token);
-      console.log(`Updated prescription ${prescriptionId} status to DISPENSED`);
-    } catch (statusError) {
-      console.error("Error updating prescription status:", statusError);
+      console.log(`pharmacyUtils: Updating prescription status to DISPENSED via API...`);
+      const result = await apiService.updatePrescriptionStatus(prescriptionId, 'DISPENSED', token);
+      console.log(`pharmacyUtils: Updated prescription ${prescriptionId} status to DISPENSED`, result);
+    } catch (error) {
+      console.error("pharmacyUtils: Error updating prescription status:", error);
+      // Log details if available, but in a type-safe way
+      const err = error as any;
+      if (err && err.response) {
+        console.error("pharmacyUtils: Error response status:", err.response.status);
+        console.error("pharmacyUtils: Error response data:", err.response.data);
+      }
       // Even if status update fails, we'll try to continue with invoice creation
     }
     
-    // TODO: In a real implementation, we would also create an actual invoice record
-    // For now we just mark the prescription as dispensed
+    // 2. Get prescription details to deduct medicine quantities
+    if (medicineDetails && medicineDetails.length > 0) {
+      try {
+        console.log(`pharmacyUtils: Getting prescription details to update medicine inventory...`);
+        const prescriptionDetails = await apiService.getPrescriptionDetails(prescriptionId, token);
+        console.log(`pharmacyUtils: Found ${prescriptionDetails.length} prescription details`);
+        
+        // Process each prescription detail and deduct medicine quantity
+        for (const detail of prescriptionDetails) {
+          if (detail.medicineId && detail.medicineId._id) {
+            console.log(`pharmacyUtils: Deducting ${detail.quantity} of ${detail.medicineId.name} (ID: ${detail.medicineId._id}) from inventory`);
+            try {
+              await apiService.deductMedicineStock(detail.medicineId._id, detail.quantity, token);
+              console.log(`pharmacyUtils: Successfully deducted ${detail.quantity} of medicine ID ${detail.medicineId._id} from inventory`);
+            } catch (deductError) {
+              console.error(`pharmacyUtils: Failed to deduct medicine ${detail.medicineId._id}:`, deductError);
+              // Continue processing other medicines even if one fails
+            }
+          } else {
+            console.warn(`pharmacyUtils: Missing medicine ID in prescription detail:`, detail);
+          }
+        }
+      } catch (detailsError) {
+        console.error(`pharmacyUtils: Error fetching prescription details to update inventory:`, detailsError);
+        // Continue to invoice creation even if medicine deduction fails
+      }
+    } else {
+      console.log(`pharmacyUtils: No medicines to deduct from inventory`);
+    }
     
-    // Simulate successful invoice creation
+    // 3. Create invoice record (simulated for now)
     const now = new Date();
     const invoiceDate = now.toISOString();
     
-    console.log(`Simulated invoice created at ${invoiceDate} for prescription ${prescriptionId}`);
+    console.log(`pharmacyUtils: Simulated invoice created at ${invoiceDate} for prescription ${prescriptionId}`);
     
     return true;
   } catch (error) {
-    console.error("Error creating pharmacy invoice:", error);
+    console.error("pharmacyUtils: Error creating pharmacy invoice:", error);
+    const err = error as any; // Type-safe error handling
+    if (err && err.response) {
+      console.error("pharmacyUtils: Error response status:", err.response.status);
+      console.error("pharmacyUtils: Error response data:", err.response.data);
+      console.error("pharmacyUtils: Error response headers:", err.response.headers);
+    }
+    console.error("pharmacyUtils: Error stack:", err.stack);
     return false;
   }
 };
@@ -321,12 +365,12 @@ export const getPharmacyStats = async (token: string | null) => {
     if (token) {
       try {
         // Try to get real counts from the API
-        // Get all dispensed prescriptions today
+        // Get all completed prescriptions today
         const today = new Date();
         const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
         
         // Count prescriptions by status
-        const dispensedToday = await getPrescriptionsCountByStatus('DISPENSED', token, startOfDay);
+        const dispensedToday = await getPrescriptionsCountByStatus('COMPLETED', token, startOfDay);
         const pendingDispense = await getPrescriptionsCountByStatus('PENDING_DISPENSE', token);
         
         console.log(`API stats: ${dispensedToday} dispensed today, ${pendingDispense} pending`);

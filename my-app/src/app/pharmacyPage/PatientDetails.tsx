@@ -92,33 +92,56 @@ export const PatientDetails = ({
     }
   };
   
+  // Tính tổng tiền của đơn thuốc
+  const calculateTotal = () => {
+    // Use our fetched medicines instead of patient.prescription
+    return medicines.reduce((total, med) => {
+      return total + med.price * med.quantity;
+    }, 0);
+  };
+  
   // Handler for completing prescription
   const handleComplete = async () => {
+    console.log("PatientDetails: handleComplete started");
     setProcessing(true);
     setError(null);
     
     try {
       if (!token) {
+        console.error("PatientDetails: No authentication token available");
         throw new Error("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn.");
       }
       
-      const totalAmount = calculateTotal();
+      const totalAmount = medicines.length > 0 ? calculateTotal() : 0;
+      console.log(`PatientDetails: Processing completion for patient ${patient.fullName} (ID: ${patient.id})`);
+      console.log(`PatientDetails: Total amount to be recorded: ${totalAmount} VND`);
+      console.log(`PatientDetails: Medicines count: ${medicines.length}`);
       
-      // Mark prescription as dispensed
-      const success = await createPharmacyInvoice(patient.id, totalAmount, token);
+      // Mark prescription as DISPENSED even if there are no medicines
+      console.log("PatientDetails: Calling createPharmacyInvoice...");
+      // Pass medicines data to deduct quantities from inventory
+      const success = await createPharmacyInvoice(patient.id, totalAmount, token, medicines);
       
       if (success) {
+        console.log("PatientDetails: Invoice created successfully");
         // Close invoice and notify parent component
         setShowInvoice(false);
-        onPatientComplete(patient.id);
+        console.log("PatientDetails: Notifying Dashboard of completion via onPatientComplete");
+        // Thêm timeout nhỏ để đảm bảo UI cập nhật sau khi API hoàn tất
+        setTimeout(() => {
+          onPatientComplete(patient.id);
+          console.log(`PatientDetails: Patient ${patient.id} removed from waiting list`);
+        }, 300);
       } else {
+        console.error("PatientDetails: Failed to create pharmacy invoice");
         throw new Error("Không thể cập nhật trạng thái đơn thuốc.");
       }
     } catch (err: any) {
-      console.error("Error completing prescription:", err);
+      console.error("PatientDetails: Error completing prescription:", err);
       setError(err.message || "Không thể hoàn thành phát thuốc. Vui lòng thử lại.");
     } finally {
       setProcessing(false);
+      console.log("PatientDetails: handleComplete process finished");
     }
   };
   
@@ -136,12 +159,7 @@ export const PatientDetails = ({
     />;
   }
   
-  const calculateTotal = () => {
-    // Use our fetched medicines instead of patient.prescription
-    return medicines.reduce((total, med) => {
-      return total + med.price * med.quantity;
-    }, 0);
-  };
+  // Định nghĩa calculateTotal đã được di chuyển lên trước hàm handleComplete
   
   return (
     <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
@@ -158,13 +176,13 @@ export const PatientDetails = ({
         ) : (
           <button 
             onClick={handleShowInvoice} 
-            disabled={processing || isLoading || medicines.length === 0}
+            disabled={processing || isLoading}
             className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white transition-colors shadow-sm ${
-              processing || isLoading || medicines.length === 0
+              processing || isLoading
                 ? 'bg-gray-400 cursor-not-allowed' 
                 : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
             }`}
-            title={medicines.length === 0 ? "Không có thuốc nào để phát" : "Xuất hóa đơn thuốc"}
+            title="Xuất hóa đơn thuốc"
           >
             {processing ? (
               <>

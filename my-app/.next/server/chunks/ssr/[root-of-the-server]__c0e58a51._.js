@@ -167,6 +167,7 @@ __turbopack_context__.s({
     "createPrescriptionDetail": (()=>createPrescriptionDetail),
     "createQueue": (()=>createQueue),
     "createUser": (()=>createUser),
+    "deductMedicineStock": (()=>deductMedicineStock),
     "deleteAppointment": (()=>deleteAppointment),
     "deleteMedicine": (()=>deleteMedicine),
     "deleteQueue": (()=>deleteQueue),
@@ -623,6 +624,36 @@ const getPrescriptionDetails = async (prescriptionId, token)=>{
         }
     });
     return response.data;
+};
+const deductMedicineStock = async (medicineId, quantity, token)=>{
+    console.log(`API Call: Deducting ${quantity} units from medicine ID: ${medicineId}`);
+    try {
+        // Đầu tiên lấy thông tin hiện tại của thuốc
+        const medicine = await getMedicineById(medicineId, token);
+        if (!medicine) {
+            throw new Error(`Medicine with ID ${medicineId} not found`);
+        }
+        // Kiểm tra số lượng hợp lệ
+        if (medicine.totalPills < quantity) {
+            console.warn(`Warning: Attempting to deduct ${quantity} pills but only ${medicine.totalPills} available`);
+        // Trong trường hợp thực tế, bạn có thể muốn ném lỗi ở đây
+        }
+        // Tính toán số lượng mới
+        const newQuantity = Math.max(0, medicine.totalPills - quantity);
+        // Cập nhật số lượng thuốc
+        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].put(`/medicines/${medicineId}`, {
+            totalPills: newQuantity
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(`API Success: Updated medicine ${medicine.name}, new quantity: ${newQuantity}`);
+        return response.data;
+    } catch (error) {
+        console.error('API Error: deductMedicineStock failed:', error.response?.data || error.message);
+        throw error;
+    }
 };
 }}),
 "[project]/src/app/context/AuthContext.tsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {
