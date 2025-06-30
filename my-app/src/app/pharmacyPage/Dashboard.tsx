@@ -1,9 +1,8 @@
-// Updated 2025-06-30: Removed API testing functionality and replaced with Medicine Manager
+// Updated 2025-07-01: Removed Statistics tab and consolidated revenue features into InvoiceDetailModal
 import React, { useState, useEffect } from 'react';
-import { LogOutIcon, PillIcon, BarChartIcon, AlertTriangle, UserIcon, FileText } from 'lucide-react';
+import { LogOutIcon, PillIcon, AlertTriangle, UserIcon, FileText } from 'lucide-react';
 import { PatientList } from './PatientList';
 import { PatientDetails } from './PatientDetails';
-import { Statistics } from './Statistics';
 import { MedicineManager } from './MedicineManager';
 import { PharmacyPatient, getPatientsWithPendingPrescriptions } from './pharmacyUtils';
 import { useAuth } from '../context/AuthContext';
@@ -28,7 +27,7 @@ export const Dashboard = ({
   onLogout
 }: DashboardProps) => {
   const { token } = useAuth(); // Get token from auth context
-  const [activeTab, setActiveTab] = useState('dispense'); // 'dispense' or 'statistics'
+  const [activeTab, setActiveTab] = useState('dispense'); // Only 'dispense' tab remains
   const [selectedPatient, setSelectedPatient] = useState<PharmacyPatient | null>(null);
   const [waitingPatients, setWaitingPatients] = useState<PharmacyPatient[]>([]);
   const [showMedicineManager, setShowMedicineManager] = useState(false);
@@ -152,80 +151,71 @@ export const Dashboard = ({
         </div>
       </header>
       
-      {/* Navigation */}
+      {/* Navigation - Removed Statistics tab */}
       <nav className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center h-16">
-            <div className="flex space-x-8">
-              <button onClick={() => {
-              setActiveTab('dispense');
-              setSelectedPatient(null);
-            }} className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out ${activeTab === 'dispense' ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+            <div className="flex">
+              <button className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out border-blue-500 text-gray-900`}>
                 <PillIcon className="h-5 w-5 mr-1" /> Phát Thuốc
-              </button>
-              <button onClick={() => {
-              setActiveTab('statistics');
-              setSelectedPatient(null);
-            }} className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out ${activeTab === 'statistics' ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
-                <BarChartIcon className="h-5 w-5 mr-1" /> Xem Thống Kê Doanh Thu
               </button>
             </div>
           </div>
         </div>
       </nav>
-      {/* Main Content */}
+      {/* Main Content - Removed Statistics component */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {activeTab === 'dispense' ? <div className="flex flex-col md:flex-row gap-6">
-            <div className="w-full md:w-1/3">
-              <PatientList 
-                patients={waitingPatients} 
-                onPatientSelect={handlePatientSelect} 
-                onRefresh={fetchPatients}
-                isLoading={isLoading}
-                error={error}
-              />
-            </div>
-            <div className="w-full md:w-2/3">
-              {isLoading && !selectedPatient ? (
-                <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-gray-600">Đang tải danh sách bệnh nhân...</p>
-                  </div>
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="w-full md:w-1/3">
+            <PatientList 
+              patients={waitingPatients} 
+              onPatientSelect={handlePatientSelect} 
+              onRefresh={fetchPatients}
+              isLoading={isLoading}
+              error={error}
+            />
+          </div>
+          <div className="w-full md:w-2/3">
+            {isLoading && !selectedPatient ? (
+              <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                  <p className="text-gray-600">Đang tải danh sách bệnh nhân...</p>
                 </div>
-              ) : error && !selectedPatient ? (
-                <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="bg-red-100 p-3 rounded-full mx-auto mb-4 w-16 h-16 flex items-center justify-center">
-                      <AlertTriangle className="h-8 w-8 text-red-600" />
-                    </div>
-                    <p className="text-red-600 font-medium mb-2">Không thể tải dữ liệu</p>
-                    <p className="text-gray-600 mb-4">{error}</p>
-                    <button 
-                      onClick={fetchPatients}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                    >
-                      Thử lại
-                    </button>
+              </div>
+            ) : error && !selectedPatient ? (
+              <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="bg-red-100 p-3 rounded-full mx-auto mb-4 w-16 h-16 flex items-center justify-center">
+                    <AlertTriangle className="h-8 w-8 text-red-600" />
                   </div>
+                  <p className="text-red-600 font-medium mb-2">Không thể tải dữ liệu</p>
+                  <p className="text-gray-600 mb-4">{error}</p>
+                  <button 
+                    onClick={fetchPatients}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    Thử lại
+                  </button>
                 </div>
-              ) : selectedPatient ? (
-                <PatientDetails patient={selectedPatient} onPatientComplete={handlePatientRemove} />
-              ) : (
-                <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="bg-blue-100 p-3 rounded-full mx-auto mb-4 w-16 h-16 flex items-center justify-center">
-                      <UserIcon className="h-8 w-8 text-blue-600" />
-                    </div>
-                    <p className="text-gray-700 font-medium mb-2">Chưa có bệnh nhân nào được chọn</p>
-                    <p className="text-gray-500">
-                      Vui lòng chọn bệnh nhân từ danh sách để xem chi tiết đơn thuốc.
-                    </p>
+              </div>
+            ) : selectedPatient ? (
+              <PatientDetails patient={selectedPatient} onPatientComplete={handlePatientRemove} />
+            ) : (
+              <div className="bg-white shadow rounded-lg p-6 h-96 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="bg-blue-100 p-3 rounded-full mx-auto mb-4 w-16 h-16 flex items-center justify-center">
+                    <UserIcon className="h-8 w-8 text-blue-600" />
                   </div>
+                  <p className="text-gray-700 font-medium mb-2">Chưa có bệnh nhân nào được chọn</p>
+                  <p className="text-gray-500">
+                    Vui lòng chọn bệnh nhân từ danh sách để xem chi tiết đơn thuốc.
+                  </p>
                 </div>
-              )}
-            </div>
-          </div> : <Statistics />}
+              </div>
+            )}
+          </div>
+        </div>
       </main>
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 py-4">
