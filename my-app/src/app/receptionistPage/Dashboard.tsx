@@ -138,7 +138,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           }));
           
           // Sắp xếp theo thời gian hoàn thành mới nhất
-          formattedQueues.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+          formattedQueues.sort((a: any, b: any) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
           
           setCompletedQueues(formattedQueues);
           setTotalPages(Math.ceil(formattedQueues.length / queuesPerPage));
@@ -192,7 +192,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       }));
       
       // Sắp xếp theo thời gian hoàn thành mới nhất
-      formattedMockQueues.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+      formattedMockQueues.sort((a: any, b: any) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
       
       setCompletedQueues(formattedMockQueues);
       setTotalPages(Math.ceil(formattedMockQueues.length / queuesPerPage));
