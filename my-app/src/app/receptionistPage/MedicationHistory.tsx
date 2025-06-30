@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { SearchIcon, CalendarIcon, PillIcon } from 'lucide-react';
-import { 
-  getAllPrescriptions,
-  getUserById,
-  getPrescriptionDetailsByPrescriptionId,
-  getMedicineById,
-  searchUsers,
-  initializeData
-} from '../datats/mockPatients';
+import { Search as SearchIcon, Calendar as CalendarIcon, Pill as PillIcon } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import * as apiService from '../services/api.service';
 
 // Define interfaces for the data we're working with
 interface MedicationDetailDisplay {
@@ -25,6 +19,7 @@ interface MedicationRecordDisplay {
   doctor: string;
   diagnosis: string;
   medications: MedicationDetailDisplay[];
+  status?: string; // Status of the prescription
 }
 
 interface MedicationHistoryProps {
@@ -36,81 +31,241 @@ export function MedicationHistory({ onBack }: MedicationHistoryProps) {
   const [endDate, setEndDate] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [medicationRecords, setMedicationRecords] = useState<MedicationRecordDisplay[]>([]);
+  const [allStatuses, setAllStatuses] = useState(false); // Toggle to show all statuses
+  const [debugInfo, setDebugInfo] = useState<any>(null);
   
+  const { token } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   // Load medication data from API
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Initialize data from API first
-        await initializeData();
-        
-        // Get all prescriptions
-        const prescriptions = await getAllPrescriptions();
-        
-        // Transform prescriptions to the format we need for display
-        const records: MedicationRecordDisplay[] = [];
-        
-        for (const prescription of prescriptions) {
-          // Get patient info
-          const patient = await getUserById(prescription.patientId);
+    if (!token) return;
+    
+    if (allStatuses) {
+      loadAllPrescriptions();
+    } else {
+      loadDispensedPrescriptions();
+    }
+  }, [token, allStatuses]);
+  
+  // Function to load prescriptions with DISPENSED status
+  const loadDispensedPrescriptions = async () => {
+    if (!token) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Get prescriptions with status DISPENSED from the API
+      console.log('MedicationHistory: Fetching DISPENSED prescriptions');
+      const prescriptions = await apiService.getPrescriptions({ status: 'DISPENSED' }, token);
+      console.log(`MedicationHistory: Found ${prescriptions.length} DISPENSED prescriptions`);
+      
+      await processPrescriptions(prescriptions);
+    } catch (error: any) {
+      console.error("Error loading dispensed medication data:", error);
+      setError(error.message || "Không thể tải dữ liệu lịch sử thuốc");
+      setMedicationRecords([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to load all prescriptions regardless of status
+  const loadAllPrescriptions = async () => {
+    if (!token) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      console.log('Loading all prescriptions regardless of status');
+      const prescriptions = await apiService.getPrescriptions({}, token);
+      console.log(`Found ${prescriptions.length} total prescriptions`);
+      
+      await processPrescriptions(prescriptions);
+    } catch (error: any) {
+      console.error("Error loading all medication data:", error);
+      setError(error.message || "Không thể tải dữ liệu lịch sử thuốc");
+      setMedicationRecords([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Common function to process prescriptions data
+  const processPrescriptions = async (prescriptions: any[]) => {
+    try {
+      // Transform prescriptions to the format we need for display
+      const records: MedicationRecordDisplay[] = [];
+      
+      for (const prescription of prescriptions) {
+        try {
+          // Get prescription details (medicines)
+          console.log(`MedicationHistory: Fetching details for prescription ${prescription._id}`);
           
-          // Get doctor info
-          const doctor = await getUserById(prescription.doctorId);
+          // Fix for TypeScript errors - ensure token is not null
+          if (!token) {
+            console.error('Token is null, cannot fetch prescription details');
+            continue;
+          }
           
-          // Get prescription details
-          const prescriptionDetails = await getPrescriptionDetailsByPrescriptionId(prescription._id);
+          const prescriptionDetails = await apiService.getPrescriptionDetails(prescription._id, token);
           
           // Transform prescription details to medication details
           const medications: MedicationDetailDisplay[] = [];
           
+          // For each medicine in the prescription
           for (const detail of prescriptionDetails) {
-            const medicine = await getMedicineById(detail.medicineId);
-            
-            // Parse dosage to extract frequency and duration
-            // In a real app, these would be separate fields
-            const dosageInfo = detail.dosage.split(' ');
-            const frequency = dosageInfo.slice(0, dosageInfo.length > 3 ? 3 : dosageInfo.length).join(' ');
-            const duration = `${detail.quantity / parseInt(dosageInfo[0])} ngày`;
-            
-            medications.push({
-              name: medicine ? medicine.name : 'Unknown Medicine',
-              dosage: medicine ? `${medicine.name.split(' ')[1]}` : 'Unknown Dosage',
-              frequency: frequency,
-              duration: duration
-            });
+            try {
+              // Get medicine details if medicineId is an object with _id
+              const medicineId = typeof detail.medicineId === 'object' ? detail.medicineId._id : detail.medicineId;
+              
+              // Fix for TypeScript errors - ensure token is not null
+              if (!token) {
+                console.error('Token is null, cannot fetch medicine details');
+                continue;
+              }
+              
+              const medicine = detail.medicineId && typeof detail.medicineId === 'object' 
+                ? detail.medicineId  // If already populated
+                : await apiService.getMedicineById(medicineId, token);
+              
+              // Parse dosage to extract frequency and duration
+              const dosageInfo = detail.dosage.split(' ');
+              const frequency = dosageInfo.length > 0 ? dosageInfo.join(' ') : 'Không có thông tin';
+              
+              // Calculate duration based on quantity and dosage
+              let duration = 'Không xác định';
+              const firstNumberInDosage = parseInt(dosageInfo[0]);
+              if (!isNaN(firstNumberInDosage) && firstNumberInDosage > 0) {
+                duration = `${Math.round(detail.quantity / firstNumberInDosage)} ngày`;
+              }
+              
+              medications.push({
+                name: medicine?.name || 'Không xác định thuốc',
+                dosage: detail.dosage || 'Không xác định liều lượng',
+                frequency: frequency,
+                duration: duration
+              });
+            } catch (medErr) {
+              console.error(`Error fetching medicine details for ${detail.medicineId}:`, medErr);
+              medications.push({
+                name: 'Lỗi dữ liệu thuốc',
+                dosage: 'Không xác định',
+                frequency: 'Không xác định',
+                duration: 'Không xác định'
+              });
+            }
           }
           
           // Format date for display
           const dateObj = new Date(prescription.date);
           const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
           
+          // Get patient and doctor info directly from populated fields if available
+          const patient = prescription.patientId && typeof prescription.patientId === 'object' 
+            ? prescription.patientId 
+            : { fullName: 'Không xác định', _id: 'Unknown' };
+          
+          const doctor = prescription.doctorId && typeof prescription.doctorId === 'object' 
+            ? prescription.doctorId 
+            : { fullName: 'Không xác định' };
+          
           records.push({
             id: prescription._id,
-            name: patient ? patient.fullName : 'Unknown Patient',
-            patientId: patient ? patient.userId : 'Unknown',
+            name: patient.fullName,
+            patientId: patient._id,
             date: formattedDate,
-            doctor: doctor ? doctor.fullName : 'Unknown Doctor',
-            diagnosis: prescription.diagnosis,
-            medications: medications
+            doctor: doctor.fullName,
+            diagnosis: prescription.diagnosis || 'Không có chẩn đoán',
+            medications: medications,
+            status: prescription.status // Add status to the record
           });
+        } catch (prescErr) {
+          console.error(`Error processing prescription ${prescription._id}:`, prescErr);
         }
-        
-        setMedicationRecords(records);
-      } catch (error) {
-        console.error("Error loading medication data:", error);
-        setMedicationRecords([]);
       }
-    };
+      
+      setMedicationRecords(records);
+      setError(null);
+    } catch (error: any) {
+      console.error("Error processing prescriptions:", error);
+      throw error;
+    }
+  };
+  
+  // Add debug function to show available data
+  const debugMedicationData = async () => {
+    if (!token) return;
     
-    loadData();
-  }, []);
+    try {
+      console.log('Debug: Fetching all prescriptions to see available statuses');
+      const allPrescriptions = await apiService.getPrescriptions({}, token);
+      
+      console.log('Debug: First 3 prescriptions raw data:', allPrescriptions.slice(0, 3));
+      
+      // Group by status to see what we have
+      const statusCounts: Record<string, number> = {};
+      allPrescriptions.forEach((prescription: any) => {
+        const status = prescription.status || 'unknown';
+        statusCounts[status] = (statusCounts[status] || 0) + 1;
+      });
+      
+      console.log('Debug: Available prescription statuses:', statusCounts);
+      setDebugInfo({
+        statusCounts,
+        totalPrescriptions: allPrescriptions.length,
+        firstPrescription: allPrescriptions.length > 0 ? allPrescriptions[0] : null
+      });
+      
+      // Check if we have any 'DISPENSED' prescriptions
+      if (statusCounts['DISPENSED'] && statusCounts['DISPENSED'] > 0) {
+        console.log('Debug: We have DISPENSED prescriptions, should be showing them');
+        
+        // Let's check those DISPENSED prescriptions
+        const dispensedPrescriptions = allPrescriptions.filter((p: any) => p.status === 'DISPENSED');
+        console.log('Debug: First DISPENSED prescription:', dispensedPrescriptions[0]);
+      } else {
+        console.log('Debug: No DISPENSED prescriptions found, this is why no data appears');
+        
+        // Let's try to manually search for a few other statuses
+        const tryOtherStatuses = async () => {
+          try {
+            console.log('Debug: Trying with status=PENDING_DISPENSE');
+            const pendingPrescriptions = await apiService.getPrescriptions({ status: 'PENDING_DISPENSE' }, token);
+            console.log(`Debug: Found ${pendingPrescriptions.length} PENDING_DISPENSE prescriptions`);
+            
+            if (pendingPrescriptions.length > 0) {
+              console.log('Debug: Example PENDING_DISPENSE prescription:', pendingPrescriptions[0]);
+            }
+          } catch (err) {
+            console.error('Debug: Error fetching PENDING_DISPENSE prescriptions', err);
+          }
+        };
+        
+        tryOtherStatuses();
+      }
+      
+    } catch (error) {
+      console.error('Debug: Error fetching all prescriptions:', error);
+    }
+  };
+  
+  // Call debug function when component loads
+  useEffect(() => {
+    if (token) {
+      debugMedicationData();
+    }
+  }, [token]);
   
   // Filter medications based on search term and date range
   const filteredMedications = medicationRecords.filter(record => {
     // Filter by search term
     const matchesSearch = 
       record.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      record.patientId.toLowerCase().includes(searchTerm.toLowerCase());
+      (record.patientId && record.patientId.toLowerCase().includes(searchTerm.toLowerCase()));
     
     // Filter by date range if applicable
     let matchesDateRange = true;
@@ -135,9 +290,23 @@ export function MedicationHistory({ onBack }: MedicationHistoryProps) {
         </button>
       </div>
       {/* Header section */}
-      <div className="mb-8 border-b border-gray-200 pb-5">
-        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Lịch sử thuốc</h1>
-        <p className="text-gray-600 mt-2">Xem lịch sử thuốc đã kê cho bệnh nhân</p>
+      <div className="mb-8 border-b border-gray-200 pb-5 flex justify-between items-end">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Lịch sử thuốc</h1>
+          <p className="text-gray-600 mt-2">Xem lịch sử thuốc đã kê cho bệnh nhân</p>
+        </div>
+        <div>
+          <button
+            onClick={() => setAllStatuses(!allStatuses)}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              allStatuses 
+                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {allStatuses ? 'Chỉ hiển thị đã phát thuốc' : 'Hiển thị tất cả đơn thuốc'}
+          </button>
+        </div>
       </div>
       
       {/* Main content container */}
@@ -196,7 +365,35 @@ export function MedicationHistory({ onBack }: MedicationHistoryProps) {
         
         {/* Records content */}
         <div className="p-6">
-          {filteredMedications.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-16 border border-dashed border-gray-300 rounded-lg">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <h3 className="text-lg font-medium text-gray-700">
+                Đang tải dữ liệu...
+              </h3>
+              <p className="text-gray-500 mt-2">
+                Vui lòng đợi trong khi chúng tôi tải dữ liệu từ máy chủ
+              </p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-16 border border-dashed border-gray-300 rounded-lg">
+              <div className="mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mb-4">
+                <PillIcon size={24} className="text-red-600" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-700">
+                Không thể tải dữ liệu
+              </h3>
+              <p className="text-gray-500 mt-2 max-w-md mx-auto">
+                {error}
+              </p>
+              <button 
+                onClick={() => window.location.reload()}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Thử lại
+              </button>
+            </div>
+          ) : filteredMedications.length > 0 ? (
             <div className="space-y-6">
               {filteredMedications.map(record => (
                 <div key={record.id} className="border border-gray-300 rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md">
@@ -222,6 +419,25 @@ export function MedicationHistory({ onBack }: MedicationHistoryProps) {
                         <p className="text-xs text-gray-600 uppercase tracking-wide font-medium">Chẩn đoán</p>
                         <p className="text-sm font-medium text-gray-800 mt-1">{record.diagnosis}</p>
                       </div>
+                      {record.status && (
+                        <div>
+                          <p className="text-xs text-gray-600 uppercase tracking-wide font-medium">Trạng thái</p>
+                          <p className={`text-sm font-medium mt-1 px-2 py-0.5 rounded inline-block ${
+                            record.status === 'DISPENSED' 
+                              ? 'bg-green-100 text-green-800' 
+                              : record.status === 'PENDING_DISPENSE' 
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-red-100 text-red-800'
+                          }`}>
+                            {record.status === 'DISPENSED' 
+                              ? 'Đã phát thuốc' 
+                              : record.status === 'PENDING_DISPENSE' 
+                                ? 'Chờ phát thuốc' 
+                                : 'Đã hủy'
+                            }
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -276,11 +492,40 @@ export function MedicationHistory({ onBack }: MedicationHistoryProps) {
             <div className="text-center py-16 border border-dashed border-gray-300 rounded-lg">
               <PillIcon size={48} className="mx-auto text-gray-400 mb-4" />
               <h3 className="text-lg font-medium text-gray-700">
-                Không tìm thấy dữ liệu
+                {allStatuses ? 'Không tìm thấy đơn thuốc nào' : 'Không tìm thấy đơn thuốc đã phát'}
               </h3>
               <p className="text-gray-500 mt-2 max-w-md mx-auto">
-                Thử tìm kiếm với từ khóa khác hoặc thay đổi bộ lọc để xem kết quả
+                {allStatuses 
+                  ? 'Không có đơn thuốc nào trong hệ thống' 
+                  : 'Không có đơn thuốc nào ở trạng thái đã phát (DISPENSED) trong hệ thống.'}
               </p>
+              
+              <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+                <button 
+                  onClick={debugMedicationData}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                >
+                  Kiểm tra trạng thái đơn thuốc
+                </button>
+                
+                {!allStatuses && (
+                  <button 
+                    onClick={() => setAllStatuses(true)}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                  >
+                    Hiển thị tất cả đơn thuốc
+                  </button>
+                )}
+              </div>
+              
+              <div className="mt-4 text-sm text-gray-500">
+                <p>Trạng thái đơn thuốc hợp lệ:</p>
+                <ul className="mt-2 inline-flex flex-wrap gap-2 justify-center">
+                  <li className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md">PENDING_DISPENSE</li>
+                  <li className="px-2 py-1 bg-green-100 text-green-800 rounded-md">DISPENSED</li>
+                  <li className="px-2 py-1 bg-red-100 text-red-800 rounded-md">CANCELLED</li>
+                </ul>
+              </div>
             </div>
           )}
           

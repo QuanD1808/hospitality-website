@@ -5116,12 +5116,14 @@ __turbopack_context__.s({
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SearchIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/search.js [app-client] (ecmascript) <export default as SearchIcon>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/calendar.js [app-client] (ecmascript) <export default as CalendarIcon>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pill$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__PillIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/pill.js [app-client] (ecmascript) <export default as PillIcon>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/datats/mockPatients.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Search$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/search.js [app-client] (ecmascript) <export default as Search>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Calendar$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/calendar.js [app-client] (ecmascript) <export default as Calendar>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pill$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Pill$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/pill.js [app-client] (ecmascript) <export default as Pill>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
+;
 ;
 ;
 ;
@@ -5131,68 +5133,212 @@ function MedicationHistory({ onBack }) {
     const [endDate, setEndDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [searchTerm, setSearchTerm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [medicationRecords, setMedicationRecords] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [allStatuses, setAllStatuses] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false); // Toggle to show all statuses
+    const [debugInfo, setDebugInfo] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const { token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
+    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     // Load medication data from API
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "MedicationHistory.useEffect": ()=>{
-            const loadData = {
-                "MedicationHistory.useEffect.loadData": async ()=>{
-                    try {
-                        // Initialize data from API first
-                        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["initializeData"])();
-                        // Get all prescriptions
-                        const prescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getAllPrescriptions"])();
-                        // Transform prescriptions to the format we need for display
-                        const records = [];
-                        for (const prescription of prescriptions){
-                            // Get patient info
-                            const patient = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])(prescription.patientId);
-                            // Get doctor info
-                            const doctor = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getUserById"])(prescription.doctorId);
-                            // Get prescription details
-                            const prescriptionDetails = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionDetailsByPrescriptionId"])(prescription._id);
-                            // Transform prescription details to medication details
-                            const medications = [];
-                            for (const detail of prescriptionDetails){
-                                const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
-                                // Parse dosage to extract frequency and duration
-                                // In a real app, these would be separate fields
-                                const dosageInfo = detail.dosage.split(' ');
-                                const frequency = dosageInfo.slice(0, dosageInfo.length > 3 ? 3 : dosageInfo.length).join(' ');
-                                const duration = `${detail.quantity / parseInt(dosageInfo[0])} ngày`;
-                                medications.push({
-                                    name: medicine ? medicine.name : 'Unknown Medicine',
-                                    dosage: medicine ? `${medicine.name.split(' ')[1]}` : 'Unknown Dosage',
-                                    frequency: frequency,
-                                    duration: duration
-                                });
+            if (!token) return;
+            if (allStatuses) {
+                loadAllPrescriptions();
+            } else {
+                loadDispensedPrescriptions();
+            }
+        }
+    }["MedicationHistory.useEffect"], [
+        token,
+        allStatuses
+    ]);
+    // Function to load prescriptions with DISPENSED status
+    const loadDispensedPrescriptions = async ()=>{
+        if (!token) return;
+        setLoading(true);
+        setError(null);
+        try {
+            // Get prescriptions with status DISPENSED from the API
+            console.log('MedicationHistory: Fetching DISPENSED prescriptions');
+            const prescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptions"])({
+                status: 'DISPENSED'
+            }, token);
+            console.log(`MedicationHistory: Found ${prescriptions.length} DISPENSED prescriptions`);
+            await processPrescriptions(prescriptions);
+        } catch (error) {
+            console.error("Error loading dispensed medication data:", error);
+            setError(error.message || "Không thể tải dữ liệu lịch sử thuốc");
+            setMedicationRecords([]);
+        } finally{
+            setLoading(false);
+        }
+    };
+    // Function to load all prescriptions regardless of status
+    const loadAllPrescriptions = async ()=>{
+        if (!token) return;
+        setLoading(true);
+        setError(null);
+        try {
+            console.log('Loading all prescriptions regardless of status');
+            const prescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptions"])({}, token);
+            console.log(`Found ${prescriptions.length} total prescriptions`);
+            await processPrescriptions(prescriptions);
+        } catch (error) {
+            console.error("Error loading all medication data:", error);
+            setError(error.message || "Không thể tải dữ liệu lịch sử thuốc");
+            setMedicationRecords([]);
+        } finally{
+            setLoading(false);
+        }
+    };
+    // Common function to process prescriptions data
+    const processPrescriptions = async (prescriptions)=>{
+        try {
+            // Transform prescriptions to the format we need for display
+            const records = [];
+            for (const prescription of prescriptions){
+                try {
+                    // Get prescription details (medicines)
+                    console.log(`MedicationHistory: Fetching details for prescription ${prescription._id}`);
+                    // Fix for TypeScript errors - ensure token is not null
+                    if (!token) {
+                        console.error('Token is null, cannot fetch prescription details');
+                        continue;
+                    }
+                    const prescriptionDetails = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptionDetails"])(prescription._id, token);
+                    // Transform prescription details to medication details
+                    const medications = [];
+                    // For each medicine in the prescription
+                    for (const detail of prescriptionDetails){
+                        try {
+                            // Get medicine details if medicineId is an object with _id
+                            const medicineId = typeof detail.medicineId === 'object' ? detail.medicineId._id : detail.medicineId;
+                            // Fix for TypeScript errors - ensure token is not null
+                            if (!token) {
+                                console.error('Token is null, cannot fetch medicine details');
+                                continue;
                             }
-                            // Format date for display
-                            const dateObj = new Date(prescription.date);
-                            const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
-                            records.push({
-                                id: prescription._id,
-                                name: patient ? patient.fullName : 'Unknown Patient',
-                                patientId: patient ? patient.userId : 'Unknown',
-                                date: formattedDate,
-                                doctor: doctor ? doctor.fullName : 'Unknown Doctor',
-                                diagnosis: prescription.diagnosis,
-                                medications: medications
+                            const medicine = detail.medicineId && typeof detail.medicineId === 'object' ? detail.medicineId // If already populated
+                             : await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(medicineId, token);
+                            // Parse dosage to extract frequency and duration
+                            const dosageInfo = detail.dosage.split(' ');
+                            const frequency = dosageInfo.length > 0 ? dosageInfo.join(' ') : 'Không có thông tin';
+                            // Calculate duration based on quantity and dosage
+                            let duration = 'Không xác định';
+                            const firstNumberInDosage = parseInt(dosageInfo[0]);
+                            if (!isNaN(firstNumberInDosage) && firstNumberInDosage > 0) {
+                                duration = `${Math.round(detail.quantity / firstNumberInDosage)} ngày`;
+                            }
+                            medications.push({
+                                name: medicine?.name || 'Không xác định thuốc',
+                                dosage: detail.dosage || 'Không xác định liều lượng',
+                                frequency: frequency,
+                                duration: duration
+                            });
+                        } catch (medErr) {
+                            console.error(`Error fetching medicine details for ${detail.medicineId}:`, medErr);
+                            medications.push({
+                                name: 'Lỗi dữ liệu thuốc',
+                                dosage: 'Không xác định',
+                                frequency: 'Không xác định',
+                                duration: 'Không xác định'
                             });
                         }
-                        setMedicationRecords(records);
-                    } catch (error) {
-                        console.error("Error loading medication data:", error);
-                        setMedicationRecords([]);
                     }
+                    // Format date for display
+                    const dateObj = new Date(prescription.date);
+                    const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+                    // Get patient and doctor info directly from populated fields if available
+                    const patient = prescription.patientId && typeof prescription.patientId === 'object' ? prescription.patientId : {
+                        fullName: 'Không xác định',
+                        _id: 'Unknown'
+                    };
+                    const doctor = prescription.doctorId && typeof prescription.doctorId === 'object' ? prescription.doctorId : {
+                        fullName: 'Không xác định'
+                    };
+                    records.push({
+                        id: prescription._id,
+                        name: patient.fullName,
+                        patientId: patient._id,
+                        date: formattedDate,
+                        doctor: doctor.fullName,
+                        diagnosis: prescription.diagnosis || 'Không có chẩn đoán',
+                        medications: medications,
+                        status: prescription.status // Add status to the record
+                    });
+                } catch (prescErr) {
+                    console.error(`Error processing prescription ${prescription._id}:`, prescErr);
                 }
-            }["MedicationHistory.useEffect.loadData"];
-            loadData();
+            }
+            setMedicationRecords(records);
+            setError(null);
+        } catch (error) {
+            console.error("Error processing prescriptions:", error);
+            throw error;
         }
-    }["MedicationHistory.useEffect"], []);
+    };
+    // Add debug function to show available data
+    const debugMedicationData = async ()=>{
+        if (!token) return;
+        try {
+            console.log('Debug: Fetching all prescriptions to see available statuses');
+            const allPrescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptions"])({}, token);
+            console.log('Debug: First 3 prescriptions raw data:', allPrescriptions.slice(0, 3));
+            // Group by status to see what we have
+            const statusCounts = {};
+            allPrescriptions.forEach((prescription)=>{
+                const status = prescription.status || 'unknown';
+                statusCounts[status] = (statusCounts[status] || 0) + 1;
+            });
+            console.log('Debug: Available prescription statuses:', statusCounts);
+            setDebugInfo({
+                statusCounts,
+                totalPrescriptions: allPrescriptions.length,
+                firstPrescription: allPrescriptions.length > 0 ? allPrescriptions[0] : null
+            });
+            // Check if we have any 'DISPENSED' prescriptions
+            if (statusCounts['DISPENSED'] && statusCounts['DISPENSED'] > 0) {
+                console.log('Debug: We have DISPENSED prescriptions, should be showing them');
+                // Let's check those DISPENSED prescriptions
+                const dispensedPrescriptions = allPrescriptions.filter((p)=>p.status === 'DISPENSED');
+                console.log('Debug: First DISPENSED prescription:', dispensedPrescriptions[0]);
+            } else {
+                console.log('Debug: No DISPENSED prescriptions found, this is why no data appears');
+                // Let's try to manually search for a few other statuses
+                const tryOtherStatuses = async ()=>{
+                    try {
+                        console.log('Debug: Trying with status=PENDING_DISPENSE');
+                        const pendingPrescriptions = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getPrescriptions"])({
+                            status: 'PENDING_DISPENSE'
+                        }, token);
+                        console.log(`Debug: Found ${pendingPrescriptions.length} PENDING_DISPENSE prescriptions`);
+                        if (pendingPrescriptions.length > 0) {
+                            console.log('Debug: Example PENDING_DISPENSE prescription:', pendingPrescriptions[0]);
+                        }
+                    } catch (err) {
+                        console.error('Debug: Error fetching PENDING_DISPENSE prescriptions', err);
+                    }
+                };
+                tryOtherStatuses();
+            }
+        } catch (error) {
+            console.error('Debug: Error fetching all prescriptions:', error);
+        }
+    };
+    // Call debug function when component loads
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "MedicationHistory.useEffect": ()=>{
+            if (token) {
+                debugMedicationData();
+            }
+        }
+    }["MedicationHistory.useEffect"], [
+        token
+    ]);
     // Filter medications based on search term and date range
     const filteredMedications = medicationRecords.filter((record)=>{
         // Filter by search term
-        const matchesSearch = record.name.toLowerCase().includes(searchTerm.toLowerCase()) || record.patientId.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = record.name.toLowerCase().includes(searchTerm.toLowerCase()) || record.patientId && record.patientId.toLowerCase().includes(searchTerm.toLowerCase());
         // Filter by date range if applicable
         let matchesDateRange = true;
         if (startDate && endDate) {
@@ -5214,37 +5360,60 @@ function MedicationHistory({ onBack }) {
                     children: "← Quay lại"
                 }, void 0, false, {
                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                    lineNumber: 130,
+                    lineNumber: 285,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                lineNumber: 129,
+                lineNumber: 284,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "mb-8 border-b border-gray-200 pb-5",
+                className: "mb-8 border-b border-gray-200 pb-5 flex justify-between items-end",
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                        className: "text-3xl font-bold text-gray-900 tracking-tight",
-                        children: "Lịch sử thuốc"
-                    }, void 0, false, {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                className: "text-3xl font-bold text-gray-900 tracking-tight",
+                                children: "Lịch sử thuốc"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                lineNumber: 295,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                className: "text-gray-600 mt-2",
+                                children: "Xem lịch sử thuốc đã kê cho bệnh nhân"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                lineNumber: 296,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                        lineNumber: 139,
+                        lineNumber: 294,
                         columnNumber: 9
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        className: "text-gray-600 mt-2",
-                        children: "Xem lịch sử thuốc đã kê cho bệnh nhân"
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            onClick: ()=>setAllStatuses(!allStatuses),
+                            className: `px-4 py-2 rounded-md text-sm font-medium transition-colors ${allStatuses ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`,
+                            children: allStatuses ? 'Chỉ hiển thị đã phát thuốc' : 'Hiển thị tất cả đơn thuốc'
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                            lineNumber: 299,
+                            columnNumber: 11
+                        }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                        lineNumber: 140,
+                        lineNumber: 298,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                lineNumber: 138,
+                lineNumber: 293,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5260,17 +5429,17 @@ function MedicationHistory({ onBack }) {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none",
-                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SearchIcon$3e$__["SearchIcon"], {
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Search$3e$__["Search"], {
                                                 size: 18,
                                                 className: "text-black"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 150,
+                                                lineNumber: 319,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                            lineNumber: 149,
+                                            lineNumber: 318,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -5281,13 +5450,13 @@ function MedicationHistory({ onBack }) {
                                             onChange: (e)=>setSearchTerm(e.target.value)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                            lineNumber: 152,
+                                            lineNumber: 321,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                    lineNumber: 148,
+                                    lineNumber: 317,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5302,7 +5471,7 @@ function MedicationHistory({ onBack }) {
                                                     children: "Từ ngày"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                    lineNumber: 163,
+                                                    lineNumber: 332,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5310,17 +5479,17 @@ function MedicationHistory({ onBack }) {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none",
-                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarIcon$3e$__["CalendarIcon"], {
+                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Calendar$3e$__["Calendar"], {
                                                                 size: 16,
                                                                 className: "text-black"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 166,
+                                                                lineNumber: 335,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 165,
+                                                            lineNumber: 334,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -5331,19 +5500,19 @@ function MedicationHistory({ onBack }) {
                                                             onChange: (e)=>setStartDate(e.target.value)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 168,
+                                                            lineNumber: 337,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                    lineNumber: 164,
+                                                    lineNumber: 333,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                            lineNumber: 162,
+                                            lineNumber: 331,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5355,7 +5524,7 @@ function MedicationHistory({ onBack }) {
                                                     children: "Đến ngày"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                    lineNumber: 179,
+                                                    lineNumber: 348,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5363,17 +5532,17 @@ function MedicationHistory({ onBack }) {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none",
-                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarIcon$3e$__["CalendarIcon"], {
+                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Calendar$3e$__["Calendar"], {
                                                                 size: 16,
                                                                 className: "text-black"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 182,
+                                                                lineNumber: 351,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 181,
+                                                            lineNumber: 350,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -5384,42 +5553,121 @@ function MedicationHistory({ onBack }) {
                                                             onChange: (e)=>setEndDate(e.target.value)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 184,
+                                                            lineNumber: 353,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                    lineNumber: 180,
+                                                    lineNumber: 349,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                            lineNumber: 178,
+                                            lineNumber: 347,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                    lineNumber: 161,
+                                    lineNumber: 330,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                            lineNumber: 147,
+                            lineNumber: 316,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                        lineNumber: 146,
+                        lineNumber: 315,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "p-6",
                         children: [
-                            filteredMedications.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "text-center py-16 border border-dashed border-gray-300 rounded-lg",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                        lineNumber: 370,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        className: "text-lg font-medium text-gray-700",
+                                        children: "Đang tải dữ liệu..."
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                        lineNumber: 371,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-gray-500 mt-2",
+                                        children: "Vui lòng đợi trong khi chúng tôi tải dữ liệu từ máy chủ"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                        lineNumber: 374,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                lineNumber: 369,
+                                columnNumber: 13
+                            }, this) : error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "text-center py-16 border border-dashed border-gray-300 rounded-lg",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mb-4",
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pill$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Pill$3e$__["Pill"], {
+                                            size: 24,
+                                            className: "text-red-600"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                            lineNumber: 381,
+                                            columnNumber: 17
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                        lineNumber: 380,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        className: "text-lg font-medium text-gray-700",
+                                        children: "Không thể tải dữ liệu"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                        lineNumber: 383,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-gray-500 mt-2 max-w-md mx-auto",
+                                        children: error
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                        lineNumber: 386,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        onClick: ()=>window.location.reload(),
+                                        className: "mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors",
+                                        children: "Thử lại"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                        lineNumber: 389,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                lineNumber: 379,
+                                columnNumber: 13
+                            }, this) : filteredMedications.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "space-y-6",
                                 children: filteredMedications.map((record)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "border border-gray-300 rounded-lg overflow-hidden shadow-sm transition-all hover:shadow-md",
@@ -5434,7 +5682,7 @@ function MedicationHistory({ onBack }) {
                                                                 children: record.name
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 205,
+                                                                lineNumber: 402,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5445,13 +5693,13 @@ function MedicationHistory({ onBack }) {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 208,
+                                                                lineNumber: 405,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                        lineNumber: 204,
+                                                        lineNumber: 401,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5464,7 +5712,7 @@ function MedicationHistory({ onBack }) {
                                                                         children: "Ngày khám"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 214,
+                                                                        lineNumber: 411,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5472,13 +5720,13 @@ function MedicationHistory({ onBack }) {
                                                                         children: record.date
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 215,
+                                                                        lineNumber: 412,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 213,
+                                                                lineNumber: 410,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5488,7 +5736,7 @@ function MedicationHistory({ onBack }) {
                                                                         children: "Bác sĩ"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 218,
+                                                                        lineNumber: 415,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5496,13 +5744,13 @@ function MedicationHistory({ onBack }) {
                                                                         children: record.doctor
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 219,
+                                                                        lineNumber: 416,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 217,
+                                                                lineNumber: 414,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5512,7 +5760,7 @@ function MedicationHistory({ onBack }) {
                                                                         children: "Chẩn đoán"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 222,
+                                                                        lineNumber: 419,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5520,25 +5768,49 @@ function MedicationHistory({ onBack }) {
                                                                         children: record.diagnosis
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 223,
+                                                                        lineNumber: 420,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 221,
+                                                                lineNumber: 418,
                                                                 columnNumber: 23
+                                                            }, this),
+                                                            record.status && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                        className: "text-xs text-gray-600 uppercase tracking-wide font-medium",
+                                                                        children: "Trạng thái"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                                        lineNumber: 424,
+                                                                        columnNumber: 27
+                                                                    }, this),
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                        className: `text-sm font-medium mt-1 px-2 py-0.5 rounded inline-block ${record.status === 'DISPENSED' ? 'bg-green-100 text-green-800' : record.status === 'PENDING_DISPENSE' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`,
+                                                                        children: record.status === 'DISPENSED' ? 'Đã phát thuốc' : record.status === 'PENDING_DISPENSE' ? 'Chờ phát thuốc' : 'Đã hủy'
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                                        lineNumber: 425,
+                                                                        columnNumber: 27
+                                                                    }, this)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                                lineNumber: 423,
+                                                                columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                        lineNumber: 212,
+                                                        lineNumber: 409,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 203,
+                                                lineNumber: 400,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5547,19 +5819,19 @@ function MedicationHistory({ onBack }) {
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
                                                         className: "font-medium text-gray-900 mb-4 flex items-center",
                                                         children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pill$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__PillIcon$3e$__["PillIcon"], {
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pill$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Pill$3e$__["Pill"], {
                                                                 size: 18,
                                                                 className: "mr-2 text-indigo-600"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                lineNumber: 230,
+                                                                lineNumber: 446,
                                                                 columnNumber: 23
                                                             }, this),
                                                             "Danh sách thuốc"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                        lineNumber: 229,
+                                                        lineNumber: 445,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5576,7 +5848,7 @@ function MedicationHistory({ onBack }) {
                                                                                 children: "Tên thuốc"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                lineNumber: 237,
+                                                                                lineNumber: 453,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -5584,7 +5856,7 @@ function MedicationHistory({ onBack }) {
                                                                                 children: "Liều lượng"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                lineNumber: 240,
+                                                                                lineNumber: 456,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -5592,7 +5864,7 @@ function MedicationHistory({ onBack }) {
                                                                                 children: "Tần suất"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                lineNumber: 243,
+                                                                                lineNumber: 459,
                                                                                 columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -5600,18 +5872,18 @@ function MedicationHistory({ onBack }) {
                                                                                 children: "Thời gian dùng"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                lineNumber: 246,
+                                                                                lineNumber: 462,
                                                                                 columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                        lineNumber: 236,
+                                                                        lineNumber: 452,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                    lineNumber: 235,
+                                                                    lineNumber: 451,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -5624,7 +5896,7 @@ function MedicationHistory({ onBack }) {
                                                                                     children: med.name
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                    lineNumber: 254,
+                                                                                    lineNumber: 470,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -5632,7 +5904,7 @@ function MedicationHistory({ onBack }) {
                                                                                     children: med.dosage
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                    lineNumber: 257,
+                                                                                    lineNumber: 473,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -5640,7 +5912,7 @@ function MedicationHistory({ onBack }) {
                                                                                     children: med.frequency
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                    lineNumber: 260,
+                                                                                    lineNumber: 476,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -5648,78 +5920,154 @@ function MedicationHistory({ onBack }) {
                                                                                     children: med.duration
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                                    lineNumber: 263,
+                                                                                    lineNumber: 479,
                                                                                     columnNumber: 31
                                                                                 }, this)
                                                                             ]
                                                                         }, index, true, {
                                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                            lineNumber: 253,
+                                                                            lineNumber: 469,
                                                                             columnNumber: 29
                                                                         }, this))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                                    lineNumber: 251,
+                                                                    lineNumber: 467,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                            lineNumber: 234,
+                                                            lineNumber: 450,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                        lineNumber: 233,
+                                                        lineNumber: 449,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 228,
+                                                lineNumber: 444,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, record.id, true, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 202,
+                                        lineNumber: 399,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                lineNumber: 200,
+                                lineNumber: 397,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "text-center py-16 border border-dashed border-gray-300 rounded-lg",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pill$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__PillIcon$3e$__["PillIcon"], {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pill$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Pill$3e$__["Pill"], {
                                         size: 48,
                                         className: "mx-auto text-gray-400 mb-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 277,
+                                        lineNumber: 493,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                         className: "text-lg font-medium text-gray-700",
-                                        children: "Không tìm thấy dữ liệu"
+                                        children: allStatuses ? 'Không tìm thấy đơn thuốc nào' : 'Không tìm thấy đơn thuốc đã phát'
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 278,
+                                        lineNumber: 494,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-gray-500 mt-2 max-w-md mx-auto",
-                                        children: "Thử tìm kiếm với từ khóa khác hoặc thay đổi bộ lọc để xem kết quả"
+                                        children: allStatuses ? 'Không có đơn thuốc nào trong hệ thống' : 'Không có đơn thuốc nào ở trạng thái đã phát (DISPENSED) trong hệ thống.'
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 281,
+                                        lineNumber: 497,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "mt-6 flex flex-col sm:flex-row gap-4 justify-center",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                onClick: debugMedicationData,
+                                                className: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors",
+                                                children: "Kiểm tra trạng thái đơn thuốc"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                lineNumber: 504,
+                                                columnNumber: 17
+                                            }, this),
+                                            !allStatuses && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                onClick: ()=>setAllStatuses(true),
+                                                className: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors",
+                                                children: "Hiển thị tất cả đơn thuốc"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                lineNumber: 512,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                        lineNumber: 503,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "mt-4 text-sm text-gray-500",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                children: "Trạng thái đơn thuốc hợp lệ:"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                lineNumber: 522,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                                className: "mt-2 inline-flex flex-wrap gap-2 justify-center",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                        className: "px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md",
+                                                        children: "PENDING_DISPENSE"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                        lineNumber: 524,
+                                                        columnNumber: 19
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                        className: "px-2 py-1 bg-green-100 text-green-800 rounded-md",
+                                                        children: "DISPENSED"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                        lineNumber: 525,
+                                                        columnNumber: 19
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                        className: "px-2 py-1 bg-red-100 text-red-800 rounded-md",
+                                                        children: "CANCELLED"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                        lineNumber: 526,
+                                                        columnNumber: 19
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                                lineNumber: 523,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
+                                        lineNumber: 521,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                lineNumber: 276,
+                                lineNumber: 492,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5734,14 +6082,14 @@ function MedicationHistory({ onBack }) {
                                                 children: filteredMedications.length
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 290,
+                                                lineNumber: 535,
                                                 columnNumber: 24
                                             }, this),
                                             " kết quả"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 289,
+                                        lineNumber: 534,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5752,7 +6100,7 @@ function MedicationHistory({ onBack }) {
                                                 children: "Trước"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 293,
+                                                lineNumber: 538,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5760,7 +6108,7 @@ function MedicationHistory({ onBack }) {
                                                 children: "1"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 296,
+                                                lineNumber: 541,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5768,41 +6116,45 @@ function MedicationHistory({ onBack }) {
                                                 children: "Sau"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                                lineNumber: 299,
+                                                lineNumber: 544,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                        lineNumber: 292,
+                                        lineNumber: 537,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                                lineNumber: 288,
+                                lineNumber: 533,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                        lineNumber: 198,
+                        lineNumber: 367,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-                lineNumber: 144,
+                lineNumber: 313,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/receptionistPage/MedicationHistory.tsx",
-        lineNumber: 128,
+        lineNumber: 283,
         columnNumber: 5
     }, this);
 }
-_s(MedicationHistory, "loYSzSyNWd38Y0ayBA2Y+vcKAd8=");
+_s(MedicationHistory, "jczMXie8NKnXOBXjvOXKxG72mbI=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"]
+    ];
+});
 _c = MedicationHistory;
 var _c;
 __turbopack_context__.k.register(_c, "MedicationHistory");
