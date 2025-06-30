@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { ArrowLeftIcon, PrinterIcon, AlertTriangle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeftIcon, PrinterIcon, AlertTriangle, Coins, DollarSign, CalendarRange } from 'lucide-react';
 import { PharmacyPatient, PharmacyMedicine } from './pharmacyUtils';
+import { calculatePrescriptionRevenue } from '../services/api.service';
+import { useAuth } from '../context/AuthContext';
 
 interface InvoiceProps {
   patient: PharmacyPatient;
@@ -13,16 +15,60 @@ export const Invoice = ({
   onClose,
   onComplete
 }: InvoiceProps) => {
+  const { token } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [revenueData, setRevenueData] = useState<any>(null);
+  const [isLoadingRevenue, setIsLoadingRevenue] = useState(false);
   
   const currentDate = new Date().toLocaleDateString('vi-VN');
   
+  // Tính tổng tiền từ dữ liệu trong client
   const calculateTotal = () => {
     return patient.prescription.reduce((total: number, med: PharmacyMedicine) => {
       return total + med.price * med.quantity;
     }, 0);
   };
+  
+  // Lấy doanh thu từ API khi component được mount
+  useEffect(() => {
+    const fetchRevenueData = async () => {
+      if (!token || !patient.id) {
+        console.log("Missing token or patient ID, cannot fetch revenue data");
+        return;
+      }
+      
+      setIsLoadingRevenue(true);
+      try {
+        console.log(`Fetching revenue data for prescription ID: ${patient.id}`);
+        // Gọi API để tính doanh thu từ đơn thuốc này
+        const data = await calculatePrescriptionRevenue(patient.id, token);
+        console.log("Revenue data from API:", data);
+        
+        if (data && data.totalAmount !== undefined) {
+          setRevenueData(data);
+          console.log(`Total revenue for this prescription: ${data.totalAmount.toLocaleString('vi-VN')} đ`);
+          
+          if (data.monthlyRevenue) {
+            console.log(`Monthly revenue: ${data.monthlyRevenue.toLocaleString('vi-VN')} đ`);
+          }
+          
+          if (data.yearlyRevenue) {
+            console.log(`Yearly revenue: ${data.yearlyRevenue.toLocaleString('vi-VN')} đ`);
+          }
+        } else {
+          console.warn("Revenue data is incomplete or undefined");
+        }
+      } catch (err: any) {
+        console.error("Error fetching revenue data:", err);
+        console.error("Error details:", err.response?.data || err.message);
+      } finally {
+        setIsLoadingRevenue(false);
+      }
+    };
+    
+    fetchRevenueData();
+  }, [patient.id, token]);
   
   const handlePrint = async () => {
     setIsProcessing(true);
@@ -31,25 +77,46 @@ export const Invoice = ({
     try {
       console.log("Invoice: Starting print and complete process");
       
-      // Mô phỏng việc in hóa đơn thực tế
-      // Trong thực tế, đây là nơi bạn có thể:
-      // 1. Gọi API in hóa đơn
-      // 2. Gọi API để trừ số lượng thuốc trong kho
-      // 3. Gọi API để tạo invoice record
+      // Trước khi hoàn tất, kiểm tra nếu chưa có dữ liệu doanh thu, thử lấy lại
+      if (!revenueData && token) {
+        console.log("Invoice: Fetching revenue data before completing...");
+        try {
+          const data = await calculatePrescriptionRevenue(patient.id, token);
+          setRevenueData(data);
+          console.log("Revenue data retrieved:", data);
+        } catch (revError: any) {
+          console.error("Could not retrieve revenue data:", revError);
+          // Continue even if we can't get revenue data
+        }
+      }
+      
+      // Xác định tổng tiền từ API hoặc tính toán cục bộ
+      const totalAmount = revenueData?.totalAmount || calculateTotal();
       
       // In ra thông tin cho biết chúng ta đang xử lý
       console.log("Invoice: Printing invoice for patient:", patient.fullName);
       console.log("Invoice: Patient ID:", patient.id);
-      console.log("Invoice: Total amount:", calculateTotal().toLocaleString('vi-VN'), "đ");
+      console.log("Invoice: Prescription ID:", patient.id); // In the pharmacy system, patient.id is actually the prescription ID
+      console.log("Invoice: Total amount (from API):", revenueData?.totalAmount?.toLocaleString('vi-VN') || "Not available", "đ");
+      console.log("Invoice: Total amount (calculated):", calculateTotal().toLocaleString('vi-VN'), "đ");
       console.log("Invoice: Medicines:", patient.prescription.length, "items");
+      
+      // Additional revenue information
+      if (revenueData) {
+        console.log("Invoice: Monthly revenue:", revenueData.monthlyRevenue?.toLocaleString('vi-VN') || "N/A", "đ");
+        console.log("Invoice: Yearly revenue:", revenueData.yearlyRevenue?.toLocaleString('vi-VN') || "N/A", "đ");
+      }
       
       // Hiển thị thông tin chi tiết về mỗi loại thuốc
       patient.prescription.forEach((med, index) => {
+        const apiMedicineData = revenueData?.medicines?.find((m: any) => m.name === med.name);
+        
         console.log(`Invoice: Medicine ${index + 1}:`, {
           name: med.name,
           quantity: med.quantity,
           price: med.price,
-          total: med.quantity * med.price
+          calculatedTotal: med.quantity * med.price,
+          apiTotal: apiMedicineData?.total || 'N/A'
         });
       });
       
@@ -134,6 +201,9 @@ export const Invoice = ({
             <div className="mt-4 border-t pt-4">
               <h2 className="text-xl font-bold text-black">HÓA ĐƠN THUỐC</h2>
               <p className="text-black">Ngày: {currentDate}</p>
+              {isLoadingRevenue && (
+                <p className="text-blue-500 text-xs mt-1">Đang tính toán doanh thu...</p>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -210,15 +280,96 @@ export const Invoice = ({
                   </tr>)}
                 <tr className="bg-gray-50">
                   <td colSpan={5} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black text-right">
-                    Tổng cộng:
+                    <div className="flex items-center justify-end">
+                      <DollarSign className="w-4 h-4 mr-1" />
+                      <span>Tổng cộng:</span>
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
-                    {calculateTotal().toLocaleString('vi-VN')} đ
+                    {revenueData?.totalAmount ? 
+                      revenueData.totalAmount.toLocaleString('vi-VN') : 
+                      calculateTotal().toLocaleString('vi-VN')} đ
                   </td>
                 </tr>
+                {revenueData?.monthlyRevenue && (
+                  <tr className="bg-blue-50">
+                    <td colSpan={5} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-800 text-right">
+                      <div className="flex items-center justify-end">
+                        <CalendarRange className="w-4 h-4 mr-1" />
+                        <span>Doanh thu tháng này:</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-800">
+                      {revenueData.monthlyRevenue.toLocaleString('vi-VN')} đ
+                    </td>
+                  </tr>
+                )}
+                {revenueData?.yearlyRevenue && (
+                  <tr className="bg-green-50">
+                    <td colSpan={5} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-800 text-right">
+                      <div className="flex items-center justify-end">
+                        <Coins className="w-4 h-4 mr-1" />
+                        <span>Doanh thu năm nay:</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-800">
+                      {revenueData.yearlyRevenue.toLocaleString('vi-VN')} đ
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
+          {revenueData && (
+            <div className="mb-8 p-4 border border-blue-200 rounded-lg bg-blue-50">
+              <h4 className="font-medium text-blue-800 mb-2 flex items-center">
+                <Coins className="h-5 w-5 mr-1" /> Thông tin doanh thu
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <p className="text-sm text-blue-800">Doanh thu từ đơn thuốc này:</p>
+                  <p className="text-lg font-bold text-blue-900">{revenueData.totalAmount?.toLocaleString('vi-VN') || '0'} đ</p>
+                </div>
+                {revenueData.monthlyRevenue !== undefined && (
+                  <div>
+                    <p className="text-sm text-blue-800">Doanh thu trong tháng:</p>
+                    <p className="text-lg font-bold text-blue-900">{revenueData.monthlyRevenue?.toLocaleString('vi-VN') || '0'} đ</p>
+                  </div>
+                )}
+                {revenueData.yearlyRevenue !== undefined && (
+                  <div>
+                    <p className="text-sm text-blue-800">Doanh thu trong năm:</p>
+                    <p className="text-lg font-bold text-blue-900">{revenueData.yearlyRevenue?.toLocaleString('vi-VN') || '0'} đ</p>
+                  </div>
+                )}
+              </div>
+              
+              {/* Chi tiết các loại thuốc đóng góp vào doanh thu */}
+              {revenueData.medicines && revenueData.medicines.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-blue-200">
+                  <p className="text-sm font-medium text-blue-800 mb-2">Phân tích chi tiết:</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                    {revenueData.medicines.map((med: any, idx: number) => (
+                      <div key={idx} className="text-xs bg-white p-2 rounded border border-blue-100 flex justify-between">
+                        <span>{med.name} ({med.quantity} x {med.price?.toLocaleString('vi-VN')}đ)</span>
+                        <span className="font-medium">{med.total?.toLocaleString('vi-VN')}đ</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {isLoadingRevenue && (
+            <div className="mb-8 p-4 border border-blue-100 rounded-lg bg-blue-50">
+              <div className="flex items-center justify-center">
+                <span className="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full mr-2"></span>
+                <p className="text-blue-600">Đang tính toán doanh thu...</p>
+              </div>
+            </div>
+          )}
+          
           <div className="grid grid-cols-2 gap-4 mt-8">
             <div className="text-center">
               <p className="font-medium text-black">Người lập phiếu</p>

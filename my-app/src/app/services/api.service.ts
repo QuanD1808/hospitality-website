@@ -573,3 +573,47 @@ export const deductMedicineStock = async (medicineId: string, quantity: number, 
     throw error;
   }
 };
+
+// Tính doanh thu từ đơn thuốc đã phát
+export const calculateRevenue = async (token: string, startDate?: string, endDate?: string) => {
+  console.log(`API Call: calculateRevenue from ${startDate || 'all time'} to ${endDate || 'now'}`);
+  try {
+    const params: any = { status: 'DISPENSED' };
+    
+    if (startDate) params.startDate = startDate;
+    if (endDate) params.endDate = endDate;
+    
+    const response = await axiosInstance.get('/prescriptions/revenue', {
+      params,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    console.log(`API Response: Revenue calculation successful`);
+    return response.data;
+  } catch (error: any) {
+    console.error(`API Error: calculateRevenue failed:`, error.response?.data || error.message);
+    console.error('Error response status:', error.response?.status);
+    throw error;
+  }
+};
+
+// Tính doanh thu chi tiết từ một đơn thuốc cụ thể
+export const calculatePrescriptionRevenue = async (prescriptionId: string, token: string) => {
+  console.log(`API Call: calculatePrescriptionRevenue for id: ${prescriptionId}`);
+  try {
+    const response = await axiosInstance.get(`/prescriptions/${prescriptionId}/revenue`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    console.log(`API Response: Prescription revenue calculation successful`);
+    return response.data;
+  } catch (error: any) {
+    console.error(`API Error: calculatePrescriptionRevenue failed for id ${prescriptionId}:`, error.response?.data || error.message);
+    console.error('Error response status:', error.response?.status);
+    throw error;
+  }
+};

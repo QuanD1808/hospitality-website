@@ -1,6 +1,8 @@
 // src/controllers/prescriptionController.js
 const Prescription = require('../models/Prescription');
 const User = require('../models/User'); // Để kiểm tra patientId và doctorId là User hợp lệ
+const PrescriptionDetail = require('../models/PrescriptionDetail');
+const Medicine = require('../models/Medicine');
 
 // @desc    Tạo một Prescription mới
 // @route   POST /api/prescriptions
@@ -239,5 +241,221 @@ exports.deletePrescription = async (req, res) => {
             return res.status(400).json({ message: 'Invalid Prescription ID format' });
         }
         res.status(500).json({ message: 'Server Error', error: err.message });
+    }
+};
+
+// @desc    Tính doanh thu từ các đơn thuốc đã phát (DISPENSED)
+// @route   GET /api/prescriptions/revenue
+// @access  ADMIN, PHARMACIST
+exports.calculateRevenue = async (req, res) => {
+    console.log('\n========== CALCULATE REVENUE REQUEST ==========');
+    console.log('Request query:', JSON.stringify(req.query, null, 2));
+    console.log('Auth user:', req.user ? `ID: ${req.user._id}, Role: ${req.user.role}` : 'Not authenticated');
+    
+    try {
+        const { startDate, endDate } = req.query;
+        let dateFilter = { status: 'DISPENSED' };
+        
+        // Add date filtering if provided
+        if (startDate || endDate) {
+            dateFilter.date = {};
+            if (startDate) dateFilter.date.$gte = new Date(startDate);
+            if (endDate) dateFilter.date.$lte = new Date(endDate);
+        }
+        
+        console.log('Applying filters:', JSON.stringify(dateFilter, null, 2));
+        
+        // Get all dispensed prescriptions within the date range
+        const prescriptions = await Prescription.find(dateFilter);
+        console.log(`Found ${prescriptions.length} dispensed prescriptions`);
+        
+        let totalRevenue = 0;
+        let medicineDetails = [];
+        
+        // Calculate revenue for each prescription by summing up all medicine prices
+        for (const prescription of prescriptions) {
+            // Get prescription details for this prescription
+            const details = await PrescriptionDetail.find({ prescriptionId: prescription._id });
+            console.log(`Found ${details.length} details for prescription ${prescription._id}`);
+            
+            // For each detail, get medicine price and calculate subtotal
+            for (const detail of details) {
+                const medicine = await Medicine.findById(detail.medicineId);
+                if (medicine) {
+                    const subtotal = medicine.price * detail.quantity;
+                    totalRevenue += subtotal;
+                    
+                    // Add to medicine details for reporting
+                    medicineDetails.push({
+                        medicineId: medicine._id,
+                        name: medicine.name,
+                        price: medicine.price,
+                        quantity: detail.quantity,
+                        subtotal: subtotal
+                    });
+                }
+            }
+        }
+        
+        // Calculate yearly revenue (current year)
+        const currentYear = new Date().getFullYear();
+        const startOfYear = new Date(currentYear, 0, 1);
+        const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59);
+        
+        const yearlyPrescriptions = await Prescription.find({
+            status: 'DISPENSED',
+            date: { $gte: startOfYear, $lte: endOfYear }
+        });
+        
+        let yearlyRevenue = 0;
+        for (const prescription of yearlyPrescriptions) {
+            const details = await PrescriptionDetail.find({ prescriptionId: prescription._id });
+            for (const detail of details) {
+                const medicine = await Medicine.findById(detail.medicineId);
+                if (medicine) {
+                    yearlyRevenue += medicine.price * detail.quantity;
+                }
+            }
+        }
+        
+        // Calculate monthly revenue (current month)
+        const currentMonth = new Date().getMonth();
+        const startOfMonth = new Date(currentYear, currentMonth, 1);
+        const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+        
+        const monthlyPrescriptions = await Prescription.find({
+            status: 'DISPENSED',
+            date: { $gte: startOfMonth, $lte: endOfMonth }
+        });
+        
+        let monthlyRevenue = 0;
+        for (const prescription of monthlyPrescriptions) {
+            const details = await PrescriptionDetail.find({ prescriptionId: prescription._id });
+            for (const detail of details) {
+                const medicine = await Medicine.findById(detail.medicineId);
+                if (medicine) {
+                    monthlyRevenue += medicine.price * detail.quantity;
+                }
+            }
+        }
+        
+        res.status(200).json({
+            totalAmount: totalRevenue,
+            medicineDetails: medicineDetails,
+            yearlyRevenue,
+            monthlyRevenue,
+            filters: {
+                startDate: startDate || null,
+                endDate: endDate || null
+            }
+        });
+    } catch (err) {
+        console.error('Error in calculateRevenue:', err);
+        res.status(500).json({ 
+            message: 'Server Error when calculating revenue', 
+            details: err.message,
+            stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+        });
+    }
+};
+
+// @desc    Tính doanh thu cho một đơn thuốc cụ thể
+// @route   GET /api/prescriptions/:id/revenue
+// @access  ADMIN, PHARMACIST
+exports.calculatePrescriptionRevenue = async (req, res) => {
+    console.log('\n========== CALCULATE PRESCRIPTION REVENUE REQUEST ==========');
+    console.log('Prescription ID:', req.params.id);
+    console.log('Auth user:', req.user ? `ID: ${req.user._id}, Role: ${req.user.role}` : 'Not authenticated');
+    
+    try {
+        const prescriptionId = req.params.id;
+        
+        // Kiểm tra đơn thuốc tồn tại không
+        const prescription = await Prescription.findById(prescriptionId);
+        if (!prescription) {
+            return res.status(404).json({ message: 'Prescription not found' });
+        }
+        
+        // Lấy chi tiết đơn thuốc
+        const details = await PrescriptionDetail.find({ prescriptionId });
+        console.log(`Found ${details.length} details for prescription ${prescriptionId}`);
+        
+        let totalAmount = 0;
+        const medicines = [];
+        
+        // Tính toán doanh thu từ đơn thuốc này
+        for (const detail of details) {
+            const medicine = await Medicine.findById(detail.medicineId);
+            if (medicine) {
+                const subtotal = medicine.price * detail.quantity;
+                totalAmount += subtotal;
+                
+                medicines.push({
+                    id: medicine._id,
+                    name: medicine.name,
+                    price: medicine.price,
+                    quantity: detail.quantity,
+                    total: subtotal
+                });
+            }
+        }
+        
+        // Calculate monthly revenue for context (optional)
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+        const startOfMonth = new Date(currentYear, currentMonth, 1);
+        const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+        
+        const monthlyPrescriptions = await Prescription.find({
+            status: 'DISPENSED',
+            date: { $gte: startOfMonth, $lte: endOfMonth }
+        });
+        
+        let monthlyRevenue = 0;
+        for (const p of monthlyPrescriptions) {
+            const pDetails = await PrescriptionDetail.find({ prescriptionId: p._id });
+            for (const detail of pDetails) {
+                const medicine = await Medicine.findById(detail.medicineId);
+                if (medicine) {
+                    monthlyRevenue += medicine.price * detail.quantity;
+                }
+            }
+        }
+        
+        // Calculate yearly revenue for context (optional)
+        const startOfYear = new Date(currentYear, 0, 1);
+        const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59);
+        
+        const yearlyPrescriptions = await Prescription.find({
+            status: 'DISPENSED',
+            date: { $gte: startOfYear, $lte: endOfYear }
+        });
+        
+        let yearlyRevenue = 0;
+        for (const p of yearlyPrescriptions) {
+            const pDetails = await PrescriptionDetail.find({ prescriptionId: p._id });
+            for (const detail of pDetails) {
+                const medicine = await Medicine.findById(detail.medicineId);
+                if (medicine) {
+                    yearlyRevenue += medicine.price * detail.quantity;
+                }
+            }
+        }
+        
+        res.status(200).json({
+            prescriptionId,
+            totalAmount,
+            medicines,
+            monthlyRevenue,
+            yearlyRevenue
+        });
+    } catch (err) {
+        console.error('Error in calculatePrescriptionRevenue:', err);
+        res.status(500).json({ 
+            message: 'Server Error when calculating prescription revenue', 
+            details: err.message,
+            stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+        });
     }
 };

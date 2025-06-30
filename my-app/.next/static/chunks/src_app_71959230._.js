@@ -51,6 +51,8 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
 __turbopack_context__.s({
+    "calculatePrescriptionRevenue": (()=>calculatePrescriptionRevenue),
+    "calculateRevenue": (()=>calculateRevenue),
     "createAppointment": (()=>createAppointment),
     "createBatchPrescriptionDetails": (()=>createBatchPrescriptionDetails),
     "createMedicine": (()=>createMedicine),
@@ -599,6 +601,44 @@ const deductMedicineStock = async (medicineId, quantity, token)=>{
         return response.data;
     } catch (error) {
         console.error('API Error: deductMedicineStock failed:', error.response?.data || error.message);
+        throw error;
+    }
+};
+const calculateRevenue = async (token, startDate, endDate)=>{
+    console.log(`API Call: calculateRevenue from ${startDate || 'all time'} to ${endDate || 'now'}`);
+    try {
+        const params = {
+            status: 'DISPENSED'
+        };
+        if (startDate) params.startDate = startDate;
+        if (endDate) params.endDate = endDate;
+        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get('/prescriptions/revenue', {
+            params,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(`API Response: Revenue calculation successful`);
+        return response.data;
+    } catch (error) {
+        console.error(`API Error: calculateRevenue failed:`, error.response?.data || error.message);
+        console.error('Error response status:', error.response?.status);
+        throw error;
+    }
+};
+const calculatePrescriptionRevenue = async (prescriptionId, token)=>{
+    console.log(`API Call: calculatePrescriptionRevenue for id: ${prescriptionId}`);
+    try {
+        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get(`/prescriptions/${prescriptionId}/revenue`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(`API Response: Prescription revenue calculation successful`);
+        return response.data;
+    } catch (error) {
+        console.error(`API Error: calculatePrescriptionRevenue failed for id ${prescriptionId}:`, error.response?.data || error.message);
+        console.error('Error response status:', error.response?.status);
         throw error;
     }
 };
