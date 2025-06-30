@@ -100,7 +100,7 @@ exports.getAllPrescriptionDetails = async (req, res) => {
                 return res.status(403).json({ message: 'Not authorized to view details for this prescription' });
             }
         }
-        // Pharmacist và Admin có thể xem tất cả chi tiết (nếu không có filter prescriptionId) hoặc của 1 đơn cụ thể
+        // RECEPTIONIST, Pharmacist và Admin có thể xem tất cả chi tiết (nếu không có filter prescriptionId) hoặc của 1 đơn cụ thể
 
         const details = await PrescriptionDetail.find(filter)
             .populate({
@@ -133,6 +133,7 @@ exports.getPrescriptionDetailById = async (req, res) => {
         if (req.user.role === 'DOCTOR' && detail.prescriptionId.doctorId._id.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: 'Not authorized' });
         }
+        // RECEPTIONIST, PHARMACIST và ADMIN có thể xem tất cả chi tiết
         res.status(200).json(detail);
     } catch (err) { /* ... (xử lý lỗi) ... */ }
 };

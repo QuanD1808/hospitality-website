@@ -18,12 +18,20 @@ export const getMedicines = async (token: string) => {
 
 // Get a specific medicine by ID
 export const getMedicineById = async (medicineId: string, token: string) => {
-  const response = await axiosInstance.get(`/medicines/${medicineId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
+  console.log(`API Call: getMedicineById for id: ${medicineId}`);
+  try {
+    const response = await axiosInstance.get(`/medicines/${medicineId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(`API Response: Found medicine with name: ${response.data.name}`);
+    return response.data;
+  } catch (error: any) {
+    console.error(`API Error: getMedicineById failed for id ${medicineId}:`, error.response?.data || error.message);
+    console.error('Error response status:', error.response?.status);
+    throw error;
+  }
 };
 
 // Create a new medicine
@@ -217,6 +225,7 @@ export const getPatients = async (token: string) => {
 
 // Kiểm tra tính hợp lệ của token
 export const validateToken = async (token: string) => {
+  console.log('Validating token (first 10 chars):', token.substring(0, 10) + '...');
   try {
     // Gọi một endpoint đơn giản để kiểm tra token có hợp lệ không
     const response = await axiosInstance.get('/users/validate-token', {
@@ -224,9 +233,25 @@ export const validateToken = async (token: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return { valid: true, data: response.data };
+    console.log('Token validation successful, user data:', response.data);
+    
+    // Get detailed user info to check role
+    try {
+      const meResponse = await axiosInstance.get('/users/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log('Current user role from /users/me:', meResponse.data?.role);
+      return { valid: true, data: meResponse.data || response.data };
+    } catch (meError) {
+      console.error('Failed to get additional user info:', meError);
+      return { valid: true, data: response.data };
+    }
   } catch (error: any) {
     console.error('Token validation error:', error);
+    console.error('Error response status:', error.response?.status);
+    console.error('Error response data:', error.response?.data);
     
     if (error.response && error.response.status === 401) {
       // Token không hợp lệ hoặc đã hết hạn
@@ -407,13 +432,23 @@ export const createPrescription = async (prescriptionData: any, token: string) =
 };
 
 export const getPrescriptions = async (queryParams: { patientId?: string, doctorId?: string, status?: string } = {}, token: string) => {
-  const response = await axiosInstance.get('/prescriptions', {
-    params: queryParams,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
+  console.log('API Call: getPrescriptions with params:', queryParams);
+  console.log('Using token (first 10 chars):', token.substring(0, 10) + '...');
+  try {
+    const response = await axiosInstance.get('/prescriptions', {
+      params: queryParams,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(`API Response: Found ${response.data.length} prescriptions`);
+    return response.data;
+  } catch (error: any) {
+    console.error('API Error: getPrescriptions failed:', error.response?.data || error.message);
+    console.error('Error response status:', error.response?.status);
+    console.error('Error response headers:', error.response?.headers);
+    throw error;
+  }
 };
 
 // Helper function specifically for pharmacy to get pending prescriptions
@@ -473,13 +508,32 @@ export const createBatchPrescriptionDetails = async (prescriptionId: string, det
 };
 
 export const getPrescriptionDetails = async (prescriptionId: string, token: string) => {
-  const response = await axiosInstance.get('/prescriptiondetails', {
-    params: { prescriptionId },
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
+  console.log(`API Call: getPrescriptionDetails for prescriptionId: ${prescriptionId}`);
+  console.log('Using token (first 10 chars):', token.substring(0, 10) + '...');
+  try {
+    const response = await axiosInstance.get('/prescriptiondetails', {
+      params: { prescriptionId },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(`API Response: Found ${response.data.length} prescription details`);
+    if (response.data.length > 0) {
+      console.log('First prescription detail sample:', {
+        id: response.data[0]._id,
+        prescriptionId: response.data[0].prescriptionId,
+        medicineId: response.data[0].medicineId,
+        quantity: response.data[0].quantity,
+        dosage: response.data[0].dosage
+      });
+    }
+    return response.data;
+  } catch (error: any) {
+    console.error('API Error: getPrescriptionDetails failed:', error.response?.data || error.message);
+    console.error('Error response status:', error.response?.status);
+    console.error('Error response headers:', error.response?.headers);
+    throw error;
+  }
 };
 
 // Deduct medicine quantity from inventory

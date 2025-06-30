@@ -126,6 +126,19 @@
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-blur: initial;
+      --tw-brightness: initial;
+      --tw-contrast: initial;
+      --tw-grayscale: initial;
+      --tw-hue-rotate: initial;
+      --tw-invert: initial;
+      --tw-opacity: initial;
+      --tw-saturate: initial;
+      --tw-sepia: initial;
+      --tw-drop-shadow: initial;
+      --tw-drop-shadow-color: initial;
+      --tw-drop-shadow-alpha: 100%;
+      --tw-drop-shadow-size: initial;
       --tw-backdrop-blur: initial;
       --tw-backdrop-brightness: initial;
       --tw-backdrop-contrast: initial;
@@ -154,6 +167,9 @@
     --color-red-600: oklch(57.7% .245 27.325);
     --color-red-700: oklch(50.5% .213 27.518);
     --color-red-800: oklch(44.4% .177 26.899);
+    --color-orange-500: oklch(70.5% .213 47.604);
+    --color-orange-600: oklch(64.6% .222 41.116);
+    --color-orange-700: oklch(55.3% .195 38.402);
     --color-amber-500: oklch(76.9% .188 70.08);
     --color-yellow-100: oklch(97.3% .071 103.193);
     --color-yellow-400: oklch(85.2% .199 91.936);
@@ -205,6 +221,7 @@
     --spacing: .25rem;
     --container-sm: 24rem;
     --container-md: 28rem;
+    --container-lg: 32rem;
     --container-xl: 36rem;
     --container-2xl: 42rem;
     --container-4xl: 56rem;
@@ -789,6 +806,10 @@
     height: 100vh;
   }
 
+  .max-h-40 {
+    max-height: calc(var(--spacing) * 40);
+  }
+
   .max-h-60 {
     max-height: calc(var(--spacing) * 60);
   }
@@ -869,6 +890,10 @@
     max-width: var(--container-7xl);
   }
 
+  .max-w-lg {
+    max-width: var(--container-lg);
+  }
+
   .max-w-md {
     max-width: var(--container-md);
   }
@@ -915,6 +940,10 @@
 
   .resize-none {
     resize: none;
+  }
+
+  .list-disc {
+    list-style-type: disc;
   }
 
   .appearance-none {
@@ -1015,6 +1044,12 @@
     --tw-space-y-reverse: 0;
     margin-block-start: calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse));
     margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)));
+  }
+
+  :where(.-space-x-px > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(-1px * var(--tw-space-x-reverse));
+    margin-inline-end: calc(-1px * calc(1 - var(--tw-space-x-reverse)));
   }
 
   :where(.space-x-1 > :not(:last-child)) {
@@ -1337,8 +1372,16 @@
     background-color: var(--color-green-600);
   }
 
+  .bg-orange-600 {
+    background-color: var(--color-orange-600);
+  }
+
   .bg-purple-100 {
     background-color: var(--color-purple-100);
+  }
+
+  .bg-purple-600 {
+    background-color: var(--color-purple-600);
   }
 
   .bg-red-50 {
@@ -1625,6 +1668,14 @@
 
   .pl-3 {
     padding-left: calc(var(--spacing) * 3);
+  }
+
+  .pl-5 {
+    padding-left: calc(var(--spacing) * 5);
+  }
+
+  .pl-8 {
+    padding-left: calc(var(--spacing) * 8);
   }
 
   .pl-10 {
@@ -1965,6 +2016,10 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
+  .filter {
+    filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
+  }
+
   .backdrop-blur-md {
     --tw-backdrop-blur: blur(var(--blur-md));
     backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
@@ -2130,6 +2185,12 @@
   }
 
   @media (hover: hover) {
+    .hover\:bg-gray-800:hover {
+      background-color: var(--color-gray-800);
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:bg-green-200:hover {
       background-color: var(--color-green-200);
     }
@@ -2138,6 +2199,18 @@
   @media (hover: hover) {
     .hover\:bg-green-700:hover {
       background-color: var(--color-green-700);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:bg-orange-700:hover {
+      background-color: var(--color-orange-700);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:bg-purple-700:hover {
+      background-color: var(--color-purple-700);
     }
   }
 
@@ -2302,6 +2375,14 @@
     --tw-ring-color: var(--color-green-500);
   }
 
+  .focus\:ring-orange-500:focus {
+    --tw-ring-color: var(--color-orange-500);
+  }
+
+  .focus\:ring-purple-500:focus {
+    --tw-ring-color: var(--color-purple-500);
+  }
+
   .focus\:ring-red-500:focus {
     --tw-ring-color: var(--color-red-500);
   }
@@ -2343,6 +2424,18 @@
   }
 
   @media (width >= 40rem) {
+    .sm\:flex {
+      display: flex;
+    }
+  }
+
+  @media (width >= 40rem) {
+    .sm\:hidden {
+      display: none;
+    }
+  }
+
+  @media (width >= 40rem) {
     .sm\:inline {
       display: inline;
     }
@@ -2361,6 +2454,12 @@
   }
 
   @media (width >= 40rem) {
+    .sm\:flex-1 {
+      flex: 1;
+    }
+  }
+
+  @media (width >= 40rem) {
     .sm\:grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -2369,6 +2468,12 @@
   @media (width >= 40rem) {
     .sm\:flex-row {
       flex-direction: row;
+    }
+  }
+
+  @media (width >= 40rem) {
+    .sm\:justify-between {
+      justify-content: space-between;
     }
   }
 
@@ -2742,6 +2847,72 @@ body {
   syntax: "*";
   inherits: false;
   initial-value: 0 0 #0000;
+}
+
+@property --tw-blur {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-brightness {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-contrast {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-grayscale {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-hue-rotate {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-invert {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-opacity {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-saturate {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-sepia {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-drop-shadow {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-drop-shadow-color {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-drop-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@property --tw-drop-shadow-size {
+  syntax: "*";
+  inherits: false
 }
 
 @property --tw-backdrop-blur {

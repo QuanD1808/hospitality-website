@@ -110,7 +110,7 @@ exports.createPrescription = async (req, res) => {
 
 // @desc    Lấy tất cả Prescriptions
 // @route   GET /api/prescriptions
-// @access  ADMIN, DOCTOR (của mình), PHARMACIST, PATIENT (của mình)
+// @access  ADMIN, DOCTOR (của mình), PHARMACIST, PATIENT (của mình), RECEPTIONIST
 exports.getAllPrescriptions = async (req, res) => {
     const { patientId, doctorId, status, startDate, endDate } = req.query; // Lọc theo patientId, doctorId, status, date
     let filter = {};
@@ -132,7 +132,8 @@ exports.getAllPrescriptions = async (req, res) => {
             filter.patientId = req.user._id; // Patient chỉ xem đơn thuốc của chính họ
         } else if (req.user.role === 'DOCTOR') {
             filter.doctorId = req.user._id; // Doctor chỉ xem đơn thuốc của chính họ
-        }
+        } 
+        // ADMIN, PHARMACIST và RECEPTIONIST có thể xem tất cả đơn thuốc (với các filter từ query)
 
         const prescriptions = await Prescription.find(filter)
             // KẾT HỢP DỮ LIỆU: Lấy thông tin chi tiết của Patient (là một User)
@@ -148,7 +149,7 @@ exports.getAllPrescriptions = async (req, res) => {
 
 // @desc    Lấy một Prescription theo _id
 // @route   GET /api/prescriptions/:id
-// @access  ADMIN, DOCTOR (của mình), PHARMACIST, PATIENT (của mình)
+// @access  ADMIN, DOCTOR (của mình), PHARMACIST, PATIENT (của mình), RECEPTIONIST
 exports.getPrescriptionById = async (req, res) => {
     try {
         const prescription = await Prescription.findById(req.params.id)
@@ -166,6 +167,7 @@ exports.getPrescriptionById = async (req, res) => {
         } else if (req.user.role === 'DOCTOR' && prescription.doctorId.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: 'Not authorized to view this prescription' });
         }
+        // ADMIN, PHARMACIST và RECEPTIONIST có thể xem tất cả đơn thuốc
 
         res.status(200).json(prescription);
     } catch (err) {

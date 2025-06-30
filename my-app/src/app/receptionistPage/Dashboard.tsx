@@ -25,6 +25,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
   const [completedQueues, setCompletedQueues] = useState<any[]>([]);
   const [loadingQueues, setLoadingQueues] = useState(false);
   const [queueError, setQueueError] = useState<string | null>(null);
+  
+  // Pagination state cho danh sách queue đã hoàn thành
+  const [currentPage, setCurrentPage] = useState(1);
+  const [queuesPerPage, setQueuesPerPage] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Load dữ liệu từ API khi component mount
   useEffect(() => {
@@ -132,7 +137,12 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                        queue.doctorId.fullName : 'Không rõ bác sĩ'
           }));
           
+          // Sắp xếp theo thời gian hoàn thành mới nhất
+          formattedQueues.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+          
           setCompletedQueues(formattedQueues);
+          setTotalPages(Math.ceil(formattedQueues.length / queuesPerPage));
+          setCurrentPage(1); // Reset to first page when data changes
         } catch (apiError: any) {
           console.error("API error:", apiError);
           setQueueError(`Lỗi khi lấy dữ liệu từ API: ${apiError.message}`);
@@ -181,12 +191,34 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         };
       }));
       
+      // Sắp xếp theo thời gian hoàn thành mới nhất
+      formattedMockQueues.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+      
       setCompletedQueues(formattedMockQueues);
+      setTotalPages(Math.ceil(formattedMockQueues.length / queuesPerPage));
+      setCurrentPage(1); // Reset to first page when data changes
     } catch (mockError: any) {
       console.error("Error loading mock data for completed queues:", mockError);
       setQueueError(`Không thể tải dữ liệu mô phỏng: ${mockError.message}`);
       setCompletedQueues([]);
+      setTotalPages(1);
     }
+  };
+
+  // Calculating pagination variables
+  const indexOfLastQueue = currentPage * queuesPerPage;
+  const indexOfFirstQueue = indexOfLastQueue - queuesPerPage;
+  const currentQueues = completedQueues.slice(indexOfFirstQueue, indexOfLastQueue);
+  
+  // Function to handle page change
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  
+  // Function to handle records per page change
+  const handleRecordsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = parseInt(e.target.value);
+    setQueuesPerPage(value);
+    setTotalPages(Math.ceil(completedQueues.length / value));
+    setCurrentPage(1); // Reset to first page when changing records per page
   };
 
   return (
@@ -294,7 +326,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {completedQueues.slice(0, 5).map((queue) => (
+                    {currentQueues.map((queue) => (
                       <tr key={queue._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
@@ -325,13 +357,159 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                   </tbody>
                 </table>
                 
-                {completedQueues.length > 5 && (
-                  <div className="bg-gray-50 px-4 py-3 border-t border-gray-200 sm:px-6">
-                    <p className="text-sm text-gray-700">
-                      Hiển thị 5/{completedQueues.length} bệnh nhân đã hoàn thành khám
-                    </p>
+                {/* Pagination Controls */}
+                <div className="px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                  <div className="flex flex-col gap-4 sm:hidden">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-gray-700">
+                        Trang {currentPage}/{totalPages}
+                      </p>
+                      <select 
+                        className="border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm"
+                        value={queuesPerPage}
+                        onChange={(e) => {
+                          setQueuesPerPage(Number(e.target.value));
+                          setTotalPages(Math.ceil(completedQueues.length / Number(e.target.value)));
+                          setCurrentPage(1); // Reset to first page when changing records per page
+                        }}
+                      >
+                        <option value={5}>5 mỗi trang</option>
+                        <option value={10}>10 mỗi trang</option>
+                        <option value={20}>20 mỗi trang</option>
+                        <option value={completedQueues.length}>Tất cả</option>
+                      </select>
+                    </div>
+                    <div className="flex justify-between">
+                      <button
+                        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                        className={`relative inline-flex items-center px-4 py-2 rounded-md text-sm font-medium ${
+                          currentPage === 1 
+                            ? 'text-gray-400 bg-gray-100'
+                            : 'text-blue-600 bg-blue-100 hover:bg-blue-200'
+                        } focus:outline-none`}
+                        disabled={currentPage === 1}
+                      >
+                        Trước
+                      </button>
+                      <span className="text-sm font-medium">
+                        {currentPage} / {totalPages}
+                      </span>
+                      <button
+                        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                        className={`relative inline-flex items-center px-4 py-2 rounded-md text-sm font-medium ${
+                          currentPage === totalPages 
+                            ? 'text-gray-400 bg-gray-100'
+                            : 'text-blue-600 bg-blue-100 hover:bg-blue-200'
+                        } focus:outline-none`}
+                        disabled={currentPage === totalPages}
+                      >
+                        Tiếp theo
+                      </button>
+                    </div>
                   </div>
-                )}
+                  <div className="hidden sm:flex-1 sm:flex sm:justify-between">
+                    <div className="flex items-center">
+                      <p className="text-sm text-gray-700">
+                        Hiển thị{' '}
+                        <span className="font-medium">{(currentPage - 1) * queuesPerPage + 1}</span>
+                        {' '}đến{' '}
+                        <span className="font-medium">{Math.min(currentPage * queuesPerPage, completedQueues.length)}</span>
+                        {' '}trong tổng số{' '}
+                        <span className="font-medium">{completedQueues.length}</span>
+                        {' '}bệnh nhân đã hoàn thành khám
+                      </p>
+                      <select 
+                        className="ml-3 border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm"
+                        value={queuesPerPage}
+                        onChange={(e) => {
+                          setQueuesPerPage(Number(e.target.value));
+                          setTotalPages(Math.ceil(completedQueues.length / Number(e.target.value)));
+                          setCurrentPage(1); // Reset to first page when changing records per page
+                        }}
+                      >
+                        <option value={5}>5 mỗi trang</option>
+                        <option value={10}>10 mỗi trang</option>
+                        <option value={20}>20 mỗi trang</option>
+                        <option value={completedQueues.length}>Hiển thị tất cả</option>
+                      </select>
+                    </div>
+                    <div>
+                      <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <button
+                          onClick={() => setCurrentPage(1)}
+                          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10"
+                        >
+                          <span className="sr-only">Đến trang đầu</span>
+                          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 18l-6-6 6-6" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => setCurrentPage(currentPage - 1)}
+                          className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10"
+                          disabled={currentPage === 1}
+                        >
+                          <span className="sr-only">Trang trước</span>
+                          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 18l-6-6 6-6" />
+                          </svg>
+                        </button>
+                        
+                        {/* Page number buttons */}
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                          // Logic to show pages around current page
+                          let pageToShow;
+                          if (totalPages <= 5) {
+                            pageToShow = i + 1;
+                          } else if (currentPage <= 3) {
+                            pageToShow = i + 1;
+                          } else if (currentPage >= totalPages - 2) {
+                            pageToShow = totalPages - 4 + i;
+                          } else {
+                            pageToShow = currentPage - 2 + i;
+                          }
+                          
+                          if (pageToShow > 0 && pageToShow <= totalPages) {
+                            return (
+                              <button
+                                key={pageToShow}
+                                onClick={() => setCurrentPage(pageToShow)}
+                                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 ${
+                                  currentPage === pageToShow
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                                } text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition-colors`}
+                              >
+                                {pageToShow}
+                              </button>
+                            );
+                          }
+                          return null;
+                        })}
+                        
+                        <button
+                          onClick={() => setCurrentPage(currentPage + 1)}
+                          className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10"
+                          disabled={currentPage === totalPages}
+                        >
+                          <span className="sr-only">Trang tiếp theo</span>
+                          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 6l6 6-6 6" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => setCurrentPage(totalPages)}
+                          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10"
+                        >
+                          <span className="sr-only">Đến trang cuối</span>
+                          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 6l6 6-6 6" />
+                          </svg>
+                        </button>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="text-center py-8 text-gray-500">

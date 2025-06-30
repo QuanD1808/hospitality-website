@@ -212,12 +212,20 @@ const getMedicines = async (token)=>{
     return response.data;
 };
 const getMedicineById = async (medicineId, token)=>{
-    const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/medicines/${medicineId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-    return response.data;
+    console.log(`API Call: getMedicineById for id: ${medicineId}`);
+    try {
+        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/medicines/${medicineId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(`API Response: Found medicine with name: ${response.data.name}`);
+        return response.data;
+    } catch (error) {
+        console.error(`API Error: getMedicineById failed for id ${medicineId}:`, error.response?.data || error.message);
+        console.error('Error response status:', error.response?.status);
+        throw error;
+    }
 };
 const createMedicine = async (medicineData, token)=>{
     const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].post('/medicines', medicineData, {
@@ -385,6 +393,7 @@ const getPatients = async (token)=>{
     }
 };
 const validateToken = async (token)=>{
+    console.log('Validating token (first 10 chars):', token.substring(0, 10) + '...');
     try {
         // Gọi một endpoint đơn giản để kiểm tra token có hợp lệ không
         const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('/users/validate-token', {
@@ -392,12 +401,30 @@ const validateToken = async (token)=>{
                 Authorization: `Bearer ${token}`
             }
         });
-        return {
-            valid: true,
-            data: response.data
-        };
+        console.log('Token validation successful, user data:', response.data);
+        // Get detailed user info to check role
+        try {
+            const meResponse = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('/users/me', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log('Current user role from /users/me:', meResponse.data?.role);
+            return {
+                valid: true,
+                data: meResponse.data || response.data
+            };
+        } catch (meError) {
+            console.error('Failed to get additional user info:', meError);
+            return {
+                valid: true,
+                data: response.data
+            };
+        }
     } catch (error) {
         console.error('Token validation error:', error);
+        console.error('Error response status:', error.response?.status);
+        console.error('Error response data:', error.response?.data);
         if (error.response && error.response.status === 401) {
             // Token không hợp lệ hoặc đã hết hạn
             return {
@@ -554,13 +581,23 @@ const createPrescription = async (prescriptionData, token)=>{
     }
 };
 const getPrescriptions = async (queryParams = {}, token)=>{
-    const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('/prescriptions', {
-        params: queryParams,
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-    return response.data;
+    console.log('API Call: getPrescriptions with params:', queryParams);
+    console.log('Using token (first 10 chars):', token.substring(0, 10) + '...');
+    try {
+        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('/prescriptions', {
+            params: queryParams,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(`API Response: Found ${response.data.length} prescriptions`);
+        return response.data;
+    } catch (error) {
+        console.error('API Error: getPrescriptions failed:', error.response?.data || error.message);
+        console.error('Error response status:', error.response?.status);
+        console.error('Error response headers:', error.response?.headers);
+        throw error;
+    }
 };
 const getPendingDispensePrescriptions = async (token)=>{
     return getPrescriptions({
@@ -615,15 +652,34 @@ const createBatchPrescriptionDetails = async (prescriptionId, details, token)=>{
     }
 };
 const getPrescriptionDetails = async (prescriptionId, token)=>{
-    const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('/prescriptiondetails', {
-        params: {
-            prescriptionId
-        },
-        headers: {
-            Authorization: `Bearer ${token}`
+    console.log(`API Call: getPrescriptionDetails for prescriptionId: ${prescriptionId}`);
+    console.log('Using token (first 10 chars):', token.substring(0, 10) + '...');
+    try {
+        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get('/prescriptiondetails', {
+            params: {
+                prescriptionId
+            },
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(`API Response: Found ${response.data.length} prescription details`);
+        if (response.data.length > 0) {
+            console.log('First prescription detail sample:', {
+                id: response.data[0]._id,
+                prescriptionId: response.data[0].prescriptionId,
+                medicineId: response.data[0].medicineId,
+                quantity: response.data[0].quantity,
+                dosage: response.data[0].dosage
+            });
         }
-    });
-    return response.data;
+        return response.data;
+    } catch (error) {
+        console.error('API Error: getPrescriptionDetails failed:', error.response?.data || error.message);
+        console.error('Error response status:', error.response?.status);
+        console.error('Error response headers:', error.response?.headers);
+        throw error;
+    }
 };
 const deductMedicineStock = async (medicineId, quantity, token)=>{
     console.log(`API Call: Deducting ${quantity} units from medicine ID: ${medicineId}`);
