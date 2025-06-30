@@ -243,6 +243,56 @@ export const getDailyRevenue = async () => {
     const today = new Date();
     const result = [];
     
+    // Try to get authentication token from localStorage
+    const tokenFromStorage = localStorage.getItem('token');
+    
+    if (tokenFromStorage) {
+      console.log('Using API to get daily revenue data');
+      
+      try {
+        // Get data for the last 7 days using API
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(today);
+          date.setDate(today.getDate() - i);
+          const dateString = date.toISOString().split('T')[0];
+          
+          // Get start and end of the day
+          const startDate = dateString;
+          const endDate = dateString;
+          
+          // Use API to get revenue for this day
+          const dailyData = await apiService.calculateRevenue(tokenFromStorage, startDate, endDate);
+          
+          result.push({
+            date: dateString,
+            amount: dailyData.totalAmount || 0
+          });
+        }
+      } catch (apiError) {
+        console.error('Error fetching daily revenue from API, falling back to mock data:', apiError);
+        // Fall back to mock data if API fails
+        return getDailyRevenueMock();
+      }
+    } else {
+      console.log('No auth token, using mock data for daily revenue');
+      // No token, use mock data
+      return getDailyRevenueMock();
+    }
+    
+    // Sort by date ascending for easier chart rendering
+    return result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  } catch (error) {
+    console.error("Error getting daily revenue:", error);
+    return [];
+  }
+};
+
+// Mock function for daily revenue when API is not available
+const getDailyRevenueMock = async () => {
+  try {
+    const today = new Date();
+    const result = [];
+    
     // Get all invoices
     const allInvoices = await getAllInvoices();
     
@@ -269,163 +319,147 @@ export const getDailyRevenue = async () => {
     // Sort by date ascending for easier chart rendering
     return result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   } catch (error) {
-    console.error("Error getting daily revenue:", error);
+    console.error("Error getting daily revenue mock data:", error);
     return [];
   }
 };
 
-// Function to create a new pharmacy invoice
+// Function to get yearly revenue data for statistics
+export const getYearlyRevenue = async () => {
+  try {
+    const currentYear = new Date().getFullYear();
+    const result = [];
+    
+    // Try to get authentication token from localStorage
+    const tokenFromStorage = localStorage.getItem('token');
+    
+    if (tokenFromStorage) {
+      console.log('Using API to get yearly revenue data');
+      
+      try {
+        // Get data for the last 5 years using API
+        for (let i = 0; i < 5; i++) {
+          const year = currentYear - i;
+          
+          const yearlyData = await apiService.calculateYearlyRevenue(tokenFromStorage, year.toString());
+          result.push({
+            year: year.toString(),
+            amount: yearlyData.totalAmount || 0
+          });
+        }
+      } catch (apiError) {
+        console.error('Error fetching yearly revenue from API, falling back to mock data:', apiError);
+        // Fall back to mock data if API fails
+        return getYearlyRevenueMock();
+      }
+    } else {
+      console.log('No auth token, using mock data for yearly revenue');
+      // No token, use mock data
+      return getYearlyRevenueMock();
+    }
+    
+    // Sort by year ascending for easier chart rendering
+    return result.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+  } catch (error) {
+    console.error("Error getting yearly revenue:", error);
+    return [];
+  }
+};
+
+// Mock function for yearly revenue when API is not available
+const getYearlyRevenueMock = async () => {
+  try {
+    const currentYear = new Date().getFullYear();
+    const result = [];
+    
+    // Get all invoices
+    const allInvoices = await getAllInvoices();
+    
+    // Calculate revenue for last 5 years
+    for (let i = 0; i < 5; i++) {
+      const year = currentYear - i;
+      
+      // Sum all invoices for this year
+      const yearInvoices = allInvoices.filter(invoice => {
+        const invoiceDate = new Date(invoice.createdAt);
+        return invoiceDate.getFullYear() === year;
+      });
+      
+      const totalAmount = yearInvoices.reduce((sum: number, invoice) => sum + invoice.totalAmount, 0);
+      
+      result.push({
+        year: year.toString(),
+        amount: totalAmount
+      });
+    }
+    
+    // Sort by year ascending for easier chart rendering
+    return result.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+  } catch (error) {
+    console.error("Error getting yearly revenue mock data:", error);
+    return [];
+  }
+};
+
+// Function to create a pharmacy invoice and mark prescription as dispensed
 export const createPharmacyInvoice = async (
   prescriptionId: string, 
   totalAmount: number, 
   token: string,
-  medicineDetails?: PharmacyMedicine[] // Add medicine details parameter
+  medicines: PharmacyMedicine[] = []
 ): Promise<boolean> => {
+  console.log(`Creating pharmacy invoice for prescription ${prescriptionId} with amount ${totalAmount}`);
+  
   try {
     if (!token) {
-      console.error("pharmacyUtils: No authentication token provided");
-      return false;
+      console.error("No authentication token available");
+      throw new Error("Authentication required");
     }
     
-    console.log(`pharmacyUtils: Creating pharmacy invoice for prescription ${prescriptionId} with total amount ${totalAmount}`);
-    console.log(`pharmacyUtils: Token available: ${!!token}`);
-    console.log(`pharmacyUtils: Medicines to deduct from inventory:`, medicineDetails);
+    // Step 1: Mark prescription as DISPENSED
+    console.log(`Updating prescription status to DISPENSED for ID: ${prescriptionId}`);
+    await apiService.updatePrescriptionStatus(prescriptionId, 'DISPENSED', token);
     
-    // 1. Update prescription status to DISPENSED (not COMPLETED, as backend only allows PHARMACIST to set status to DISPENSED or CANCELLED)
-    try {
-      console.log(`pharmacyUtils: Updating prescription status to DISPENSED via API...`);
-      const result = await apiService.updatePrescriptionStatus(prescriptionId, 'DISPENSED', token);
-      console.log(`pharmacyUtils: Updated prescription ${prescriptionId} status to DISPENSED`, result);
-    } catch (error) {
-      console.error("pharmacyUtils: Error updating prescription status:", error);
-      // Log details if available, but in a type-safe way
-      const err = error as any;
-      if (err && err.response) {
-        console.error("pharmacyUtils: Error response status:", err.response.status);
-        console.error("pharmacyUtils: Error response data:", err.response.data);
-      }
-      // Even if status update fails, we'll try to continue with invoice creation
-    }
-    
-    // 2. Get prescription details to deduct medicine quantities
-    if (medicineDetails && medicineDetails.length > 0) {
-      try {
-        console.log(`pharmacyUtils: Getting prescription details to update medicine inventory...`);
-        const prescriptionDetails = await apiService.getPrescriptionDetails(prescriptionId, token);
-        console.log(`pharmacyUtils: Found ${prescriptionDetails.length} prescription details`);
-        
-        // Process each prescription detail and deduct medicine quantity
-        for (const detail of prescriptionDetails) {
-          if (detail.medicineId && detail.medicineId._id) {
-            console.log(`pharmacyUtils: Deducting ${detail.quantity} of ${detail.medicineId.name} (ID: ${detail.medicineId._id}) from inventory`);
-            try {
-              await apiService.deductMedicineStock(detail.medicineId._id, detail.quantity, token);
-              console.log(`pharmacyUtils: Successfully deducted ${detail.quantity} of medicine ID ${detail.medicineId._id} from inventory`);
-            } catch (deductError) {
-              console.error(`pharmacyUtils: Failed to deduct medicine ${detail.medicineId._id}:`, deductError);
-              // Continue processing other medicines even if one fails
-            }
-          } else {
-            console.warn(`pharmacyUtils: Missing medicine ID in prescription detail:`, detail);
-          }
+    // Step 2: Deduct medicines from inventory
+    if (medicines && medicines.length > 0) {
+      console.log(`Processing ${medicines.length} medicines to update inventory`);
+      
+      // Get all prescription details for this prescription to get medicine IDs
+      const prescriptionDetails = await apiService.getPrescriptionDetails(prescriptionId, token);
+      
+      // Create a map of medicine names to their IDs
+      const medicineNameToIdMap = new Map();
+      for (const detail of prescriptionDetails) {
+        const medicine = detail.medicineId;
+        if (medicine && medicine.name && medicine._id) {
+          medicineNameToIdMap.set(medicine.name, medicine._id);
         }
-      } catch (detailsError) {
-        console.error(`pharmacyUtils: Error fetching prescription details to update inventory:`, detailsError);
-        // Continue to invoice creation even if medicine deduction fails
+      }
+      
+      // Process each medicine and deduct from inventory
+      for (const med of medicines) {
+        const medicineId = medicineNameToIdMap.get(med.name);
+        
+        if (medicineId) {
+          console.log(`Deducting ${med.quantity} units of ${med.name} (ID: ${medicineId}) from inventory`);
+          try {
+            await apiService.deductMedicineStock(medicineId, med.quantity, token);
+          } catch (deductError) {
+            console.error(`Error deducting medicine ${med.name}:`, deductError);
+            // Continue with other medicines even if one fails
+          }
+        } else {
+          console.warn(`Could not find medicine ID for ${med.name}, skipping inventory update`);
+        }
       }
     } else {
-      console.log(`pharmacyUtils: No medicines to deduct from inventory`);
+      console.log("No medicines to process for inventory update");
     }
     
-    // 3. Create invoice record (simulated for now)
-    const now = new Date();
-    const invoiceDate = now.toISOString();
-    
-    console.log(`pharmacyUtils: Simulated invoice created at ${invoiceDate} for prescription ${prescriptionId}`);
-    
+    console.log(`Pharmacy invoice process completed successfully for prescription ${prescriptionId}`);
     return true;
-  } catch (error) {
-    console.error("pharmacyUtils: Error creating pharmacy invoice:", error);
-    const err = error as any; // Type-safe error handling
-    if (err && err.response) {
-      console.error("pharmacyUtils: Error response status:", err.response.status);
-      console.error("pharmacyUtils: Error response data:", err.response.data);
-      console.error("pharmacyUtils: Error response headers:", err.response.headers);
-    }
-    console.error("pharmacyUtils: Error stack:", err.stack);
+  } catch (error: any) {
+    console.error("Error creating pharmacy invoice:", error);
     return false;
   }
 };
-
-// Function to get real-time pharmacy statistics
-export const getPharmacyStats = async (token: string | null) => {
-  try {
-    console.log("Fetching pharmacy statistics");
-    
-    if (token) {
-      try {
-        // Try to get real counts from the API
-        // Get all completed prescriptions today
-        const today = new Date();
-        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
-        
-        // Count prescriptions by status
-        const dispensedToday = await getPrescriptionsCountByStatus('COMPLETED', token, startOfDay);
-        const pendingDispense = await getPrescriptionsCountByStatus('PENDING_DISPENSE', token);
-        
-        console.log(`API stats: ${dispensedToday} dispensed today, ${pendingDispense} pending`);
-        
-        return {
-          dispensedToday,
-          pendingDispense,
-          totalRevenue: calculateTotalRevenue(dispensedToday),
-          averageValue: dispensedToday > 0 ? calculateTotalRevenue(dispensedToday) / dispensedToday : 0
-        };
-      } catch (apiError) {
-        console.error("Error fetching pharmacy stats from API:", apiError);
-        // Fall back to mock data
-      }
-    }
-    
-    // Return mock statistics
-    console.log("Using mock pharmacy statistics");
-    return {
-      dispensedToday: 5,
-      pendingDispense: 3,
-      totalRevenue: 1250000,
-      averageValue: 250000
-    };
-  } catch (error) {
-    console.error("Error getting pharmacy stats:", error);
-    return {
-      dispensedToday: 0,
-      pendingDispense: 0,
-      totalRevenue: 0,
-      averageValue: 0
-    };
-  }
-};
-
-// Helper function to get prescription counts by status
-async function getPrescriptionsCountByStatus(status: string, token: string, startDate?: string): Promise<number> {
-  try {
-    const params: any = { status };
-    if (startDate) {
-      // If startDate is provided, we're looking for prescriptions created after this date
-      params.startDate = startDate;
-    }
-    
-    const prescriptions = await apiService.getPrescriptions(params, token);
-    return prescriptions.length;
-  } catch (error) {
-    console.error(`Error getting count for ${status} prescriptions:`, error);
-    return 0;
-  }
-}
-
-// Helper function to calculate estimated revenue
-function calculateTotalRevenue(dispensedCount: number): number {
-  // Simple estimation - average 250,000 VND per prescription
-  const averagePerPrescription = 250000;
-  return dispensedCount * averagePerPrescription;
-}

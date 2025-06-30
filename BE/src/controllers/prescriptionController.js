@@ -261,6 +261,13 @@ exports.calculateRevenue = async (req, res) => {
             dateFilter.date = {};
             if (startDate) dateFilter.date.$gte = new Date(startDate);
             if (endDate) dateFilter.date.$lte = new Date(endDate);
+            
+            // If endDate is provided but not with time, set it to end of day
+            if (endDate && endDate.length === 10) {  // YYYY-MM-DD format
+                const endOfDay = new Date(endDate);
+                endOfDay.setHours(23, 59, 59, 999);
+                dateFilter.date.$lte = endOfDay;
+            }
         }
         
         console.log('Applying filters:', JSON.stringify(dateFilter, null, 2));
@@ -271,6 +278,7 @@ exports.calculateRevenue = async (req, res) => {
         
         let totalRevenue = 0;
         let medicineDetails = [];
+        let dailyRevenue = {};
         
         // Calculate revenue for each prescription by summing up all medicine prices
         for (const prescription of prescriptions) {
@@ -278,12 +286,21 @@ exports.calculateRevenue = async (req, res) => {
             const details = await PrescriptionDetail.find({ prescriptionId: prescription._id });
             console.log(`Found ${details.length} details for prescription ${prescription._id}`);
             
+            // Get the date of this prescription for daily breakdown
+            const prescriptionDate = prescription.date.toISOString().split('T')[0];
+            if (!dailyRevenue[prescriptionDate]) {
+                dailyRevenue[prescriptionDate] = 0;
+            }
+            
             // For each detail, get medicine price and calculate subtotal
             for (const detail of details) {
                 const medicine = await Medicine.findById(detail.medicineId);
                 if (medicine) {
                     const subtotal = medicine.price * detail.quantity;
                     totalRevenue += subtotal;
+                    
+                    // Add to daily revenue
+                    dailyRevenue[prescriptionDate] += subtotal;
                     
                     // Add to medicine details for reporting
                     medicineDetails.push({
@@ -302,10 +319,21 @@ exports.calculateRevenue = async (req, res) => {
         const startOfYear = new Date(currentYear, 0, 1);
         const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59);
         
-        const yearlyPrescriptions = await Prescription.find({
-            status: 'DISPENSED',
-            date: { $gte: startOfYear, $lte: endOfYear }
-        });
+        // Check if we need to calculate for a specific year
+        const yearFromQuery = startDate && startDate.length >= 4 ? new Date(startDate).getFullYear() : null;
+        
+        const yearToUse = yearFromQuery || currentYear;
+        const startOfTargetYear = new Date(yearToUse, 0, 1);
+        const endOfTargetYear = new Date(yearToUse, 11, 31, 23, 59, 59);
+        
+        let yearFilter = { status: 'DISPENSED' };
+        if (yearFromQuery) {
+            yearFilter.date = { $gte: startOfTargetYear, $lte: endOfTargetYear };
+        } else {
+            yearFilter.date = { $gte: startOfYear, $lte: endOfYear };
+        }
+        
+        const yearlyPrescriptions = await Prescription.find(yearFilter);
         
         let yearlyRevenue = 0;
         for (const prescription of yearlyPrescriptions) {
@@ -339,14 +367,22 @@ exports.calculateRevenue = async (req, res) => {
             }
         }
         
+        // Convert dailyRevenue object to array format
+        const dailyRevenueArray = Object.entries(dailyRevenue).map(([date, amount]) => ({
+            date,
+            amount
+        }));
+        
         res.status(200).json({
             totalAmount: totalRevenue,
             medicineDetails: medicineDetails,
             yearlyRevenue,
             monthlyRevenue,
+            dailyBreakdown: dailyRevenueArray,
             filters: {
                 startDate: startDate || null,
-                endDate: endDate || null
+                endDate: endDate || null,
+                year: yearFromQuery || currentYear
             }
         });
     } catch (err) {

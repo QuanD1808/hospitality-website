@@ -599,6 +599,21 @@ export const calculateRevenue = async (token: string, startDate?: string, endDat
   }
 };
 
+// Tính doanh thu theo năm
+export const calculateYearlyRevenue = async (token: string, year: string) => {
+  console.log(`API Call: calculateYearlyRevenue for year: ${year}`);
+  try {
+    const startDate = `${year}-01-01`;
+    const endDate = `${year}-12-31`;
+    
+    const response = await calculateRevenue(token, startDate, endDate);
+    return response;
+  } catch (error: any) {
+    console.error(`API Error: calculateYearlyRevenue failed for year ${year}:`, error);
+    throw error;
+  }
+};
+
 // Tính doanh thu chi tiết từ một đơn thuốc cụ thể
 export const calculatePrescriptionRevenue = async (prescriptionId: string, token: string) => {
   console.log(`API Call: calculatePrescriptionRevenue for id: ${prescriptionId}`);

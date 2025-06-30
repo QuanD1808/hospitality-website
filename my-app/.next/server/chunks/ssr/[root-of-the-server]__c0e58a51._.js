@@ -162,6 +162,7 @@ var { g: global, __dirname } = __turbopack_context__;
 __turbopack_context__.s({
     "calculatePrescriptionRevenue": (()=>calculatePrescriptionRevenue),
     "calculateRevenue": (()=>calculateRevenue),
+    "calculateYearlyRevenue": (()=>calculateYearlyRevenue),
     "createAppointment": (()=>createAppointment),
     "createBatchPrescriptionDetails": (()=>createBatchPrescriptionDetails),
     "createMedicine": (()=>createMedicine),
@@ -732,6 +733,18 @@ const calculateRevenue = async (token, startDate, endDate)=>{
     } catch (error) {
         console.error(`API Error: calculateRevenue failed:`, error.response?.data || error.message);
         console.error('Error response status:', error.response?.status);
+        throw error;
+    }
+};
+const calculateYearlyRevenue = async (token, year)=>{
+    console.log(`API Call: calculateYearlyRevenue for year: ${year}`);
+    try {
+        const startDate = `${year}-01-01`;
+        const endDate = `${year}-12-31`;
+        const response = await calculateRevenue(token, startDate, endDate);
+        return response;
+    } catch (error) {
+        console.error(`API Error: calculateYearlyRevenue failed for year ${year}:`, error);
         throw error;
     }
 };

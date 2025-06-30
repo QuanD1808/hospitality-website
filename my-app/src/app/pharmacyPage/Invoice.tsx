@@ -351,8 +351,8 @@ export const Invoice = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                     {revenueData.medicines.map((med: any, idx: number) => (
                       <div key={idx} className="text-xs bg-white p-2 rounded border border-blue-100 flex justify-between">
-                        <span>{med.name} ({med.quantity} x {med.price?.toLocaleString('vi-VN')}đ)</span>
-                        <span className="font-medium">{med.total?.toLocaleString('vi-VN')}đ</span>
+                        <span className="text-gray-700">{med.name} <span className="text-gray-500">({med.quantity} x {med.price?.toLocaleString('vi-VN')}đ)</span></span>
+                        <span className="font-medium text-blue-700">{med.total?.toLocaleString('vi-VN')}đ</span>
                       </div>
                     ))}
                   </div>
