@@ -275,6 +275,16 @@ export const getQueues = async (token: string) => {
   return response.data;
 };
 
+export const getQueuesByDoctor = async (token: string, status?: string) => {
+  const url = status ? `/queues/doctor?status=${status}` : '/queues/doctor';
+  const response = await axiosInstance.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 export const getQueuesWithPatients = async (token: string) => {
   const response = await axiosInstance.get('/queues/with-patients', {
     headers: {

@@ -2,5 +2,5 @@
   "version": 3,
   "sources": [],
   "sections": [
-    {"offset": {"line": 12, "column": 0}, "map": {"version":3,"sources":["file:///D:/Codes/Projects/hospitalityWeb/hospitality-website/my-app/src/app/favicon.ico.mjs%20%28structured%20image%20object%29"],"sourcesContent":["import src from \"IMAGE\";\nexport default { src, width: 256, height: 256 }\n"],"names":[],"mappings":";;;AAAA;;uCACe;IAAE,KAAA,8GAAA,CAAA,UAAG;IAAE,OAAO;IAAK,QAAQ;AAAI","debugId":null}}]
+    {"offset": {"line": 12, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/danny/Desktop/EnSoft/File%20B%C3%A0i%20T%E1%BA%ADp/%C4%91%E1%BB%93%20%C3%A1n%20th%E1%BB%B1c%20t%E1%BA%ADp%20l%E1%BA%ADp%20tr%C3%ACnh%20A/hospitality-website/my-app/src/app/favicon.ico.mjs%20%28structured%20image%20object%29"],"sourcesContent":["import src from \"IMAGE\";\nexport default { src, width: 256, height: 256 }\n"],"names":[],"mappings":";;;AAAA;;uCACe;IAAE,KAAA,8GAAA,CAAA,UAAG;IAAE,OAAO;IAAK,QAAQ;AAAI","debugId":null}}]
 }

@@ -75,6 +75,7 @@ __turbopack_context__.s({
     "getPrescriptionDetails": (()=>getPrescriptionDetails),
     "getPrescriptions": (()=>getPrescriptions),
     "getQueues": (()=>getQueues),
+    "getQueuesByDoctor": (()=>getQueuesByDoctor),
     "getQueuesByStatus": (()=>getQueuesByStatus),
     "getQueuesWithPatients": (()=>getQueuesWithPatients),
     "getUserById": (()=>getUserById),
@@ -341,6 +342,15 @@ const validateToken = async (token)=>{
 };
 const getQueues = async (token)=>{
     const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get('/queues', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return response.data;
+};
+const getQueuesByDoctor = async (token, status)=>{
+    const url = status ? `/queues/doctor?status=${status}` : '/queues/doctor';
+    const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$axios$2e$customize$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get(url, {
         headers: {
             Authorization: `Bearer ${token}`
         }

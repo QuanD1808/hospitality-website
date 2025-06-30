@@ -326,15 +326,28 @@ const PatientList = ({ patients, onSelectPatient, selectedPatientId })=>{
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "p-4 border-b border-gray-200 flex items-center justify-between",
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                    className: "text-lg font-semibold text-gray-900",
-                    children: "Danh sách bệnh nhân"
-                }, void 0, false, {
-                    fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
-                    lineNumber: 33,
-                    columnNumber: 9
-                }, this)
-            }, void 0, false, {
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        className: "text-lg font-semibold text-gray-900",
+                        children: "Danh sách bệnh nhân của bạn"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
+                        lineNumber: 33,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded",
+                        children: [
+                            patients.length,
+                            " bệnh nhân"
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
+                        lineNumber: 34,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
                 fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
                 lineNumber: 32,
                 columnNumber: 7
@@ -345,11 +358,49 @@ const PatientList = ({ patients, onSelectPatient, selectedPatientId })=>{
                     maxHeight: 'calc(100vh - 200px)'
                 },
                 children: patients.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "text-center text-gray-700 text-sm",
-                    children: "Không có bệnh nhân trong danh sách chờ."
-                }, void 0, false, {
+                    className: "text-center text-gray-700 py-8",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                            className: "w-12 h-12 mx-auto text-gray-400 mb-3",
+                            fill: "none",
+                            stroke: "currentColor",
+                            viewBox: "0 0 24 24",
+                            xmlns: "http://www.w3.org/2000/svg",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                strokeLinecap: "round",
+                                strokeLinejoin: "round",
+                                strokeWidth: "2",
+                                d: "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
+                                lineNumber: 42,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
+                            lineNumber: 41,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "text-base",
+                            children: "Không có bệnh nhân nào được gán cho bạn"
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
+                            lineNumber: 44,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "text-xs text-gray-500 mt-1",
+                            children: "Các bệnh nhân sẽ được tiếp tân chuyển đến bạn"
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
+                            lineNumber: 45,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
                     fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
-                    lineNumber: 37,
+                    lineNumber: 40,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "space-y-2",
@@ -361,22 +412,22 @@ const PatientList = ({ patients, onSelectPatient, selectedPatientId })=>{
                                 onSelect: ()=>idx === 0 && onSelectPatient(patient)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
-                                lineNumber: 42,
+                                lineNumber: 51,
                                 columnNumber: 17
                             }, this)
                         }, patient._id, false, {
                             fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
-                            lineNumber: 41,
+                            lineNumber: 50,
                             columnNumber: 15
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
-                    lineNumber: 39,
+                    lineNumber: 48,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/dashboard-doctor/PatientList.tsx",
-                lineNumber: 35,
+                lineNumber: 38,
                 columnNumber: 7
             }, this)
         ]
@@ -2173,7 +2224,6 @@ const Dashboard = ()=>{
     // State cho bệnh nhân được chọn
     const [selectedPatient, setSelectedPatient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     // Lấy danh sách bệnh nhân đang chờ khi component mount và định kỳ mỗi 30 giây
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         // Tải dữ liệu ngay lần đầu
@@ -2185,84 +2235,62 @@ const Dashboard = ()=>{
         // Xóa interval khi component unmount
         return ()=>clearInterval(interval);
     }, []);
-    // Hàm chuyển đổi dữ liệu API thành định dạng PatientInQueue
-    const formatApiData = (apiData)=>{
-        return apiData.map((item)=>{
-            // Xây dựng patientInfo từ dữ liệu patient
-            let patientInfo = null;
-            if (item.patient && typeof item.patient === 'object') {
-                patientInfo = {
-                    _id: item.patient._id,
-                    userId: item.patient.userId || item.patient._id,
-                    fullName: item.patient.fullName,
-                    phone: item.patient.phone,
-                    role: item.patient.role,
-                    email: item.patient.email
-                }; // Type cast to User
-            }
-            // Chuẩn hóa trường patient thành string (ID)
-            const patientId = typeof item.patient === 'object' ? item.patient._id : item.patient;
-            // Chuẩn hóa trường doctorId thành string (ID)
-            const doctorId = typeof item.doctorId === 'object' ? item.doctorId._id : item.doctorId;
-            return {
-                _id: item._id,
-                patient: patientId,
-                status: item.status,
-                doctorId: doctorId,
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt,
-                __v: item.__v,
-                patientInfo
-            }; // Type cast to PatientInQueue
-        });
-    };
     // Hàm để tải danh sách bệnh nhân đang chờ
     const loadPatients = async ()=>{
         try {
             setLoading(true);
-            setError(null);
             console.log("Refreshing doctor's patient list...");
             if (token) {
+                // Sử dụng API để lấy danh sách bệnh nhân được gán cho bác sĩ hiện tại
                 try {
-                    // Sử dụng endpoint mới để lấy danh sách bệnh nhân chỉ của bác sĩ đang đăng nhập
-                    console.log("Fetching doctor's queues from API...");
-                    const doctorQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getDoctorQueues"])(token, 'in_progress');
-                    console.log(`API returned ${doctorQueues.length} queues for current doctor`);
-                    // Chuyển đổi dữ liệu API thành định dạng PatientInQueue
-                    const formattedQueues = formatApiData(doctorQueues);
-                    setPatients(formattedQueues);
-                    // Nếu đã chọn một bệnh nhân nhưng bệnh nhân đó không còn trong danh sách mới
-                    // thì bỏ chọn bệnh nhân đó
-                    if (selectedPatient && !formattedQueues.some((p)=>p._id === selectedPatient._id)) {
-                        setSelectedPatient(null);
-                    }
+                    // Lấy danh sách queue của bác sĩ hiện tại có trạng thái "in_progress"
+                    const doctorQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesByDoctor"])(token, 'in_progress');
+                    console.log(`Loaded ${doctorQueues.length} queues assigned to current doctor`);
+                    // Convert API response to PatientInQueue format
+                    const patientsInProgress = doctorQueues.map((queue)=>({
+                            _id: queue._id,
+                            patient: typeof queue.patient === 'object' ? queue.patient._id : queue.patient,
+                            status: queue.status,
+                            doctorId: typeof queue.doctorId === 'object' ? queue.doctorId._id : queue.doctorId,
+                            createdAt: queue.createdAt,
+                            updatedAt: queue.updatedAt,
+                            patientInfo: typeof queue.patient === 'object' ? queue.patient : null
+                        }));
+                    setPatients(patientsInProgress);
                 } catch (apiError) {
-                    console.error("API error loading patients:", apiError);
-                    setError(`Lỗi API: ${apiError.message}`);
-                    // Fallback to mock data
-                    useMockData();
+                    console.error("API error loading doctor's patients:", apiError);
+                    // Fallback to mock data if API fails
+                    fallbackToMockData();
                 }
             } else {
-                // Không có token, sử dụng mock data
-                useMockData();
+                // No token, use mock data
+                fallbackToMockData();
             }
         } catch (error) {
             console.error("Error loading patients:", error);
-            setError(`Lỗi: ${error.message}`);
         } finally{
             setLoading(false);
         }
     };
-    // Sử dụng mock data khi không có token hoặc API bị lỗi
-    const useMockData = async ()=>{
+    // Fallback function to load mock data
+    const fallbackToMockData = async ()=>{
         try {
-            // Lấy tất cả queue kèm thông tin bệnh nhân từ mock data
+            console.log("Using mock data for doctor's patients");
+            // Get current doctor ID from localStorage
+            const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+            const doctorId = currentUser?._id;
+            if (!doctorId) {
+                console.warn("No doctor ID found in localStorage, can't filter patients");
+                return;
+            }
+            // Lấy tất cả queue kèm thông tin bệnh nhân
             const queues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllQueuesWithPatientInfo"])();
             // Lọc chỉ lấy những bệnh nhân đã được chuyển vào khám (status = 'in_progress')
-            const patientsInProgress = queues.filter((q)=>q.status === 'in_progress');
+            // VÀ được chỉ định cho bác sĩ hiện tại
+            const patientsInProgress = queues.filter((q)=>q.status === 'in_progress' && q.doctorId === doctorId);
             setPatients(patientsInProgress);
         } catch (error) {
-            console.error("Error loading patients:", error);
+            console.error("Error loading mock patient data:", error);
         }
     };
     // Xử lý khi chọn bệnh nhân
@@ -2311,36 +2339,18 @@ const Dashboard = ()=>{
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "w-full lg:w-1/3 h-full",
-                children: [
-                    error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4",
-                        role: "alert",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                            className: "block sm:inline",
-                            children: error
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/dashboard-doctor/Dashboard.tsx",
-                            lineNumber: 186,
-                            columnNumber: 13
-                        }, this)
-                    }, void 0, false, {
-                        fileName: "[project]/src/app/dashboard-doctor/Dashboard.tsx",
-                        lineNumber: 185,
-                        columnNumber: 11
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2d$doctor$2f$PatientList$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PatientList"], {
-                        patients: sortedPatients,
-                        onSelectPatient: handleSelectPatient,
-                        selectedPatientId: selectedPatient ? selectedPatient._id : undefined
-                    }, void 0, false, {
-                        fileName: "[project]/src/app/dashboard-doctor/Dashboard.tsx",
-                        lineNumber: 189,
-                        columnNumber: 9
-                    }, this)
-                ]
-            }, void 0, true, {
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2d$doctor$2f$PatientList$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PatientList"], {
+                    patients: sortedPatients,
+                    onSelectPatient: handleSelectPatient,
+                    selectedPatientId: selectedPatient ? selectedPatient._id : undefined
+                }, void 0, false, {
+                    fileName: "[project]/src/app/dashboard-doctor/Dashboard.tsx",
+                    lineNumber: 161,
+                    columnNumber: 9
+                }, this)
+            }, void 0, false, {
                 fileName: "[project]/src/app/dashboard-doctor/Dashboard.tsx",
-                lineNumber: 183,
+                lineNumber: 160,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2351,18 +2361,18 @@ const Dashboard = ()=>{
                     onMarkAsDone: handleMarkAsDone
                 }, void 0, false, {
                     fileName: "[project]/src/app/dashboard-doctor/Dashboard.tsx",
-                    lineNumber: 196,
+                    lineNumber: 168,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/dashboard-doctor/Dashboard.tsx",
-                lineNumber: 195,
+                lineNumber: 167,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/dashboard-doctor/Dashboard.tsx",
-        lineNumber: 182,
+        lineNumber: 159,
         columnNumber: 5
     }, this);
 };
