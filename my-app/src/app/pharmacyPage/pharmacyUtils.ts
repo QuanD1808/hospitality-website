@@ -38,6 +38,14 @@ export interface PharmacyInvoice {
   totalAmount: number;
 }
 
+// Helper function to extract medicine ID properly
+const extractMedicineId = (medicineId: any): string => {
+  if (typeof medicineId === 'object' && medicineId !== null) {
+    return medicineId._id || medicineId.id || '';
+  }
+  return medicineId || '';
+};
+
 // Function to get patients with pending prescriptions for the pharmacy
 export const getPatientsWithPendingPrescriptions = async (): Promise<PharmacyPatient[]> => {
   try {
@@ -75,7 +83,11 @@ export const getPatientsWithPendingPrescriptions = async (): Promise<PharmacyPat
             for (const detail of prescriptionDetails) {
               // We need to get medicine details for each prescription detail
               try {
-                const medicine = await apiService.getMedicineById(detail.medicineId, tokenFromStorage);
+                // Extract medicine ID properly
+                const medicineId = extractMedicineId(detail.medicineId);
+                console.log(`Getting medicine details for ID: ${medicineId}`);
+                
+                const medicine = await apiService.getMedicineById(medicineId, tokenFromStorage);
                 medicines.push({
                   name: medicine?.name || 'Unknown',
                   quantity: detail.quantity,
@@ -83,9 +95,11 @@ export const getPatientsWithPendingPrescriptions = async (): Promise<PharmacyPat
                   price: medicine?.price || 0
                 });
               } catch (medError) {
-                console.warn(`Error fetching medicine ${detail.medicineId}, falling back to mock data:`, medError);
+                console.warn(`Error fetching medicine from API, falling back to mock data:`, medError);
                 // If we can't get the medicine from API, use mock data
-                const mockMedicine = await getMedicineById(detail.medicineId);
+                // Extract medicine ID properly for mock data too
+                const medicineId = extractMedicineId(detail.medicineId);
+                const mockMedicine = await getMedicineById(medicineId);
                 medicines.push({
                   name: mockMedicine?.name || 'Unknown',
                   quantity: detail.quantity,
@@ -163,9 +177,13 @@ const fetchMockPendingPrescriptions = async (): Promise<PharmacyPatient[]> => {
       
       for (const detail of prescriptionDetails) {
         try {
-          const medicine = await getMedicineById(detail.medicineId);
+          // Extract medicine ID properly
+          const medicineId = extractMedicineId(detail.medicineId);
+          console.log(`Getting mock medicine details for ID: ${medicineId}`);
+          
+          const medicine = await getMedicineById(medicineId);
           if (!medicine) {
-            console.warn(`Mock medicine with ID ${detail.medicineId} not found`);
+            console.warn(`Mock medicine with ID ${medicineId} not found`);
             medicines.push({
               name: 'Unknown Medicine',
               quantity: detail.quantity,
@@ -182,7 +200,7 @@ const fetchMockPendingPrescriptions = async (): Promise<PharmacyPatient[]> => {
             price: medicine.price
           });
         } catch (medError) {
-          console.error(`Error processing mock medicine for detail ${detail._id}:`, medError);
+          console.error(`Error processing mock medicine:`, medError);
           medicines.push({
             name: 'Error Loading Medicine',
             quantity: detail.quantity,
@@ -430,9 +448,15 @@ export const createPharmacyInvoice = async (
       // Create a map of medicine names to their IDs
       const medicineNameToIdMap = new Map();
       for (const detail of prescriptionDetails) {
-        const medicine = detail.medicineId;
-        if (medicine && medicine.name && medicine._id) {
-          medicineNameToIdMap.set(medicine.name, medicine._id);
+        // Extract medicine ID and name properly
+        if (detail.medicineId) {
+          const medicine = detail.medicineId;
+          const medicineName = typeof medicine === 'object' ? medicine.name : '';
+          const medicineId = extractMedicineId(medicine);
+          
+          if (medicineName && medicineId) {
+            medicineNameToIdMap.set(medicineName, medicineId);
+          }
         }
       }
       

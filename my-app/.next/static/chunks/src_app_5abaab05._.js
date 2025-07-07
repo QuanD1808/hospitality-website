@@ -2295,6 +2295,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mock
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/api.service.ts [app-client] (ecmascript)");
 ;
 ;
+// Helper function to extract medicine ID properly
+const extractMedicineId = (medicineId)=>{
+    if (typeof medicineId === 'object' && medicineId !== null) {
+        return medicineId._id || medicineId.id || '';
+    }
+    return medicineId || '';
+};
 const getPatientsWithPendingPrescriptions = async ()=>{
     try {
         // Try to get authentication token from localStorage
@@ -2326,7 +2333,10 @@ const getPatientsWithPendingPrescriptions = async ()=>{
                         for (const detail of prescriptionDetails){
                             // We need to get medicine details for each prescription detail
                             try {
-                                const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId, tokenFromStorage);
+                                // Extract medicine ID properly
+                                const medicineId = extractMedicineId(detail.medicineId);
+                                console.log(`Getting medicine details for ID: ${medicineId}`);
+                                const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$api$2e$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(medicineId, tokenFromStorage);
                                 medicines.push({
                                     name: medicine?.name || 'Unknown',
                                     quantity: detail.quantity,
@@ -2334,9 +2344,11 @@ const getPatientsWithPendingPrescriptions = async ()=>{
                                     price: medicine?.price || 0
                                 });
                             } catch (medError) {
-                                console.warn(`Error fetching medicine ${detail.medicineId}, falling back to mock data:`, medError);
+                                console.warn(`Error fetching medicine from API, falling back to mock data:`, medError);
                                 // If we can't get the medicine from API, use mock data
-                                const mockMedicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
+                                // Extract medicine ID properly for mock data too
+                                const medicineId = extractMedicineId(detail.medicineId);
+                                const mockMedicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(medicineId);
                                 medicines.push({
                                     name: mockMedicine?.name || 'Unknown',
                                     quantity: detail.quantity,
@@ -2404,9 +2416,12 @@ const fetchMockPendingPrescriptions = async ()=>{
             const medicines = [];
             for (const detail of prescriptionDetails){
                 try {
-                    const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(detail.medicineId);
+                    // Extract medicine ID properly
+                    const medicineId = extractMedicineId(detail.medicineId);
+                    console.log(`Getting mock medicine details for ID: ${medicineId}`);
+                    const medicine = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMedicineById"])(medicineId);
                     if (!medicine) {
-                        console.warn(`Mock medicine with ID ${detail.medicineId} not found`);
+                        console.warn(`Mock medicine with ID ${medicineId} not found`);
                         medicines.push({
                             name: 'Unknown Medicine',
                             quantity: detail.quantity,
@@ -2422,7 +2437,7 @@ const fetchMockPendingPrescriptions = async ()=>{
                         price: medicine.price
                     });
                 } catch (medError) {
-                    console.error(`Error processing mock medicine for detail ${detail._id}:`, medError);
+                    console.error(`Error processing mock medicine:`, medError);
                     medicines.push({
                         name: 'Error Loading Medicine',
                         quantity: detail.quantity,
@@ -2621,9 +2636,14 @@ const createPharmacyInvoice = async (prescriptionId, totalAmount, token, medicin
             // Create a map of medicine names to their IDs
             const medicineNameToIdMap = new Map();
             for (const detail of prescriptionDetails){
-                const medicine = detail.medicineId;
-                if (medicine && medicine.name && medicine._id) {
-                    medicineNameToIdMap.set(medicine.name, medicine._id);
+                // Extract medicine ID and name properly
+                if (detail.medicineId) {
+                    const medicine = detail.medicineId;
+                    const medicineName = typeof medicine === 'object' ? medicine.name : '';
+                    const medicineId = extractMedicineId(medicine);
+                    if (medicineName && medicineId) {
+                        medicineNameToIdMap.set(medicineName, medicineId);
+                    }
                 }
             }
             // Process each medicine and deduct from inventory
