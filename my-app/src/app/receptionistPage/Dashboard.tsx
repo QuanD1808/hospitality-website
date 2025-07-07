@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { 
   getAllPatients, 
   getQueuesByStatus,
-  initializeData
+  // Removed initializeData import to prevent unauthorized access
 } from '../datats/mockPatients';
 import * as apiService from '../services/api.service';
 
@@ -35,8 +35,8 @@ export function Dashboard({ onNavigate }: DashboardProps) {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Initialize data from API
-        await initializeData();
+        // Removed initializeData() call to prevent 403 Forbidden error
+        // This was trying to access medicines data which receptionists don't have permission for
         
         // Lấy tổng số bệnh nhân
         const patients = await getAllPatients();
@@ -166,7 +166,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
   const fetchCompletedQueuesMock = async () => {
     try {
       console.log("Using mock data for completed queues...");
-      await initializeData();
+      // Remove initializeData call here too
       
       // Lấy danh sách queue đã hoàn thành từ mock data
       const mockCompletedQueues = await getQueuesByStatus('completed');

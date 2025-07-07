@@ -773,8 +773,8 @@ function Dashboard({ onNavigate }) {
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         const loadData = async ()=>{
             try {
-                // Initialize data from API
-                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["initializeData"])();
+                // Removed initializeData() call to prevent 403 Forbidden error
+                // This was trying to access medicines data which receptionists don't have permission for
                 // Lấy tổng số bệnh nhân
                 const patients = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllPatients"])();
                 setPatientCount(patients.length);
@@ -944,7 +944,7 @@ function Dashboard({ onNavigate }) {
     const fetchCompletedQueuesMock = async ()=>{
         try {
             console.log("Using mock data for completed queues...");
-            await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["initializeData"])();
+            // Remove initializeData call here too
             // Lấy danh sách queue đã hoàn thành từ mock data
             const mockCompletedQueues = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$datats$2f$mockPatients$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getQueuesByStatus"])('completed');
             // Format lại dữ liệu để hiển thị
