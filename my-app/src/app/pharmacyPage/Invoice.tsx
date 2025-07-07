@@ -15,12 +15,14 @@ export const Invoice = ({
   onClose,
   onComplete
 }: InvoiceProps) => {
-  const { token } = useAuth();
+  const { token, user } = useAuth(); // Get both token and user from auth context
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [revenueData, setRevenueData] = useState<any>(null);
   const [isLoadingRevenue, setIsLoadingRevenue] = useState(false);
   
+  // Get the current user's name for the invoice
+  const pharmacistName = user?.fullName || 'Chưa xác định';
   const currentDate = new Date().toLocaleDateString('vi-VN');
   
   // Tính tổng tiền từ dữ liệu trong client
@@ -229,7 +231,7 @@ export const Invoice = ({
             </div>
             <div>
               <p className="text-sm font-medium text-black">Nhân viên phát thuốc</p>
-              <p className="text-black">Nguyễn Thị Hà</p>
+              <p className="text-black">{pharmacistName}</p>
             </div>
           </div>
           <div className="overflow-x-auto mb-6">
@@ -375,7 +377,7 @@ export const Invoice = ({
               <p className="font-medium text-black">Người lập phiếu</p>
               <p className="text-black text-sm">(Ký, ghi rõ họ tên)</p>
               <div className="h-16"></div>
-              <p className="text-black">Nguyễn Thị Hà</p>
+              <p className="text-black">{pharmacistName}</p>
             </div>
             <div className="text-center">
               <p className="font-medium text-black">Người nhận thuốc</p>

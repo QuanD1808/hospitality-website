@@ -476,11 +476,13 @@ var _s = __turbopack_context__.k.signature();
 ;
 const Invoice = ({ patient, onClose, onComplete })=>{
     _s();
-    const { token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
+    const { token, user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])(); // Get both token and user from auth context
     const [isProcessing, setIsProcessing] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [revenueData, setRevenueData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [isLoadingRevenue, setIsLoadingRevenue] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    // Get the current user's name for the invoice
+    const pharmacistName = user?.fullName || 'Chưa xác định';
     const currentDate = new Date().toLocaleDateString('vi-VN');
     // Tính tổng tiền từ dữ liệu trong client
     const calculateTotal = ()=>{
@@ -614,12 +616,12 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     className: "h-5 w-5"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 161,
+                                    lineNumber: 163,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                lineNumber: 160,
+                                lineNumber: 162,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -627,13 +629,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                 children: "Hóa Đơn Thuốc"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                lineNumber: 163,
+                                lineNumber: 165,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                        lineNumber: 159,
+                        lineNumber: 161,
                         columnNumber: 9
                     }, this),
                     error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -643,7 +645,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                 className: "h-4 w-4 mr-1"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                lineNumber: 167,
+                                lineNumber: 169,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -651,13 +653,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                 children: error
                             }, void 0, false, {
                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                lineNumber: 168,
+                                lineNumber: 170,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                        lineNumber: 166,
+                        lineNumber: 168,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: handlePrint,
@@ -669,7 +671,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     className: "animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-1"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 182,
+                                    lineNumber: 184,
                                     columnNumber: 17
                                 }, this),
                                 "Đang xử lý..."
@@ -680,7 +682,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     className: "h-4 w-4 mr-1"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 187,
+                                    lineNumber: 189,
                                     columnNumber: 17
                                 }, this),
                                 " In & hoàn tất"
@@ -688,13 +690,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                         }, void 0, true)
                     }, void 0, false, {
                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                        lineNumber: 171,
+                        lineNumber: 173,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                lineNumber: 158,
+                lineNumber: 160,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -710,7 +712,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     children: "PHÒNG KHÁM ĐA KHOA"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 196,
+                                    lineNumber: 198,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -718,7 +720,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     children: "123 Nguyễn Huệ, Quận 1, TP.HCM"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 199,
+                                    lineNumber: 201,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -726,7 +728,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                     children: "Điện thoại: (028) 3822 1234"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 200,
+                                    lineNumber: 202,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -737,7 +739,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "HÓA ĐƠN THUỐC"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 202,
+                                            lineNumber: 204,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -748,7 +750,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 203,
+                                            lineNumber: 205,
                                             columnNumber: 15
                                         }, this),
                                         isLoadingRevenue && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -756,19 +758,19 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Đang tính toán doanh thu..."
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 205,
+                                            lineNumber: 207,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 201,
+                                    lineNumber: 203,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                            lineNumber: 195,
+                            lineNumber: 197,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -781,7 +783,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Họ và tên bệnh nhân"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 211,
+                                            lineNumber: 213,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -789,13 +791,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: patient.fullName
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 212,
+                                            lineNumber: 214,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 210,
+                                    lineNumber: 212,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -805,7 +807,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Số điện thoại"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 215,
+                                            lineNumber: 217,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -813,13 +815,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: patient.phone
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 216,
+                                            lineNumber: 218,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 214,
+                                    lineNumber: 216,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -829,7 +831,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Mã đơn thuốc"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 219,
+                                            lineNumber: 221,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -837,13 +839,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: patient.serialNumber
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 220,
+                                            lineNumber: 222,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 218,
+                                    lineNumber: 220,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -853,7 +855,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Chẩn đoán"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 223,
+                                            lineNumber: 225,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -861,13 +863,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: patient.diagnosis
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 224,
+                                            lineNumber: 226,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 222,
+                                    lineNumber: 224,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -877,7 +879,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Bác sĩ kê đơn"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 227,
+                                            lineNumber: 229,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -885,13 +887,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: patient.doctor
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 228,
+                                            lineNumber: 230,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 226,
+                                    lineNumber: 228,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -901,27 +903,27 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Nhân viên phát thuốc"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 231,
+                                            lineNumber: 233,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-black",
-                                            children: "Nguyễn Thị Hà"
+                                            children: pharmacistName
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 232,
+                                            lineNumber: 234,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 230,
+                                    lineNumber: 232,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                            lineNumber: 209,
+                            lineNumber: 211,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -939,7 +941,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "STT"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 239,
+                                                    lineNumber: 241,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -948,7 +950,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Tên thuốc"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 242,
+                                                    lineNumber: 244,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -957,7 +959,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Số lượng"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 245,
+                                                    lineNumber: 247,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -966,7 +968,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Liều dùng"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 248,
+                                                    lineNumber: 250,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -975,7 +977,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Đơn giá"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 251,
+                                                    lineNumber: 253,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -984,18 +986,18 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Thành tiền"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 254,
+                                                    lineNumber: 256,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 238,
+                                            lineNumber: 240,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                        lineNumber: 237,
+                                        lineNumber: 239,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -1008,7 +1010,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             children: index + 1
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 261,
+                                                            lineNumber: 263,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1016,7 +1018,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             children: medicine.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 264,
+                                                            lineNumber: 266,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1024,7 +1026,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             children: medicine.quantity
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 267,
+                                                            lineNumber: 269,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1032,7 +1034,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             children: medicine.dosage
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 270,
+                                                            lineNumber: 272,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1043,7 +1045,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 273,
+                                                            lineNumber: 275,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1055,13 +1057,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 276,
+                                                            lineNumber: 278,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, index, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 260,
+                                                    lineNumber: 262,
                                                     columnNumber: 90
                                                 }, this)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -1077,25 +1079,25 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                                     className: "w-4 h-4 mr-1"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                                    lineNumber: 284,
+                                                                    lineNumber: 286,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                     children: "Tổng cộng:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                                    lineNumber: 285,
+                                                                    lineNumber: 287,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 283,
+                                                            lineNumber: 285,
                                                             columnNumber: 21
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                        lineNumber: 282,
+                                                        lineNumber: 284,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1106,13 +1108,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                        lineNumber: 288,
+                                                        lineNumber: 290,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                lineNumber: 281,
+                                                lineNumber: 283,
                                                 columnNumber: 17
                                             }, this),
                                             revenueData?.monthlyRevenue && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -1128,25 +1130,25 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                                     className: "w-4 h-4 mr-1"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                                    lineNumber: 298,
+                                                                    lineNumber: 300,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                     children: "Doanh thu tháng này:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                                    lineNumber: 299,
+                                                                    lineNumber: 301,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 297,
+                                                            lineNumber: 299,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                        lineNumber: 296,
+                                                        lineNumber: 298,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1157,13 +1159,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                        lineNumber: 302,
+                                                        lineNumber: 304,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                lineNumber: 295,
+                                                lineNumber: 297,
                                                 columnNumber: 19
                                             }, this),
                                             revenueData?.yearlyRevenue && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -1179,25 +1181,25 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                                     className: "w-4 h-4 mr-1"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                                    lineNumber: 311,
+                                                                    lineNumber: 313,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                     children: "Doanh thu năm nay:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                                    lineNumber: 312,
+                                                                    lineNumber: 314,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 310,
+                                                            lineNumber: 312,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                        lineNumber: 309,
+                                                        lineNumber: 311,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1208,30 +1210,30 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                        lineNumber: 315,
+                                                        lineNumber: 317,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                lineNumber: 308,
+                                                lineNumber: 310,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                        lineNumber: 259,
+                                        lineNumber: 261,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                lineNumber: 236,
+                                lineNumber: 238,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                            lineNumber: 235,
+                            lineNumber: 237,
                             columnNumber: 11
                         }, this),
                         revenueData && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1244,14 +1246,14 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             className: "h-5 w-5 mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 326,
+                                            lineNumber: 328,
                                             columnNumber: 17
                                         }, this),
                                         " Thông tin doanh thu"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 325,
+                                    lineNumber: 327,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1264,7 +1266,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Doanh thu từ đơn thuốc này:"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 330,
+                                                    lineNumber: 332,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1275,13 +1277,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 331,
+                                                    lineNumber: 333,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 329,
+                                            lineNumber: 331,
                                             columnNumber: 17
                                         }, this),
                                         revenueData.monthlyRevenue !== undefined && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1291,7 +1293,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Doanh thu trong tháng:"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 335,
+                                                    lineNumber: 337,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1302,13 +1304,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 336,
+                                                    lineNumber: 338,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 334,
+                                            lineNumber: 336,
                                             columnNumber: 19
                                         }, this),
                                         revenueData.yearlyRevenue !== undefined && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1318,7 +1320,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     children: "Doanh thu trong năm:"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 341,
+                                                    lineNumber: 343,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1329,19 +1331,19 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 342,
+                                                    lineNumber: 344,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 340,
+                                            lineNumber: 342,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 328,
+                                    lineNumber: 330,
                                     columnNumber: 15
                                 }, this),
                                 revenueData.medicines && revenueData.medicines.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1352,7 +1354,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Phân tích chi tiết:"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 350,
+                                            lineNumber: 352,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1376,13 +1378,13 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                                    lineNumber: 354,
+                                                                    lineNumber: 356,
                                                                     columnNumber: 68
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 354,
+                                                            lineNumber: 356,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1393,30 +1395,30 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                            lineNumber: 355,
+                                                            lineNumber: 357,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, idx, true, {
                                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                                    lineNumber: 353,
+                                                    lineNumber: 355,
                                                     columnNumber: 23
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 351,
+                                            lineNumber: 353,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 349,
+                                    lineNumber: 351,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                            lineNumber: 324,
+                            lineNumber: 326,
                             columnNumber: 13
                         }, this),
                         isLoadingRevenue && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1428,7 +1430,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                         className: "animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                        lineNumber: 367,
+                                        lineNumber: 369,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1436,18 +1438,18 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                         children: "Đang tính toán doanh thu..."
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                        lineNumber: 368,
+                                        lineNumber: 370,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                lineNumber: 366,
+                                lineNumber: 368,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                            lineNumber: 365,
+                            lineNumber: 367,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1461,7 +1463,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Người lập phiếu"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 375,
+                                            lineNumber: 377,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1469,28 +1471,28 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "(Ký, ghi rõ họ tên)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 376,
+                                            lineNumber: 378,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "h-16"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 377,
+                                            lineNumber: 379,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-black",
-                                            children: "Nguyễn Thị Hà"
+                                            children: pharmacistName
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 378,
+                                            lineNumber: 380,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 374,
+                                    lineNumber: 376,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1501,7 +1503,7 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "Người nhận thuốc"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 381,
+                                            lineNumber: 383,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1509,14 +1511,14 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: "(Ký, ghi rõ họ tên)"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 382,
+                                            lineNumber: 384,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "h-16"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 383,
+                                            lineNumber: 385,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1524,40 +1526,40 @@ const Invoice = ({ patient, onClose, onComplete })=>{
                                             children: patient.fullName
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                            lineNumber: 384,
+                                            lineNumber: 386,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                                    lineNumber: 380,
+                                    lineNumber: 382,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                            lineNumber: 373,
+                            lineNumber: 375,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                    lineNumber: 194,
+                    lineNumber: 196,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-                lineNumber: 193,
+                lineNumber: 195,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pharmacyPage/Invoice.tsx",
-        lineNumber: 157,
+        lineNumber: 159,
         columnNumber: 10
     }, this);
 };
-_s(Invoice, "DqY7M0brMVtBoUFyGArvZ0irT0I=", false, function() {
+_s(Invoice, "6gDqvPkmOuBHhJlWa3HxJgWaLEg=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"]
     ];
