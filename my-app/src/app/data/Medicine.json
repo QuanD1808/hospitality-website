@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Augmentin 625mg",
+    "totalPills": 100,
+    "price": 15000.0
+  },
+  {
+    "id": 2,
+    "name": "Paracetamol 500mg",
+    "totalPills": 200,
+    "price": 3000.0
+  },
+  {
+    "id": 3,
+    "name": "Bromhexine 8mg",
+    "totalPills": 150,
+    "price": 2000.0
+  }
+]

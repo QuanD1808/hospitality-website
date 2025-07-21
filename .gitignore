@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+/node_modules # Dùng / ở đầu để chỉ node_modules ở thư mục gốc nếu có
+
+# Specific to subdirectories
+BE/node_modules/
+my-app/node_modules/ # Nếu bạn có my-app và nó cũng có node_modules
+my-app/.next/      # Cho Next.js frontend
+
+# Environment variables - KHÔNG BAO GIỜ COMMIT FILE .env
+.env
+.env*.local
+BE/.env
+my-app/.env        # Nếu có
+my-app/.env.local  # Nếu có
+
+# IDE/Editor specific
+.vscode/
+.idea/
+
+# OS specific
+.DS_Store
+Thumbs.db

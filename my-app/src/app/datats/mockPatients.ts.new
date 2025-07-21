@@ -1,0 +1,615 @@
+// Dữ liệu được fetched từ API thay vì dùng static data
+import axiosInstance from '../services/axios.customize.service';
+
+// Khai báo các interface
+export interface User {
+  _id: string;
+  userId: string;
+  username: string;
+  email: string;
+  password: string;
+  fullName: string;
+  phone: string;
+  role: 'PATIENT' | 'DOCTOR' | 'PHARMACIST' | 'RECEPTIONIST' | 'ADMIN';
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface Queue {
+  _id: string;
+  patient: string; // ObjectId của bệnh nhân
+  status: 'waiting' | 'in_progress' | 'completed' | 'canceled';
+  doctorId?: string; // ObjectId của bác sĩ được chỉ định (nếu có)
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface Prescription {
+  _id: string;
+  customPrescriptionId: string;
+  patientId: string; // ObjectId
+  doctorId: string; // ObjectId
+  diagnosis: string;
+  date: string;
+  status: 'PENDING_DISPENSE' | 'DISPENSED' | 'CANCELED';
+  __v: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PrescriptionDetail {
+  _id: string;
+  customPrescriptionDetailId: string;
+  prescriptionId: string; // ObjectId
+  medicineId: string; // ObjectId
+  quantity: number;
+  dosage: string;
+  __v: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Medicine {
+  _id: string;
+  customMedicineId: string;
+  name: string;
+  totalPills: number;
+  price: number;
+  __v: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Invoice {
+  _id: string;
+  prescriptionId: string; // ObjectId
+  patientId: string; // ObjectId
+  totalAmount: number;
+  status: 'PAID' | 'UNPAID';
+  __v: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Biến cache để lưu trữ dữ liệu từ API
+export let mockUsers: User[] = [];
+export let mockQueues: Queue[] = [];
+export let mockMedicines: Medicine[] = [];
+export let mockPrescriptions: Prescription[] = [];
+export let mockPrescriptionDetails: PrescriptionDetail[] = [];
+export let mockInvoices: Invoice[] = [];
+
+// Biến toàn cục để lưu token xác thực
+let authToken: string | null = null;
+
+// Hàm thiết lập token khi người dùng đăng nhập
+export const setAuthToken = (token: string) => {
+  authToken = token;
+  if (typeof window !== 'undefined') { // Kiểm tra nếu đang chạy trên browser
+    localStorage.setItem('authToken', token); // Lưu token vào localStorage để giữ qua refresh
+  }
+};
+
+// Hàm để lấy token hiện tại
+export const getAuthToken = () => {
+  // Nếu không có token trong memory, thử lấy từ localStorage
+  if (!authToken && typeof window !== 'undefined') {
+    authToken = localStorage.getItem('authToken');
+  }
+  return authToken;
+};
+
+// Helper function để thực hiện API call có xác thực
+const authenticatedGet = async (endpoint: string) => {
+  try {
+    const token = getAuthToken();
+    if (!token) {
+      console.warn('No authentication token available. Please login first.');
+      return null;
+    }
+
+    const response = await axiosInstance.get(endpoint, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching from ${endpoint}:`, error);
+    return null;
+  }
+};
+
+// ============= FETCH DATA FUNCTIONS =============
+
+// Load users từ API
+export const fetchUsers = async () => {
+  const data = await authenticatedGet('/users');
+  if (data && Array.isArray(data)) {
+    mockUsers = data;
+    return data;
+  }
+  return [];
+};
+
+// Load queues từ API
+export const fetchQueues = async () => {
+  const data = await authenticatedGet('/queues');
+  if (data && Array.isArray(data)) {
+    mockQueues = data;
+    return data;
+  }
+  return [];
+};
+
+// Load medicines từ API
+export const fetchMedicines = async () => {
+  const data = await authenticatedGet('/medicines');
+  if (data && Array.isArray(data)) {
+    mockMedicines = data;
+    return data;
+  }
+  return [];
+};
+
+// Load prescriptions từ API
+export const fetchPrescriptions = async () => {
+  const data = await authenticatedGet('/prescriptions');
+  if (data && Array.isArray(data)) {
+    mockPrescriptions = data;
+    return data;
+  }
+  return [];
+};
+
+// Load prescription details từ API
+export const fetchPrescriptionDetails = async () => {
+  const data = await authenticatedGet('/prescription-details');
+  if (data && Array.isArray(data)) {
+    mockPrescriptionDetails = data;
+    return data;
+  }
+  return [];
+};
+
+// Load invoices từ API
+export const fetchInvoices = async () => {
+  const data = await authenticatedGet('/invoices');
+  if (data && Array.isArray(data)) {
+    mockInvoices = data;
+    return data;
+  }
+  return [];
+};
+
+// Initialize all data (call when app starts)
+export const initializeData = async () => {
+  try {
+    await Promise.all([
+      fetchUsers(),
+      fetchQueues(),
+      fetchMedicines(),
+      fetchPrescriptions(),
+      fetchPrescriptionDetails(),
+      fetchInvoices()
+    ]);
+    console.log('Data initialized successfully');
+    return true;
+  } catch (error) {
+    console.error('Error initializing data:', error);
+    return false;
+  }
+};
+
+// ============= USER-RELATED FUNCTIONS =============
+
+export const getAllUsers = async () => {
+  if (mockUsers.length === 0) {
+    await fetchUsers();
+  }
+  return [...mockUsers];
+};
+
+export const getUserById = async (id: string) => {
+  if (mockUsers.length === 0) {
+    await fetchUsers();
+  }
+  return mockUsers.find(user => user._id === id);
+};
+
+export const getUsersByRole = async (role: string) => {
+  if (mockUsers.length === 0) {
+    await fetchUsers();
+  }
+  return mockUsers.filter(user => user.role === role);
+};
+
+export const searchUsers = async (searchTerm: string) => {
+  if (mockUsers.length === 0) {
+    await fetchUsers();
+  }
+  const term = searchTerm.toLowerCase();
+  return mockUsers.filter(user => 
+    user.fullName.toLowerCase().includes(term) || 
+    user.username.toLowerCase().includes(term) ||
+    user.email.toLowerCase().includes(term) ||
+    user.phone.includes(term) ||
+    user.userId.includes(term)
+  );
+};
+
+// ============= QUEUE-RELATED FUNCTIONS =============
+
+export const getAllQueues = async () => {
+  if (mockQueues.length === 0) {
+    await fetchQueues();
+  }
+  return [...mockQueues];
+};
+
+export const getQueuesByStatus = async (status: string) => {
+  if (mockQueues.length === 0) {
+    await fetchQueues();
+  }
+  return mockQueues.filter(queue => queue.status === status);
+};
+
+export const getQueueByPatientId = async (patientId: string) => {
+  if (mockQueues.length === 0) {
+    await fetchQueues();
+  }
+  return mockQueues.find(queue => queue.patient === patientId);
+};
+
+export const addQueue = async (patientId: string, status: 'waiting' | 'in_progress' | 'completed' | 'canceled' = 'waiting') => {
+  // Kiểm tra xem patientId có tồn tại và là bệnh nhân không
+  const patient = await getUserById(patientId);
+  if (!patient || patient.role !== 'PATIENT') {
+    console.error('Invalid patient ID or user is not a patient');
+    return null;
+  }
+
+  // Kiểm tra xem bệnh nhân đã có trong queue chưa
+  const existingQueue = await getQueueByPatientId(patientId);
+  if (existingQueue) {
+    console.warn('Patient already in queue');
+    return existingQueue;
+  }
+
+  // Tạo queue mới
+  const newQueue: Queue = {
+    _id: generateMongoId(),
+    patient: patientId,
+    status: status,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    __v: 0
+  };
+
+  // Gọi API để tạo queue thực sự qua API
+  try {
+    // Đây là phần sẽ gọi API thực tế
+    // const response = await axiosInstance.post('/queues', newQueue, {
+    //   headers: { Authorization: `Bearer ${getAuthToken()}` }
+    // });
+    // if (response.data) {
+    //   mockQueues.push(response.data);
+    //   return response.data;
+    // }
+    
+    // Hiện tại, chúng ta chỉ thêm vào cache
+    mockQueues.push(newQueue);
+    return newQueue;
+  } catch (error) {
+    console.error('Error creating queue:', error);
+    return null;
+  }
+};
+
+export const updateQueueStatus = async (
+  queueId: string, 
+  status: 'waiting' | 'in_progress' | 'completed' | 'canceled', 
+  doctorId?: string
+) => {
+  if (mockQueues.length === 0) {
+    await fetchQueues();
+  }
+  
+  const index = mockQueues.findIndex(queue => queue._id === queueId);
+  if (index !== -1) {
+    const updatedQueue = {
+      ...mockQueues[index],
+      status: status,
+      updatedAt: new Date().toISOString()
+    };
+    
+    if (doctorId && status === 'in_progress') {
+      updatedQueue.doctorId = doctorId;
+    }
+    
+    // Thực tế sẽ gọi API để cập nhật queue
+    // const response = await axiosInstance.put(`/queues/${queueId}`, updatedQueue, {
+    //   headers: { Authorization: `Bearer ${getAuthToken()}` }
+    // });
+    
+    // Hiện tại chỉ cập nhật trong cache
+    mockQueues[index] = updatedQueue;
+    return mockQueues[index];
+  }
+  return null;
+};
+
+export const deleteQueue = async (queueId: string) => {
+  if (mockQueues.length === 0) {
+    await fetchQueues();
+  }
+  
+  const index = mockQueues.findIndex(queue => queue._id === queueId);
+  if (index !== -1) {
+    const deletedQueue = mockQueues[index];
+    
+    // Thực tế sẽ gọi API để xóa queue
+    // await axiosInstance.delete(`/queues/${queueId}`, {
+    //   headers: { Authorization: `Bearer ${getAuthToken()}` }
+    // });
+    
+    // Hiện tại chỉ xóa trong cache
+    mockQueues.splice(index, 1);
+    return deletedQueue;
+  }
+  return null;
+};
+
+// ============= MEDICINE-RELATED FUNCTIONS =============
+
+export const getAllMedicines = async () => {
+  if (mockMedicines.length === 0) {
+    await fetchMedicines();
+  }
+  return [...mockMedicines];
+};
+
+export const getMedicineById = async (id: string) => {
+  if (mockMedicines.length === 0) {
+    await fetchMedicines();
+  }
+  return mockMedicines.find(medicine => medicine._id === id);
+};
+
+export const searchMedicines = async (searchTerm: string) => {
+  if (mockMedicines.length === 0) {
+    await fetchMedicines();
+  }
+  const term = searchTerm.toLowerCase();
+  return mockMedicines.filter(medicine => 
+    medicine.name.toLowerCase().includes(term) || 
+    medicine.customMedicineId.toLowerCase().includes(term)
+  );
+};
+
+// ============= PRESCRIPTION-RELATED FUNCTIONS =============
+
+export const getAllPrescriptions = async () => {
+  if (mockPrescriptions.length === 0) {
+    await fetchPrescriptions();
+  }
+  return [...mockPrescriptions];
+};
+
+export const getPrescriptionById = async (id: string) => {
+  if (mockPrescriptions.length === 0) {
+    await fetchPrescriptions();
+  }
+  return mockPrescriptions.find(prescription => prescription._id === id);
+};
+
+export const getPrescriptionsByPatientId = async (patientId: string) => {
+  if (mockPrescriptions.length === 0) {
+    await fetchPrescriptions();
+  }
+  return mockPrescriptions.filter(prescription => prescription.patientId === patientId);
+};
+
+export const getPrescriptionsByDoctorId = async (doctorId: string) => {
+  if (mockPrescriptions.length === 0) {
+    await fetchPrescriptions();
+  }
+  return mockPrescriptions.filter(prescription => prescription.doctorId === doctorId);
+};
+
+export const getPrescriptionsByStatus = async (status: string) => {
+  if (mockPrescriptions.length === 0) {
+    await fetchPrescriptions();
+  }
+  return mockPrescriptions.filter(prescription => prescription.status === status);
+};
+
+// ============= PRESCRIPTION DETAIL-RELATED FUNCTIONS =============
+
+export const getAllPrescriptionDetails = async () => {
+  if (mockPrescriptionDetails.length === 0) {
+    await fetchPrescriptionDetails();
+  }
+  return [...mockPrescriptionDetails];
+};
+
+export const getPrescriptionDetailsByPrescriptionId = async (prescriptionId: string) => {
+  if (mockPrescriptionDetails.length === 0) {
+    await fetchPrescriptionDetails();
+  }
+  return mockPrescriptionDetails.filter(detail => detail.prescriptionId === prescriptionId);
+};
+
+export const getMedicinesForPrescription = async (prescriptionId: string) => {
+  const details = await getPrescriptionDetailsByPrescriptionId(prescriptionId);
+  
+  const result = [];
+  for (const detail of details) {
+    const medicine = await getMedicineById(detail.medicineId);
+    result.push({
+      ...detail,
+      medicine: medicine || null
+    });
+  }
+  
+  return result;
+};
+
+// ============= INVOICE-RELATED FUNCTIONS =============
+
+export const getAllInvoices = async () => {
+  if (mockInvoices.length === 0) {
+    await fetchInvoices();
+  }
+  return [...mockInvoices];
+};
+
+export const getInvoiceById = async (id: string) => {
+  if (mockInvoices.length === 0) {
+    await fetchInvoices();
+  }
+  return mockInvoices.find(invoice => invoice._id === id);
+};
+
+export const getInvoiceByPrescriptionId = async (prescriptionId: string) => {
+  if (mockInvoices.length === 0) {
+    await fetchInvoices();
+  }
+  return mockInvoices.find(invoice => invoice.prescriptionId === prescriptionId);
+};
+
+export const getInvoicesByPatientId = async (patientId: string) => {
+  if (mockInvoices.length === 0) {
+    await fetchInvoices();
+  }
+  return mockInvoices.filter(invoice => invoice.patientId === patientId);
+};
+
+export const getInvoicesByStatus = async (status: string) => {
+  if (mockInvoices.length === 0) {
+    await fetchInvoices();
+  }
+  return mockInvoices.filter(invoice => invoice.status === status);
+};
+
+// ============= UTILITY FUNCTIONS =============
+
+export const getPatientFullPrescriptionDetails = async (patientId: string) => {
+  const prescriptions = await getPrescriptionsByPatientId(patientId);
+  
+  const result = [];
+  for (const prescription of prescriptions) {
+    // Lấy thông tin bác sĩ
+    const doctor = await getUserById(prescription.doctorId);
+    
+    // Lấy chi tiết đơn thuốc và thông tin thuốc
+    const details = await getPrescriptionDetailsByPrescriptionId(prescription._id);
+    const medicineDetails = [];
+    
+    for (const detail of details) {
+      const medicine = await getMedicineById(detail.medicineId);
+      medicineDetails.push({
+        ...detail,
+        medicineName: medicine ? medicine.name : 'Unknown',
+        medicinePrice: medicine ? medicine.price : 0
+      });
+    }
+    
+    // Lấy hóa đơn nếu có
+    const invoice = await getInvoiceByPrescriptionId(prescription._id);
+    
+    result.push({
+      ...prescription,
+      doctorName: doctor ? doctor.fullName : 'Unknown',
+      details: medicineDetails,
+      invoice: invoice || null
+    });
+  }
+  
+  return result;
+};
+
+export const getAllPatients = async () => {
+  if (mockUsers.length === 0) {
+    await fetchUsers();
+  }
+  return mockUsers.filter(user => user.role === 'PATIENT');
+};
+
+export const getAllDoctors = async () => {
+  if (mockUsers.length === 0) {
+    await fetchUsers();
+  }
+  return mockUsers.filter(user => user.role === 'DOCTOR');
+};
+
+export type Patient = User;
+export const mockPatients = getAllPatients;
+
+export const getWaitingPatients = async () => {
+  const waitingQueues = await getQueuesByStatus('waiting');
+  
+  const result = [];
+  for (const queue of waitingQueues) {
+    const patient = await getUserById(queue.patient);
+    result.push({
+      queueInfo: queue,
+      patientInfo: patient || null
+    });
+  }
+  
+  return result;
+};
+
+export const getAllQueuesWithPatientInfo = async () => {
+  if (mockQueues.length === 0) {
+    await fetchQueues();
+  }
+  
+  const result = [];
+  for (const queue of mockQueues) {
+    const patient = await getUserById(queue.patient);
+    result.push({
+      ...queue,
+      patientInfo: patient || null
+    });
+  }
+  
+  return result;
+};
+
+// Hàm tạo MongoDB-like ID
+export const generateMongoId = () => {
+  // MongoDB ObjectId format: 24 hex characters
+  const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+  const randomPart = Array(16).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+  return timestamp + randomPart;
+};
+
+// Hàm để làm mới/reload dữ liệu từ API
+export const reloadData = async (dataTypes?: ('users' | 'queues' | 'medicines' | 'prescriptions' | 'prescriptionDetails' | 'invoices')[]) => {
+  if (!dataTypes || dataTypes.length === 0) {
+    // Reload tất cả
+    return await initializeData();
+  }
+
+  const promises = [];
+  if (dataTypes.includes('users')) promises.push(fetchUsers());
+  if (dataTypes.includes('queues')) promises.push(fetchQueues());
+  if (dataTypes.includes('medicines')) promises.push(fetchMedicines());
+  if (dataTypes.includes('prescriptions')) promises.push(fetchPrescriptions());
+  if (dataTypes.includes('prescriptionDetails')) promises.push(fetchPrescriptionDetails());
+  if (dataTypes.includes('invoices')) promises.push(fetchInvoices());
+  
+  await Promise.all(promises);
+  return {
+    users: mockUsers.length,
+    queues: mockQueues.length,
+    medicines: mockMedicines.length,
+    prescriptions: mockPrescriptions.length,
+    prescriptionDetails: mockPrescriptionDetails.length,
+    invoices: mockInvoices.length
+  };
+};
