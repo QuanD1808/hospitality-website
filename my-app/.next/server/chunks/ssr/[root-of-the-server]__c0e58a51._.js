@@ -126,7 +126,7 @@ const axiosInstance = __TURBOPACK__imported__module__$5b$project$5d2f$node_modul
         'Content-Type': 'application/json'
     },
     withCredentials: true,
-    timeout: 10000
+    timeout: 30000
 });
 // Add request interceptor for logging
 axiosInstance.interceptors.request.use((config)=>{

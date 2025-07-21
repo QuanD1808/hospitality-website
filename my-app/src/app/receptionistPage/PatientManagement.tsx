@@ -139,31 +139,55 @@ export function PatientManagement({ onBack }: PatientManagementProps) {
     }
   };
   
-  const handleSavePatient = async (patientData: Partial<User>) => {
-    setLoading(true);
-    setNotification(null);
-    try {
-      let result = null;
-      if (editingPatient && editingPatient._id) {
-        result = await updatePatient(editingPatient._id, patientData, token || undefined);
-        setNotification({ type: 'success', message: 'Cập nhật thành công' });
-      } else {
-        result = await addPatient({ ...patientData, role: 'PATIENT' }, token || undefined);
-        setNotification({ type: 'success', message: 'Thêm thành công' });
+const handleSavePatient = async (patientData: Partial<User>) => {
+  setLoading(true);
+  setNotification(null);
+  try {
+    if (editingPatient && editingPatient._id) {
+      // Logic cho việc CẬP NHẬT bệnh nhân
+      console.log("Data being sent to UPDATE API:", patientData);
+      
+      // Không cần kiểm tra các trường bắt buộc như password khi cập nhật
+      if (!patientData.fullName || !patientData.email) {
+          throw new Error("Vui lòng điền đầy đủ Họ và tên và Email.");
       }
-      if (result) {
-        setRefreshData(prev => prev + 1);
-        handleCloseForm();
-      } else {
-        throw new Error("Thao tác không trả về kết quả hợp lệ.");
+
+      await updatePatient(editingPatient._id, patientData, token || undefined);
+      setNotification({ type: 'success', message: 'Cập nhật thông tin thành công' });
+
+    } else {
+      // Logic cho việc THÊM MỚI bệnh nhân
+      const newPatientData = { ...patientData, role: 'PATIENT' as const };
+      console.log("Data being sent to CREATE API:", newPatientData);
+
+      // Kiểm tra các trường bắt buộc khi tạo mới
+      if (!newPatientData.fullName || !newPatientData.email || !newPatientData.password) {
+          throw new Error("Vui lòng điền đầy đủ Họ và tên, Email và Mật khẩu.");
       }
-    } catch (error: any) {
-      setNotification({ type: 'error', message: error.message || 'Lỗi khi lưu.' });
-    } finally {
-      setLoading(false);
-      setTimeout(() => setNotification(null), 5000);
+
+      await addPatient(newPatientData, token || undefined);
+      setNotification({ type: 'success', message: 'Thêm bệnh nhân thành công' });
     }
-  };
+
+    // === SỬA LOGIC Ở ĐÂY ===
+    // Nếu các lệnh await ở trên không throw ra lỗi, thì coi như đã thành công.
+    // Không cần kiểm tra `result` nữa.
+    setRefreshData(prev => prev + 1);
+    handleCloseForm();
+
+  } catch (error: any) {
+    // Xử lý lỗi từ API một cách chi tiết
+    console.error("Error saving patient:", error);
+    const errorMessage = error.response?.data?.message || error.message || 'Lỗi khi lưu thông tin. Vui lòng thử lại.';
+    setNotification({ type: 'error', message: errorMessage });
+    
+  } finally {
+    setLoading(false);
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  }
+};
   
   const handleCloseForm = () => {
     setShowForm(false);

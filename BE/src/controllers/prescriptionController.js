@@ -398,87 +398,114 @@ exports.calculateRevenue = async (req, res) => {
 // @desc    Tính doanh thu cho một đơn thuốc cụ thể
 // @route   GET /api/prescriptions/:id/revenue
 // @access  ADMIN, PHARMACIST
+// BE/src/controllers/prescriptionController.js (hoặc file chứa hàm này)
+const mongoose = require('mongoose'); // Cần import mongoose để dùng ObjectId
+
 exports.calculatePrescriptionRevenue = async (req, res) => {
-    console.log('\n========== CALCULATE PRESCRIPTION REVENUE REQUEST ==========');
-    console.log('Prescription ID:', req.params.id);
-    console.log('Auth user:', req.user ? `ID: ${req.user._id}, Role: ${req.user.role}` : 'Not authenticated');
+    console.log('\n========== CALCULATE PRESCRIPTION REVENUE REQUEST (OPTIMIZED) ==========');
+    const prescriptionId = req.params.id;
+    console.log('Prescription ID:', prescriptionId);
     
     try {
-        const prescriptionId = req.params.id;
-        
-        // Kiểm tra đơn thuốc tồn tại không
-        const prescription = await Prescription.findById(prescriptionId);
-        if (!prescription) {
-            return res.status(404).json({ message: 'Prescription not found' });
-        }
-        
-        // Lấy chi tiết đơn thuốc
-        const details = await PrescriptionDetail.find({ prescriptionId });
-        console.log(`Found ${details.length} details for prescription ${prescriptionId}`);
-        
-        let totalAmount = 0;
-        const medicines = [];
-        
-        // Tính toán doanh thu từ đơn thuốc này
-        for (const detail of details) {
-            const medicine = await Medicine.findById(detail.medicineId);
-            if (medicine) {
-                const subtotal = medicine.price * detail.quantity;
-                totalAmount += subtotal;
-                
-                medicines.push({
-                    id: medicine._id,
-                    name: medicine.name,
-                    price: medicine.price,
-                    quantity: detail.quantity,
-                    total: subtotal
-                });
+        // --- TÍNH TỔNG TIỀN CHO ĐƠN THUỐC HIỆN TẠI (Cách hiệu quả) ---
+        const prescriptionRevenuePipeline = [
+            // Giai đoạn 1: Tìm đúng các chi tiết của đơn thuốc này
+            { $match: { prescriptionId: new mongoose.Types.ObjectId(prescriptionId) } },
+            // Giai đoạn 2: "Join" với bảng Medicine để lấy thông tin thuốc (giá, tên)
+            {
+                $lookup: {
+                    from: 'medicines', // Tên collection của Medicine
+                    localField: 'medicineId',
+                    foreignField: '_id',
+                    as: 'medicineInfo'
+                }
+            },
+            // Giai đoạn 3: $unwind để biến mảng medicineInfo (chỉ có 1 phần tử) thành object
+            { $unwind: '$medicineInfo' },
+            // Giai đoạn 4: Tính toán tổng tiền và tạo danh sách thuốc
+            {
+                $group: {
+                    _id: '$prescriptionId', // Gom nhóm theo ID đơn thuốc
+                    totalAmount: { $sum: { $multiply: ['$quantity', '$medicineInfo.price'] } },
+                    medicines: { 
+                        $push: {
+                            id: '$medicineInfo._id',
+                            name: '$medicineInfo.name',
+                            price: '$medicineInfo.price',
+                            quantity: '$quantity',
+                            total: { $multiply: ['$quantity', '$medicineInfo.price'] }
+                        }
+                    }
+                }
             }
+        ];
+
+        const prescriptionResult = await PrescriptionDetail.aggregate(prescriptionRevenuePipeline);
+        
+        if (prescriptionResult.length === 0) {
+            // Trường hợp đơn thuốc không có chi tiết nào
+            const prescription = await Prescription.findById(prescriptionId);
+            if (!prescription) {
+                return res.status(404).json({ message: 'Prescription not found' });
+            }
+            return res.status(200).json({
+                prescriptionId,
+                totalAmount: 0,
+                medicines: [],
+                monthlyRevenue: 0, // Sẽ tính ở dưới
+                yearlyRevenue: 0,  // Sẽ tính ở dưới
+            });
         }
         
-        // Calculate monthly revenue for context (optional)
+        const { totalAmount, medicines } = prescriptionResult[0];
+
+        // --- TÍNH DOANH THU THÁNG VÀ NĂM (Cách hiệu quả) ---
         const currentDate = new Date();
-        const currentMonth = currentDate.getMonth();
         const currentYear = currentDate.getFullYear();
-        const startOfMonth = new Date(currentYear, currentMonth, 1);
-        const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
-        
-        const monthlyPrescriptions = await Prescription.find({
-            status: 'DISPENSED',
-            date: { $gte: startOfMonth, $lte: endOfMonth }
-        });
-        
-        let monthlyRevenue = 0;
-        for (const p of monthlyPrescriptions) {
-            const pDetails = await PrescriptionDetail.find({ prescriptionId: p._id });
-            for (const detail of pDetails) {
-                const medicine = await Medicine.findById(detail.medicineId);
-                if (medicine) {
-                    monthlyRevenue += medicine.price * detail.quantity;
-                }
-            }
-        }
-        
-        // Calculate yearly revenue for context (optional)
+        const startOfMonth = new Date(currentYear, currentDate.getMonth(), 1);
         const startOfYear = new Date(currentYear, 0, 1);
-        const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59);
-        
-        const yearlyPrescriptions = await Prescription.find({
-            status: 'DISPENSED',
-            date: { $gte: startOfYear, $lte: endOfYear }
-        });
-        
-        let yearlyRevenue = 0;
-        for (const p of yearlyPrescriptions) {
-            const pDetails = await PrescriptionDetail.find({ prescriptionId: p._id });
-            for (const detail of pDetails) {
-                const medicine = await Medicine.findById(detail.medicineId);
-                if (medicine) {
-                    yearlyRevenue += medicine.price * detail.quantity;
+
+        const revenuePipeline = (startDate) => ([
+            // Giai đoạn 1: Tìm các đơn thuốc đã bán trong khoảng thời gian
+            { $match: { status: 'DISPENSED', date: { $gte: startDate } } },
+            // Giai đoạn 2: "Join" với bảng PrescriptionDetail
+            {
+                $lookup: {
+                    from: 'prescriptiondetails', // Tên collection của PrescriptionDetail
+                    localField: '_id',
+                    foreignField: 'prescriptionId',
+                    as: 'details'
+                }
+            },
+            // Giai đoạn 3: Mở mảng details ra
+            { $unwind: '$details' },
+            // Giai đoạn 4: "Join" với bảng Medicine
+            {
+                $lookup: {
+                    from: 'medicines',
+                    localField: 'details.medicineId',
+                    foreignField: '_id',
+                    as: 'medicineInfo'
+                }
+            },
+            // Giai đoạn 5: Mở mảng medicineInfo ra
+            { $unwind: '$medicineInfo' },
+            // Giai đoạn 6: Gom nhóm và tính tổng doanh thu
+            {
+                $group: {
+                    _id: null, // Gom tất cả lại
+                    totalRevenue: { $sum: { $multiply: ['$details.quantity', '$medicineInfo.price'] } }
                 }
             }
-        }
+        ]);
+
+        const monthlyResult = await Prescription.aggregate(revenuePipeline(startOfMonth));
+        const yearlyResult = await Prescription.aggregate(revenuePipeline(startOfYear));
+
+        const monthlyRevenue = monthlyResult.length > 0 ? monthlyResult[0].totalRevenue : 0;
+        const yearlyRevenue = yearlyResult.length > 0 ? yearlyResult[0].totalRevenue : 0;
         
+        // --- TRẢ VỀ KẾT QUẢ ---
         res.status(200).json({
             prescriptionId,
             totalAmount,
@@ -486,12 +513,13 @@ exports.calculatePrescriptionRevenue = async (req, res) => {
             monthlyRevenue,
             yearlyRevenue
         });
+
     } catch (err) {
-        console.error('Error in calculatePrescriptionRevenue:', err);
-        res.status(500).json({ 
-            message: 'Server Error when calculating prescription revenue', 
-            details: err.message,
-            stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
-        });
+        console.error('Error in calculatePrescriptionRevenue (Optimized):', err);
+        // Kiểm tra lỗi CastError do ObjectId không hợp lệ
+        if (err.name === 'CastError' && err.path === '_id') {
+            return res.status(400).json({ message: 'Invalid Prescription ID format' });
+        }
+        res.status(500).json({ message: 'Server Error when calculating revenue' });
     }
 };

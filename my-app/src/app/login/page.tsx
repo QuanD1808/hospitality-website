@@ -54,13 +54,41 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError(''); // Xóa lỗi cũ trước khi thử lại
     setIsLoading(true);
+
     try {
+      // In ra dữ liệu để debug, bạn có thể xóa dòng này sau
+      console.log('Attempting to log in with:', { email, password });
+
+      // Gọi hàm login từ context
       await login(email, password);
-      // Routing will be handled by the useEffect above
-    } catch (err) {
-      setError('Email hoặc mật khẩu không đúng');
+      
+      // Nếu login thành công, AuthContext sẽ tự động xử lý việc chuyển hướng
+      // thông qua useEffect, nên chúng ta không cần làm gì thêm ở đây.
+
+    } catch (err: any) { // Sử dụng `any` để có thể truy cập các thuộc tính của error object
+      console.error("Login failed:", err);
+
+      // === BẮT ĐẦU CẢI TIẾN XỬ LÝ LỖI ===
+      let errorMessage = 'Đã xảy ra lỗi không xác định. Vui lòng thử lại.';
+
+      if (err.response) {
+        // Lỗi đến từ phản hồi của server (ví dụ: 400, 401, 403, 500)
+        // Ưu tiên lấy thông báo lỗi mà backend đã gửi về
+        errorMessage = err.response.data?.message || `Lỗi ${err.response.status}: Yêu cầu không hợp lệ.`;
+      } else if (err.request) {
+        // Yêu cầu đã được gửi đi nhưng không nhận được phản hồi
+        // Thường là lỗi mạng hoặc server không chạy
+        errorMessage = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại kết nối mạng.';
+      } else {
+        // Lỗi xảy ra trong quá trình thiết lập yêu cầu
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+      // === KẾT THÚC CẢI TIẾN XỬ LÝ LỖI ===
+
     } finally {
       setIsLoading(false);
     }

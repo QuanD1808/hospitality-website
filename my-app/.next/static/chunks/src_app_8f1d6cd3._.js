@@ -3054,37 +3054,54 @@ function PatientManagement(param) {
         setLoading(true);
         setNotification(null);
         try {
-            let result = null;
             if (editingPatient && editingPatient._id) {
-                result = await updatePatient(editingPatient._id, patientData, token || undefined);
+                // Logic cho việc CẬP NHẬT bệnh nhân
+                console.log("Data being sent to UPDATE API:", patientData);
+                // Không cần kiểm tra các trường bắt buộc như password khi cập nhật
+                if (!patientData.fullName || !patientData.email) {
+                    throw new Error("Vui lòng điền đầy đủ Họ và tên và Email.");
+                }
+                await updatePatient(editingPatient._id, patientData, token || undefined);
                 setNotification({
                     type: 'success',
-                    message: 'Cập nhật thành công'
+                    message: 'Cập nhật thông tin thành công'
                 });
             } else {
-                result = await addPatient({
+                // Logic cho việc THÊM MỚI bệnh nhân
+                const newPatientData = {
                     ...patientData,
                     role: 'PATIENT'
-                }, token || undefined);
+                };
+                console.log("Data being sent to CREATE API:", newPatientData);
+                // Kiểm tra các trường bắt buộc khi tạo mới
+                if (!newPatientData.fullName || !newPatientData.email || !newPatientData.password) {
+                    throw new Error("Vui lòng điền đầy đủ Họ và tên, Email và Mật khẩu.");
+                }
+                await addPatient(newPatientData, token || undefined);
                 setNotification({
                     type: 'success',
-                    message: 'Thêm thành công'
+                    message: 'Thêm bệnh nhân thành công'
                 });
             }
-            if (result) {
-                setRefreshData((prev)=>prev + 1);
-                handleCloseForm();
-            } else {
-                throw new Error("Thao tác không trả về kết quả hợp lệ.");
-            }
+            // === SỬA LOGIC Ở ĐÂY ===
+            // Nếu các lệnh await ở trên không throw ra lỗi, thì coi như đã thành công.
+            // Không cần kiểm tra `result` nữa.
+            setRefreshData((prev)=>prev + 1);
+            handleCloseForm();
         } catch (error) {
+            var _error_response_data, _error_response;
+            // Xử lý lỗi từ API một cách chi tiết
+            console.error("Error saving patient:", error);
+            const errorMessage = ((_error_response = error.response) === null || _error_response === void 0 ? void 0 : (_error_response_data = _error_response.data) === null || _error_response_data === void 0 ? void 0 : _error_response_data.message) || error.message || 'Lỗi khi lưu thông tin. Vui lòng thử lại.';
             setNotification({
                 type: 'error',
-                message: error.message || 'Lỗi khi lưu.'
+                message: errorMessage
             });
         } finally{
             setLoading(false);
-            setTimeout(()=>setNotification(null), 5000);
+            setTimeout(()=>{
+                setNotification(null);
+            }, 5000);
         }
     };
     const handleCloseForm = ()=>{
@@ -3202,12 +3219,12 @@ function PatientManagement(param) {
                     children: "← Quay lại"
                 }, void 0, false, {
                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                    lineNumber: 251,
+                    lineNumber: 275,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                lineNumber: 250,
+                lineNumber: 274,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3221,7 +3238,7 @@ function PatientManagement(param) {
                                 children: "Quản lý bệnh nhân"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 260,
+                                lineNumber: 284,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3233,20 +3250,20 @@ function PatientManagement(param) {
                                         className: "mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 265,
+                                        lineNumber: 289,
                                         columnNumber: 13
                                     }, this),
                                     "Thêm bệnh nhân"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 261,
+                                lineNumber: 285,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 259,
+                        lineNumber: 283,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3254,13 +3271,13 @@ function PatientManagement(param) {
                         children: "Quản lý thông tin bệnh nhân và thêm vào phòng chờ"
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 269,
+                        lineNumber: 293,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                lineNumber: 258,
+                lineNumber: 282,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3271,7 +3288,7 @@ function PatientManagement(param) {
                         children: authError
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 276,
+                        lineNumber: 300,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3289,12 +3306,12 @@ function PatientManagement(param) {
                                                 className: "text-black"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 285,
+                                                lineNumber: 309,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 284,
+                                            lineNumber: 308,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3305,13 +3322,13 @@ function PatientManagement(param) {
                                             onChange: (e)=>setSearchTerm(e.target.value)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 287,
+                                            lineNumber: 311,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                    lineNumber: 283,
+                                    lineNumber: 307,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3329,7 +3346,7 @@ function PatientManagement(param) {
                                                         children: "Sắp xếp: Mới nhất"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 303,
+                                                        lineNumber: 327,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -3337,7 +3354,7 @@ function PatientManagement(param) {
                                                         children: "Sắp xếp: Cũ nhất"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 304,
+                                                        lineNumber: 328,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -3345,7 +3362,7 @@ function PatientManagement(param) {
                                                         children: "Sắp xếp: Tên (A-Z)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 305,
+                                                        lineNumber: 329,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -3353,13 +3370,13 @@ function PatientManagement(param) {
                                                         children: "Sắp xếp: Tên (Z-A)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 306,
+                                                        lineNumber: 330,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 298,
+                                                lineNumber: 322,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3369,12 +3386,12 @@ function PatientManagement(param) {
                                                     className: "text-black"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 309,
+                                                    lineNumber: 333,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 308,
+                                                lineNumber: 332,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3390,39 +3407,39 @@ function PatientManagement(param) {
                                                         clipRule: "evenodd"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 313,
+                                                        lineNumber: 337,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 312,
+                                                    lineNumber: 336,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 311,
+                                                lineNumber: 335,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 297,
+                                        lineNumber: 321,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                    lineNumber: 296,
+                                    lineNumber: 320,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                            lineNumber: 282,
+                            lineNumber: 306,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 281,
+                        lineNumber: 305,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3442,7 +3459,7 @@ function PatientManagement(param) {
                                                         children: "Họ và tên"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 327,
+                                                        lineNumber: 351,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3450,7 +3467,7 @@ function PatientManagement(param) {
                                                         children: "User ID"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 328,
+                                                        lineNumber: 352,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3458,7 +3475,7 @@ function PatientManagement(param) {
                                                         children: "Username"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 329,
+                                                        lineNumber: 353,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3466,7 +3483,7 @@ function PatientManagement(param) {
                                                         children: "Email"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 330,
+                                                        lineNumber: 354,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3474,7 +3491,7 @@ function PatientManagement(param) {
                                                         children: "Điện thoại"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 331,
+                                                        lineNumber: 355,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3482,7 +3499,7 @@ function PatientManagement(param) {
                                                         children: "Vai trò"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 332,
+                                                        lineNumber: 356,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3490,18 +3507,18 @@ function PatientManagement(param) {
                                                         children: "Thao tác"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                        lineNumber: 333,
+                                                        lineNumber: 357,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 326,
+                                                lineNumber: 350,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 325,
+                                            lineNumber: 349,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -3513,12 +3530,12 @@ function PatientManagement(param) {
                                                     children: "Đang tải dữ liệu..."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 338,
+                                                    lineNumber: 362,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 338,
+                                                lineNumber: 362,
                                                 columnNumber: 21
                                             }, this) : sortedPatients.filter((patient)=>patient).map((patient, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     className: index % 2 === 0 ? 'bg-white' : 'bg-gray-50',
@@ -3529,7 +3546,7 @@ function PatientManagement(param) {
                                                             children: patient.fullName
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 344,
+                                                            lineNumber: 368,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3537,7 +3554,7 @@ function PatientManagement(param) {
                                                             children: patient.userId
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 350,
+                                                            lineNumber: 374,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3545,7 +3562,7 @@ function PatientManagement(param) {
                                                             children: patient.username
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 351,
+                                                            lineNumber: 375,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3553,7 +3570,7 @@ function PatientManagement(param) {
                                                             children: patient.email
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 352,
+                                                            lineNumber: 376,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3561,7 +3578,7 @@ function PatientManagement(param) {
                                                             children: patient.phone
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 353,
+                                                            lineNumber: 377,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3569,7 +3586,7 @@ function PatientManagement(param) {
                                                             children: patient.role
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 354,
+                                                            lineNumber: 378,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3585,12 +3602,12 @@ function PatientManagement(param) {
                                                                             size: 16
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                            lineNumber: 357,
+                                                                            lineNumber: 381,
                                                                             columnNumber: 174
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                        lineNumber: 357,
+                                                                        lineNumber: 381,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3601,12 +3618,12 @@ function PatientManagement(param) {
                                                                             size: 16
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                            lineNumber: 358,
+                                                                            lineNumber: 382,
                                                                             columnNumber: 174
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                        lineNumber: 358,
+                                                                        lineNumber: 382,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3618,47 +3635,47 @@ function PatientManagement(param) {
                                                                                 className: "mr-1"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                                lineNumber: 360,
+                                                                                lineNumber: 384,
                                                                                 columnNumber: 31
                                                                             }, this),
                                                                             "Thêm vào phòng chờ"
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                        lineNumber: 359,
+                                                                        lineNumber: 383,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                                lineNumber: 356,
+                                                                lineNumber: 380,
                                                                 columnNumber: 27
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                            lineNumber: 355,
+                                                            lineNumber: 379,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, patient._id, true, {
                                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                    lineNumber: 343,
+                                                    lineNumber: 367,
                                                     columnNumber: 23
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                            lineNumber: 336,
+                                            lineNumber: 360,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                    lineNumber: 324,
+                                    lineNumber: 348,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 323,
+                                lineNumber: 347,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex flex-col items-center justify-center py-16 border border-dashed border-gray-300 rounded-lg",
@@ -3668,7 +3685,7 @@ function PatientManagement(param) {
                                         className: "text-gray-400 mb-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 373,
+                                        lineNumber: 397,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -3676,7 +3693,7 @@ function PatientManagement(param) {
                                         children: "Không tìm thấy bệnh nhân"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 374,
+                                        lineNumber: 398,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3684,13 +3701,13 @@ function PatientManagement(param) {
                                         children: "Thử tìm kiếm với từ khóa khác hoặc thêm bệnh nhân mới"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 375,
+                                        lineNumber: 399,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 372,
+                                lineNumber: 396,
                                 columnNumber: 13
                             }, this),
                             sortedPatients && sortedPatients.filter((p)=>p).length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3705,14 +3722,14 @@ function PatientManagement(param) {
                                                 children: sortedPatients.filter((p)=>p).length
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 381,
+                                                lineNumber: 405,
                                                 columnNumber: 58
                                             }, this),
                                             " bệnh nhân"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 381,
+                                        lineNumber: 405,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3723,7 +3740,7 @@ function PatientManagement(param) {
                                                 children: "Trước"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 383,
+                                                lineNumber: 407,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3731,7 +3748,7 @@ function PatientManagement(param) {
                                                 children: "1"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 384,
+                                                lineNumber: 408,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3739,31 +3756,31 @@ function PatientManagement(param) {
                                                 children: "Sau"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                                lineNumber: 385,
+                                                lineNumber: 409,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                        lineNumber: 382,
+                                        lineNumber: 406,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 380,
+                                lineNumber: 404,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 321,
+                        lineNumber: 345,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                lineNumber: 274,
+                lineNumber: 298,
                 columnNumber: 7
             }, this),
             showForm && // === SỬA LỖI: Thêm class `light` để buộc chế độ sáng ===
@@ -3778,17 +3795,17 @@ function PatientManagement(param) {
                         isLoading: loading
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 396,
+                        lineNumber: 420,
                         columnNumber: 17
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                    lineNumber: 395,
+                    lineNumber: 419,
                     columnNumber: 13
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                lineNumber: 394,
+                lineNumber: 418,
                 columnNumber: 9
             }, this),
             notification && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3806,12 +3823,12 @@ function PatientManagement(param) {
                                 clipRule: "evenodd"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 415,
+                                lineNumber: 439,
                                 columnNumber: 17
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                            lineNumber: 414,
+                            lineNumber: 438,
                             columnNumber: 15
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
                             xmlns: "http://www.w3.org/2000/svg",
@@ -3823,17 +3840,17 @@ function PatientManagement(param) {
                                 clipRule: "evenodd"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 419,
+                                lineNumber: 443,
                                 columnNumber: 17
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                            lineNumber: 418,
+                            lineNumber: 442,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 410,
+                        lineNumber: 434,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3844,7 +3861,7 @@ function PatientManagement(param) {
                                 children: notification.type === 'success' ? 'Thành công' : 'Lỗi'
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 424,
+                                lineNumber: 448,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3852,13 +3869,13 @@ function PatientManagement(param) {
                                 children: notification.message
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 429,
+                                lineNumber: 453,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 423,
+                        lineNumber: 447,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3875,29 +3892,29 @@ function PatientManagement(param) {
                                 clipRule: "evenodd"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                                lineNumber: 440,
+                                lineNumber: 464,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                            lineNumber: 439,
+                            lineNumber: 463,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                        lineNumber: 435,
+                        lineNumber: 459,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-                lineNumber: 407,
+                lineNumber: 431,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/receptionistPage/PatientManagement.tsx",
-        lineNumber: 249,
+        lineNumber: 273,
         columnNumber: 5
     }, this);
 }

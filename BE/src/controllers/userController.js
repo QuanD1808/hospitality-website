@@ -46,38 +46,40 @@ exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        // 1. Kiểm tra dữ liệu đầu vào có đầy đủ không
         if (!email || !password) {
-            console.log('Login: Email or password missing');
-            return res.status(400).json({ message: 'Please provide email and password' });
+            console.log('Login attempt failed: Email or password was not provided.');
+            return res.status(400).json({ message: 'Vui lòng nhập đầy đủ email và mật khẩu.' });
         }
-        console.log(`Login: Finding user with email: ${email}`);
-        const user = await User.findOne({ email }).select('+password'); // Lấy cả password để so sánh
+        
+        console.log(`Login attempt for email: ${email}`);
+        
+        // 2. Tìm người dùng bằng email và lấy cả trường password đã bị ẩn
+        const user = await User.findOne({ email }).select('+password');
 
-        if (!user) {
-            console.log('Login: User not found for email:', email);
-            return res.status(400).json({ message: 'Invalid Credentials (User not found)' });
-        }
-        console.log('Login: User found, comparing password...');
-        const isMatch = await user.matchPassword(password);
-        console.log('Login: Password match result:', isMatch);
-
-        if (!isMatch) {
-            console.log('Login: Password incorrect for email:', email);
-            return res.status(400).json({ message: 'Invalid Credentials (Password incorrect)' });
+        // 3. So sánh mật khẩu và kiểm tra người dùng tồn tại
+        // Gộp cả hai trường hợp (không tìm thấy user hoặc sai mật khẩu) vào một
+        // để tăng cường bảo mật, tránh việc kẻ xấu dò xem email có tồn tại không.
+        if (!user || !(await user.matchPassword(password))) {
+            console.log(`Login attempt failed for email: ${email}. Invalid credentials.`);
+            return res.status(401).json({ message: 'Email hoặc mật khẩu không chính xác.' }); 
         }
 
-        console.log('Login: Password matched, generating token...');
+        console.log(`Login successful for user: ${user.email} (ID: ${user._id}, Role: ${user.role})`);
+        
+        // 4. Tạo token và chuẩn bị dữ liệu trả về
         const userResponse = user.toObject();
-        delete userResponse.password; // Không trả về password hash
+        delete userResponse.password; // Không bao giờ trả về mật khẩu đã hash
 
+        // 5. Trả về thông tin người dùng và token
         res.status(200).json({
             ...userResponse,
             token: generateToken(user._id)
         });
-        console.log('Login: Response sent successfully for email:', email);
+        
     } catch (err) {
-        console.error('Login error in controller:', err);
-        res.status(500).json({ message: 'Server Error', error: err.message });
+        console.error('An unexpected error occurred during login:', err);
+        res.status(500).json({ message: 'Đã xảy ra lỗi máy chủ. Vui lòng thử lại sau.' });
     }
 };
 
@@ -154,87 +156,75 @@ exports.getUserByCustomId = async (req, res) => {
     }
 };
 
+// BE/src/controllers/userController.js
+
 // @desc    Cập nhật một User theo _id
 // @route   PUT /api/users/:id
 // @access  Protected
 exports.updateUser = async (req, res) => {
     console.log('--- updateUser controller function called for id:', req.params.id, 'with data:', req.body);
-    const { password, role, isReceptionist, ...otherUpdates } = req.body; // Thêm isReceptionist vào destructuring
+    
+    // Loại bỏ isReceptionist, chúng ta không cần nó nữa
+    const { password, role, ...otherUpdates } = req.body; 
+
     try {
-        let user = await User.findById(req.params.id);
-        if (!user) {
+        let userToUpdate = await User.findById(req.params.id);
+        if (!userToUpdate) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Xử lý đặc biệt cho tiếp tân khi có tham số isReceptionist
-        if (req.user.role === 'RECEPTIONIST' && isReceptionist === true && user.role === 'PATIENT') {
-            console.log('Receptionist updating patient with special permission');
-            // Cho phép tiếp tân cập nhật thông tin bệnh nhân (không bao gồm role)
-            Object.keys(otherUpdates).forEach(key => {
-                // Tiếp tân không thể thay đổi userId và username
-                if (key !== 'userId' && key !== 'username') {
-                    user[key] = otherUpdates[key];
-                }
-            });
+        const requester = req.user;
+        const targetUser = userToUpdate;
 
-            const updatedUser = await user.save();
-            const userResponse = updatedUser.toObject();
-            delete userResponse.password;
-            return res.status(200).json(userResponse);
-        }
+        // === LOGIC PHÂN QUYỀN ĐƯỢC VIẾT LẠI HOÀN TOÀN ===
+        const isSelfUpdate = requester._id.toString() === targetUser._id.toString();
+        const isPrivilegedRole = ['ADMIN', 'RECEPTIONIST'].includes(requester.role);
+        const isDoctorUpdatingPatient = (requester.role === 'DOCTOR' && targetUser.role === 'PATIENT');
 
-        // Phân quyền cập nhật thông thường:
-        // User chỉ có thể tự cập nhật thông tin của mình (trừ vai trò)
-        // ADMIN có thể cập nhật mọi thứ của người khác, bao gồm cả vai trò
-        if (req.user.role !== 'ADMIN' && req.user._id.toString() !== user._id.toString()) {
-            return res.status(403).json({ message: 'Not authorized to update this user profile' });
+        // Kiểm tra quyền cập nhật chung
+        if (!isPrivilegedRole && !isSelfUpdate && !isDoctorUpdatingPatient) {
+            return res.status(403).json({ message: 'Bạn không có quyền cập nhật thông tin người dùng này.' });
         }
-        // Nếu người dùng đang tự cập nhật, không cho phép họ tự đổi vai trò của mình
-        if (req.user._id.toString() === user._id.toString() && role && role !== user.role) {
-             return res.status(403).json({ message: 'Users cannot change their own role.' });
+        
+        // --- Các quy tắc chi tiết hơn ---
+
+        // 1. Chỉ các vai trò đặc quyền (ADMIN, RECEPTIONIST) mới được thay đổi vai trò (role)
+        if (role && role !== targetUser.role && !isPrivilegedRole) {
+            return res.status(403).json({ message: 'Chỉ Quản trị viên hoặc Lễ tân mới có thể thay đổi vai trò.' });
         }
-        // Chỉ ADMIN mới có thể thay đổi vai trò của người khác
-        if (role && req.user.role !== 'ADMIN' && req.user._id.toString() !== user._id.toString()) {
-             return res.status(403).json({ message: 'Only ADMIN can change other users roles.' });
-        }
-        if (role && req.user.role === 'ADMIN') { // Nếu admin gửi role, cập nhật nó
-            user.role = role;
+        if (role && isPrivilegedRole) {
+            targetUser.role = role;
         }
 
-        // Cập nhật các trường khác
+        // 2. Cập nhật các trường thông tin khác
         Object.keys(otherUpdates).forEach(key => {
-            // Không cho phép cập nhật userId, username, email nếu người dùng không phải admin
-            const restrictedFields = ['userId', 'username', 'email'];
-            if (restrictedFields.includes(key) && req.user.role !== 'ADMIN' && req.user._id.toString() !== user._id.toString()){
-                return; // Bỏ qua, không cập nhật
-            }
-            // User tự cập nhật cũng không nên đổi userId, username (chỉ admin mới có thể làm việc này một cách cẩn thận)
-            if (restrictedFields.includes(key) && key !== 'email' && req.user._id.toString() === user._id.toString() && user[key] !== otherUpdates[key]) {
-                 console.warn(`User ${user.email} attempting to change restricted field ${key}. Denied unless ADMIN.`);
-                 return; // Admin có thể đổi, người khác không nên
-            }
-            user[key] = otherUpdates[key];
+            targetUser[key] = otherUpdates[key];
         });
 
+        // 3. Cập nhật mật khẩu nếu có
         if (password) {
-            user.password = password; // pre('save') hook sẽ hash lại
+            targetUser.password = password; // pre('save') hook sẽ tự động hash lại
         }
 
-        const updatedUser = await user.save();
+        // Lưu các thay đổi vào database
+        const updatedUser = await targetUser.save();
+        
+        // Trả về kết quả, không bao gồm mật khẩu
         const userResponse = updatedUser.toObject();
-        delete userResponse.password; // Không trả về password
+        delete userResponse.password;
 
         res.status(200).json(userResponse);
+
     } catch (err) {
-        if (err.code === 11000) {
+        if (err.code === 11000) { // Lỗi trùng key
             const field = Object.keys(err.keyPattern)[0];
-            return res.status(400).json({ message: `${field.charAt(0).toUpperCase() + field.slice(1)} '${err.keyValue[field]}' already exists.` });
+            return res.status(400).json({ message: `${field.charAt(0).toUpperCase() + field.slice(1)} đã tồn tại.` });
         }
-        if (err.name === 'CastError') {
-             return res.status(400).json({ message: 'Invalid User ID format' });
+        if (err.name === 'CastError') { // Lỗi định dạng ID
+             return res.status(400).json({ message: 'Định dạng ID người dùng không hợp lệ.' });
         }
         console.error('Error in updateUser:', err);
-        res.status(500).json({ message: 'Server Error', error: err.message });
+        res.status(500).json({ message: 'Lỗi máy chủ khi cập nhật người dùng.', error: err.message });
     }
 };
 
@@ -296,52 +286,59 @@ exports.getAllPatients = async (req, res) => {
     }
 };
 
+// BE/src/controllers/userController.js
+
 // @desc    Tạo User mới (bởi nhân viên hoặc admin)
 // @route   POST /api/users
-// @access  Protected (ADMIN, DOCTOR, PHARMACIST, RECEPTIONIST)
+// @access  Protected (ADMIN, RECEPTIONIST)
 exports.createUser = async (req, res) => {
     console.log('--- createUser controller function called ---');
     console.log('Request body:', req.body);
     
-    // Lấy thông tin của người đang tạo user (người đã xác thực)
-    const creatorRole = req.user.role;
-    console.log(`User with role ${creatorRole} is creating a new user`);
-    
     const { userId, username, email, password, fullName, phone, role } = req.body;
     
-    // Kiểm tra xác thực quyền: chỉ ADMIN mới có thể tạo nhân viên, các nhân viên khác chỉ có thể tạo PATIENT
-    if (role !== 'PATIENT' && creatorRole !== 'ADMIN') {
-        console.log(`${creatorRole} attempted to create a ${role} user - Permission denied`);
-        return res.status(403).json({ message: `You do not have permission to create users with role ${role}` });
+    // === BƯỚC 1: VALIDATION DỮ LIỆU ĐẦU VÀO ===
+    if (!fullName || !email || !password || !role) {
+        return res.status(400).json({ 
+            message: 'Vui lòng cung cấp đầy đủ các trường bắt buộc: fullName, email, password, role.' 
+        });
+    }
+
+    // Kiểm tra quyền hạn của người tạo
+    const creatorRole = req.user.role;
+    const privilegedRoles = ['ADMIN', 'RECEPTIONIST'];
+
+    if (!privilegedRoles.includes(creatorRole) && role !== 'PATIENT') {
+        console.log(`User with role '${creatorRole}' attempted to create a '${role}' user - Permission denied`);
+        return res.status(403).json({ 
+            message: `Bạn không có quyền tạo người dùng với vai trò '${role}'.` 
+        });
     }
     
     try {
-        // Kiểm tra xem user đã tồn tại chưa
-        let existingUser = await User.findOne({ $or: [
-            { userId: userId },
-            { username: username },
-            { email: email }
-        ]});
+        // Kiểm tra xem user đã tồn tại chưa (chỉ cần kiểm tra các trường unique)
+        // Bỏ qua userId nếu nó là null hoặc undefined
+        const orConditions = [{ email }];
+        if (username) orConditions.push({ username });
+        if (userId) orConditions.push({ userId });
+
+        let existingUser = await User.findOne({ $or: orConditions });
         
         if (existingUser) {
-            // Xác định trường bị trùng
-            let duplicateField = '';
-            if (existingUser.userId === userId) duplicateField = 'User ID';
-            else if (existingUser.username === username) duplicateField = 'Username';
-            else if (existingUser.email === email) duplicateField = 'Email';
+            let duplicateField = 'thông tin';
+            if (existingUser.email === email) duplicateField = 'Email';
+            else if (username && existingUser.username === username) duplicateField = 'Username';
+            else if (userId && existingUser.userId === userId) duplicateField = 'User ID';
             
             return res.status(400).json({ 
-                message: `Không thể tạo người dùng. ${duplicateField} đã tồn tại.`,
-                field: duplicateField.toLowerCase()
+                message: `${duplicateField} đã tồn tại. Vui lòng sử dụng thông tin khác.`,
+                field: duplicateField.toLowerCase().replace(' ', '')
             });
         }
         
-        // Tạo user ID tự động nếu không cung cấp
-        const autoUserId = userId || `${role.substring(0, 2).toUpperCase()}${Date.now()}`;
-        
         // Tạo user mới
         const newUser = new User({
-            userId: autoUserId,
+            userId: userId || `${role.substring(0, 2).toUpperCase()}${Date.now()}`,
             username,
             email,
             password, // Sẽ được hash trong model
@@ -353,27 +350,32 @@ exports.createUser = async (req, res) => {
         // Lưu user vào database
         const savedUser = await newUser.save();
         
-        // Xóa password khỏi response
         const userResponse = savedUser.toObject();
         delete userResponse.password;
         
-        // Log thành công
-        console.log(`Successfully created new ${role} with ID: ${autoUserId}`);
-        
-        // Trả về user mới tạo
+        console.log(`Successfully created new ${role} with ID: ${userResponse.userId}`);
         res.status(201).json(userResponse);
+
     } catch (err) {
         console.error('Error creating user:', err);
         
-        if (err.code === 11000) { // Lỗi trùng lặp unique key
+        // === BƯỚC 2: CẢI THIỆN XỬ LÝ LỖI ===
+        // Xử lý lỗi validation từ Mongoose
+        if (err.name === 'ValidationError') {
+            const messages = Object.values(err.errors).map(val => val.message);
+            return res.status(400).json({ message: messages.join('. ') });
+        }
+
+        // Xử lý lỗi trùng lặp unique key (dự phòng)
+        if (err.code === 11000) {
             const field = Object.keys(err.keyPattern)[0];
             return res.status(400).json({ 
-                message: `${field.charAt(0).toUpperCase() + field.slice(1)} '${err.keyValue[field]}' already exists.`,
+                message: `${field.charAt(0).toUpperCase() + field.slice(1)} đã tồn tại.`,
                 field: field
             });
         }
         
-        res.status(500).json({ message: 'Server Error', error: err.message });
+        res.status(500).json({ message: 'Lỗi máy chủ khi tạo người dùng.', error: err.message });
     }
 };
 
